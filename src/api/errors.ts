@@ -1,5 +1,3 @@
-// errors.ts
-
 export class APIError extends Error {
     status_code: number;
   

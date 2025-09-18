@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { APIError, APIRequestFailed } from "./index";
 import CONFIG from "../config";
 
-export class APIClient {
+export default class APIClient {
   private static instance: APIClient;
   private axiosInstance: AxiosInstance;
 
