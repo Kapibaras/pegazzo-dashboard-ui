@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { APIError, APIRequestFailed } from "./index";
 import CONFIG from "../config";
 
-class APIClient {
+export class APIClient {
   private static instance: APIClient;
   private axiosInstance: AxiosInstance;
 
@@ -20,7 +20,7 @@ class APIClient {
       (error) => {
         if (axios.isCancel(error) || error.code === "ERR_CANCELED") {
             console.debug("[API] request canceled:", error.message);
-            return undefined;
+            return;
         }
         if (error.response) {
             const status = error.response.status;
@@ -65,4 +65,3 @@ class APIClient {
   }
 }
 
-export const apiClient = APIClient.getInstance();
