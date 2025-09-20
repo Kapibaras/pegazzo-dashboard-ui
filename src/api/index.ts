@@ -1,9 +1,9 @@
-import APIClient from "./client";
+import SingletonAPIClient from "./clients/singleton";
 import { APIError } from "./errors";
 import { APIRequestFailed } from "./errors";
 
 export {
-    APIClient,
+    SingletonAPIClient,
     APIError,
     APIRequestFailed,
 };
