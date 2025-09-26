@@ -5,9 +5,10 @@ export default class APIClientBase {
 
   constructor(axiosInstance: AxiosInstance) {
     this.axiosInstance = axiosInstance;
+    this.axiosInstance.defaults.withCredentials = true;
   }
 
-  protected getRawAxiosInstance(): AxiosInstance {
+  public getRawAxiosInstance(): AxiosInstance {
     return this.axiosInstance;
   }
 

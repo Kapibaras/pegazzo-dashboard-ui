@@ -29,7 +29,7 @@ export default class SingletonAPIClient extends APIClientBase {
         if (error.response) {
           const status = error.response.status;
           const message =
-            error.response.data?.message ||
+            error.response.data?.detail ||
             error.response.statusText ||
             "Server error";
           return Promise.reject(new APIError(message, status));
