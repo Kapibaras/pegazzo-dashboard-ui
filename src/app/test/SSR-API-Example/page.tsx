@@ -24,7 +24,6 @@ export default async function SSRAPIExample() {
     console.log("Login response headers:", loginResponse.headers);
     console.log("Login response data:", loginResponse.data);
 
-    // 2️⃣ Capturar cookies de la respuesta
     const setCookieHeader = loginResponse.headers["set-cookie"] as string[] | string | undefined;
     let sessionCookieHeader = initialCookieHeader;
 
@@ -33,7 +32,6 @@ export default async function SSRAPIExample() {
         ? setCookieHeader.map((c) => c.split(";")[0]).join("; ")
         : setCookieHeader.split(";")[0];
     
-      // combinar con las cookies iniciales
       sessionCookieHeader = [initialCookieHeader, cookiesFromLogin]
         .filter(Boolean)
         .join("; ");
@@ -41,8 +39,8 @@ export default async function SSRAPIExample() {
 
     console.log("➡️ Session cookies:", sessionCookieHeader);
 
-    // 3️⃣ Crear un nuevo cliente autenticado
     const sessionClient = new ScopedAPIClient(sessionCookieHeader);
+    const sessionAuthService = new AuthService(sessionClient);
     const userService = new UserService(sessionClient);
 
     console.log("➡️ Fetching users after login (SSR)...");
@@ -50,11 +48,14 @@ export default async function SSRAPIExample() {
     console.log("✅ Admins:", adminsResponse.data);
 
     console.log("➡️ Logging out (SSR)...");
-    await authService.logout();
+    await sessionAuthService.logout();
 
     console.log("➡️ Fetching users after logout (SSR, should fail)...");
+    const noSessionClient = new ScopedAPIClient(""); 
+    const noSessionUserService = new UserService(noSessionClient);
+
     try {
-      await userService.getAllUsers();
+      await noSessionUserService.getAllUsers();
     } catch (err) {
       console.error("❌ Error fetching users after logout:", err);
     }

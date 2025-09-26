@@ -34,6 +34,13 @@ export default function CSRAPIExample() {
 
         console.log("➡️ Logging out (CSR)...");
         await authService.logout();
+
+        console.log("➡️ Fetching users after logout (SSR, should fail)...");
+        try {
+          await userService.getAllUsers();
+        } catch (err) {
+          console.error("❌ Error fetching users after logout:", err);
+        }
       } catch (err) {
         console.error("❌ Unexpected error (CSR):", err);
       }
