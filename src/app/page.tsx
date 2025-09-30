@@ -20,6 +20,16 @@ export default function Home() {
           <li>Save and see your changes instantly.</li>
         </ol>
 
+        <div className={styles.testSans}>
+          Este texto usa Sans y el color primario
+        </div>
+        <div className={styles.testMono}>
+          Este texto usa Mono y el color accent
+        </div>
+        <div className={styles.testBox}>
+          Este div usa el color secondary de fondo
+        </div>
+
         <div className={styles.ctas}>
           <a
             className={styles.primary}
