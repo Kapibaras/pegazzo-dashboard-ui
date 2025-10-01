@@ -5,19 +5,30 @@ import { APIError, APIRequestFailed } from "../index";
 import { getCookieFromHeader } from "@/api/helpers";
 
 export default class ScopedAPIClient extends APIClientBase {
-  constructor(cookieHeader: string | undefined) {
+  constructor(cookieHeader?: string) {
+    
     const csrfAccess = getCookieFromHeader(cookieHeader, "csrf_access_token");
     const csrfRefresh = getCookieFromHeader(cookieHeader, "csrf_refresh_token");
 
+    const csrfHeaders: Record<string, string> = {};
+    if (csrfAccess) {
+      csrfHeaders["X-CSRF-ACCESS"] = csrfAccess;
+    }
+    if (csrfRefresh) {
+      csrfHeaders["X-CSRF-REFRESH"] = csrfRefresh;
+    }
+    
+    const headers: Record<string, string> = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      ...csrfHeaders,
+      
+      ...(cookieHeader ? { Cookie: cookieHeader } : {}), 
+    };
+
     const axiosInstance = axios.create({
       baseURL: CONFIG.BASE_URL,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Cookie: cookieHeader || "",
-        ...(csrfAccess ? { "X-CSRF-ACCESS": csrfAccess } : {}),
-        ...(csrfRefresh ? { "X-CSRF-REFRESH": csrfRefresh } : {}),
-      },
+      headers,
       withCredentials: true,
     });
 
@@ -30,6 +41,7 @@ export default class ScopedAPIClient extends APIClientBase {
           console.debug("[API] request canceled:", error.message);
           return;
         }
+
         if (error.response) {
           const status = error.response.status;
           const message =
@@ -38,6 +50,7 @@ export default class ScopedAPIClient extends APIClientBase {
             "Server error";
           return Promise.reject(new APIError(message, status));
         }
+
         return Promise.reject(
           new APIRequestFailed(error.message || "Request failed", 500)
         );

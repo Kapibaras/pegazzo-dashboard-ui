@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { AuthService, UserService } from "@/services";
 import { SingletonAPIClient } from "@/api";
-import { getCookie } from "@/api/helpers";
 
 export default function CSRAPIExample() {
   useEffect(() => {
@@ -14,28 +13,21 @@ export default function CSRAPIExample() {
 
       try {
         console.log("➡️ Logging in (CSR)...");
-        const loginResponse = await authService.login({
+        const loginData = await authService.login({
           username: "JuanOvando",
           password: "string",
         });
-
-        console.log("Login response:", loginResponse.headers);
-
-        console.log("➡️ Cookies actuales (document.cookie):", document.cookie);
-
-        const csrfAccess = getCookie("csrf_access_token");
-        const csrfRefresh = getCookie("csrf_refresh_token");
-        console.log("CSRF Access:", csrfAccess);
-        console.log("CSRF Refresh:", csrfRefresh);
+        console.log("Login data:", loginData);
 
         console.log("➡️ Fetching users after login (CSR)...");
-        const usersResponse = await userService.getAllUsers("administrador");
-        console.log("✅ Users:", usersResponse.data);
+        const users = await userService.getAllUsers("administrador");
+        console.log("✅ Users:", users);
 
         console.log("➡️ Logging out (CSR)...");
         await authService.logout();
+        console.log("✅ Logged out (CSR)");
 
-        console.log("➡️ Fetching users after logout (SSR, should fail)...");
+        console.log("➡️ Fetching users after logout (should fail)...");
         try {
           await userService.getAllUsers();
         } catch (err) {
@@ -59,3 +51,4 @@ export default function CSRAPIExample() {
     </div>
   );
 }
+

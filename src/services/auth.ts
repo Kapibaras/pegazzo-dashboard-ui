@@ -1,16 +1,53 @@
 import AbstractUnauthedAPIService from "./base/AbstractUnauthedAPIService";
+import { AxiosResponse } from "axios";
 
 export default class AuthService extends AbstractUnauthedAPIService {
 
-  async login(credentials: { username: string; password: string }) {
-    return this.client.post("/auth/login", credentials, { withCredentials: true });
+  private _handleSSRContextCookies(res: AxiosResponse<any>, ssrContext?: { setCookie?: (cookie: string) => void }): void {
+    const setCookieHeader = res.headers["set-cookie"];
+    
+    if (setCookieHeader && ssrContext?.setCookie) {
+      const cookiesArray = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader];
+      cookiesArray.forEach(c => ssrContext.setCookie!(c)); 
+    }
   }
 
-  async refresh() {
-    return this.client.post("/auth/refresh", undefined, { withCredentials: true });
+  async login(
+    credentials: { username: string; password: string },
+    ssrContext?: { setCookie?: (cookie: string) => void }
+  ): Promise<{ access_token: string; refresh_token: string }> {
+    const res = await this.client.post<{ access_token: string; refresh_token: string }>( 
+      "/auth/login",
+      credentials,
+      { withCredentials: true }
+    );
+
+    this._handleSSRContextCookies(res, ssrContext); 
+
+    return res.data;
+  }
+  
+  async refresh(ssrContext?: { setCookie?: (cookie: string) => void }): Promise<{ access_token: string; refresh_token: string }> {
+    const res = await this.client.post<{ access_token: string; refresh_token: string }>(
+      "/auth/refresh",
+      undefined,
+      { withCredentials: true }
+    );
+    
+    this._handleSSRContextCookies(res, ssrContext); 
+
+    return res.data;
   }
 
-  async logout() {
-    return this.client.post("/auth/logout", undefined, { withCredentials: true });
+  async logout(ssrContext?: { setCookie?: (cookie: string) => void }): Promise<{ message: string }> {
+    const res = await this.client.post<{ message: string }>(
+      "/auth/logout",
+      undefined,
+      { withCredentials: true }
+    );
+    
+    this._handleSSRContextCookies(res, ssrContext); 
+
+    return res.data;
   }
 }

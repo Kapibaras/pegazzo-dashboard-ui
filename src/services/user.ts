@@ -8,8 +8,6 @@ export default class UserService extends AbstractAPIService {
   }
 
   async getAllUsers(role?: string): Promise<AxiosResponse<any>> {
-    return this.client.get("/user", {
-      params: role ? { role } : {},
-    });
+    return (await this.client.get("/user", { params: role ? { role } : {} })).data;
   }
 }
