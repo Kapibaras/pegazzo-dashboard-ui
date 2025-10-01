@@ -6,22 +6,14 @@ const figtree = Figtree({
   variable: "--font-figtree",
   subsets: ["latin"],
   display: "swap",
+  weight: ['400', '600', '700', '800'],
 });
 
 const sourceCodePro = Source_Code_Pro({
   variable: "--font-source-code-pro",
   subsets: ["latin"],
   display: "swap",
-});
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ['500'],
 });
 
 export const metadata: Metadata = {
@@ -36,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${figtree.variable} ${sourceCodePro.variable}`}>
+      <body className={`${figtree.className} ${sourceCodePro.variable}`}>
         {children}
       </body>
     </html>
