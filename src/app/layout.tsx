@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${figtree.className} ${sourceCodePro.variable}`}>
+      <body className={`${figtree.className} ${figtree.variable} ${sourceCodePro.className} ${sourceCodePro.variable}`}>
         {children}
       </body>
     </html>
