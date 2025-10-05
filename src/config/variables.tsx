@@ -1,6 +1,5 @@
 const VARIABLES = {
-    BASE_URL: process.env.BASE_URL || "http://localhost:3000",
-    ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET ?? (() => { throw new Error("ACCESS_TOKEN_SECRET is not defined") })(),
+    BASE_URL: process.env.MONOLITH_API_BASE_URL || "http://localhost:8000",
 };
 
 export default VARIABLES;
