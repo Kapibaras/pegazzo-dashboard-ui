@@ -2,7 +2,8 @@ import axios from "axios";
 import APIClientBase from "./base";
 import CONFIG from "@/config";
 import { APIError, APIRequestFailed } from "../index";
-import { getCookie } from "@/api/helpers";
+import getCookie from "@/utils/getCookie";
+import getCookiesClient from "@/utils/getCookiesClient";
 
 export default class SingletonAPIClient extends APIClientBase {
   private static instance: SingletonAPIClient;
@@ -41,8 +42,9 @@ export default class SingletonAPIClient extends APIClientBase {
     );
 
     this.getRawAxiosInstance().interceptors.request.use((config) => {
-      const csrfAccess = getCookie("csrf_access_token");
-      const csrfRefresh = getCookie("csrf_refresh_token");
+      const cookiesClient = getCookiesClient();
+      const csrfAccess = getCookie(cookiesClient, "csrf_access_token");
+      const csrfRefresh = getCookie(cookiesClient, "csrf_refresh_token");
 
       if (csrfAccess) {
         config.headers["X-CSRF-ACCESS"] = csrfAccess;

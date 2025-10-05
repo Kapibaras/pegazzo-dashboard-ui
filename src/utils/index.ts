@@ -1,3 +1,5 @@
-import buildCookieHeader from "./buildCookieHeader";
+import getCookiesServer from "./getCookiesServer";
+import getCookiesClient from "./getCookiesClient";
+import getCookie from "./getCookie";
 
-export default buildCookieHeader;
+export { getCookiesClient, getCookiesServer, getCookie };
