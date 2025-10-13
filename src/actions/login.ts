@@ -18,8 +18,7 @@ export async function login(formData: FormData) {
   try {
     const initialCookieHeader = await getCookiesServer();
     const scopedClient = new ScopedAPIClient(initialCookieHeader);
-    const authService = new AuthService(scopedClient);
-    await authService.login({ username, password });
+    await new AuthService(scopedClient).login({ username, password });
 
     const sessionToken = sign({ username }, VARIABLES.NEXT_SESSION_SECRET, {
       expiresIn: "1h",
@@ -29,23 +28,21 @@ export async function login(formData: FormData) {
     cookieStore.set({
       name: "session",
       value: sessionToken,
-      httpOnly: false,
+      httpOnly: true,
       path: "/",
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "lax",
       maxAge: 3600,
     });
 
     return { success: true };
   } catch (err: any) {
-    console.log(err.status_code);
     if (err.status_code === 401) {
-      return { error: "Invalid Credentials" };
+      return { error: "Invalid Credentials" }; 
     } else if (err.status_code === 404) {
-      console.log("User not found");
       return { error: "User not found" };
     } else {
-      console.log("Something went wrong");
+      console.error("Login failed with unexpected error:", err.message, err.status_code, err.stack);
       return { error: "Something went wrong" };
     }
   }

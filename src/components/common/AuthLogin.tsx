@@ -14,15 +14,16 @@ import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { login } from "@/actions";
 import { useRouter } from "next/navigation";
+import { SpanishMessages as M } from "@/i18n/es"; 
 
 const AuthLogin = () => {
   const router = useRouter();
   const { toast } = useToast();
   const [errors, setErrors] = useState({ username: "", password: "" });
 
-  const sendErrorToast = (message: string) => {
+  const sendErrorToast = (title: string, message: string) => {
     const { dismiss } = toast({
-      title: "Error",
+      title: title, 
       description: message,
       variant: "destructive",
     });
@@ -37,29 +38,36 @@ const AuthLogin = () => {
     const password = (formData.get("password") as string)?.trim() ?? "";
 
     const newErrors = { username: "", password: "" };
-    if (!username) newErrors.username = "El nombre de usuario es obligatorio.";
-    if (!password) newErrors.password = "La contraseña es obligatoria.";
+    if (!username) newErrors.username = M.VALIDATION.USERNAME_REQUIRED;
+    if (!password) newErrors.password = M.VALIDATION.PASSWORD_REQUIRED;
 
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) return;
 
     const result = await login(formData);
+
+    const ERROR_TITLE = M.LOGIN.TITLE;
+    const GENERIC_ERROR_MESSAGE = M.TOAST_ERROR_TITLE;
+    const CREDENTIALS_ERROR_MESSAGE = M.LOGIN.INVALID_CREDENTIALS;
+    const UNEXPECTED_ERROR_MESSAGE = M.LOGIN.UNEXPECTED_ERROR;
+
     if (result.error) {
       switch (result.error) {
         case "Required attributes username & password":
-          sendErrorToast("Debes ingresar un username y password");
+          sendErrorToast(ERROR_TITLE, M.LOGIN.REQUIRED_FIELDS);
           break;
+
         case "Invalid Credentials":
-          sendErrorToast("Usuario y/o contraseña son incorrectos");
-          break;
         case "User not found":
-          sendErrorToast("Usuario no encontrado");
+          sendErrorToast(ERROR_TITLE, CREDENTIALS_ERROR_MESSAGE);
           break;
+
         case "Something went wrong":
-          sendErrorToast("Tuvimos un problema, inténtelo más tarde");
+          sendErrorToast(GENERIC_ERROR_MESSAGE, UNEXPECTED_ERROR_MESSAGE);
           break;
+
         default:
-          sendErrorToast("Ocurrió un error inesperado.");
+          sendErrorToast(GENERIC_ERROR_MESSAGE, UNEXPECTED_ERROR_MESSAGE);
       }
     } else {
       router.push("/");
@@ -85,7 +93,7 @@ const AuthLogin = () => {
                   name="username"
                   placeholder="JuanOvando"
                   aria-invalid={!!errors.username}
-                  className="flex items-center self-stretch rounded-md placeholder:text-left border border-surface-700 bg-surface-400 shadow-sm py-5.5 px-4.5 focus:border-blue-600 focus:outline-none"
+                  className="flex items-center text self-stretch rounded-md placeholder:text-left border border-surface-700 bg-surface-400 shadow-sm py-5.5 px-4.5 focus:border-blue-600 focus:outline-none"
                 />
                 {errors.username && <FieldError className="text">{errors.username}</FieldError>}
               </Field>
@@ -98,7 +106,7 @@ const AuthLogin = () => {
                   type="password"
                   placeholder="**********"
                   aria-invalid={!!errors.password}
-                  className="flex items-center self-stretch rounded-md placeholder:text-left border border-surface-700 bg-surface-400 shadow-sm py-5.5 px-4.5 focus:border-blue-600 focus:outline-none"
+                  className="flex items-center text self-stretch rounded-md placeholder:text-left border border-surface-700 bg-surface-400 shadow-sm py-5.5 px-4.5 focus:border-blue-600 focus:outline-none"
                 />
                 {errors.password && <FieldError className="text">{errors.password}</FieldError>}
               </Field>

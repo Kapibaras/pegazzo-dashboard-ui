@@ -6,22 +6,23 @@ import VARIABLES from "@/config/variables";
 
 export async function middleware(request: NextRequest) {
   const { pathname, origin } = request.nextUrl;
-
   const isPublicRoute = CONSTANTS.AUTH.PUBLIC_ROUTES.some(route =>
     pathname.startsWith(route)
   );
 
   const session = request.cookies.get("session")?.value;
+  let sessionPayload = null;
 
-  let isLoggedIn = false;
   if (session) {
     try {
-      await jwtVerify(session, new TextEncoder().encode(VARIABLES.NEXT_SESSION_SECRET));
-      isLoggedIn = true;
+      const secret = new TextEncoder().encode(VARIABLES.NEXT_SESSION_SECRET);
+      const { payload } = await jwtVerify(session, secret);
+      sessionPayload = payload;
     } catch (error) {
-      isLoggedIn = false;
     }
   }
+  
+  const isLoggedIn = !!sessionPayload;
 
   if (!isPublicRoute && !isLoggedIn) {
     const redirectUrl = new URL(CONSTANTS.AUTH.LOGIN_ROUTE, origin);
@@ -32,7 +33,17 @@ export async function middleware(request: NextRequest) {
   if (isLoggedIn && pathname === CONSTANTS.AUTH.LOGIN_ROUTE) {
     return NextResponse.redirect(new URL(CONSTANTS.AUTH.HOME_ROUTE, origin));
   }
-  return NextResponse.next();
+  
+  const response = NextResponse.next();
+
+  if (isLoggedIn && sessionPayload) {
+    const userData = JSON.stringify({ 
+      username: sessionPayload.username,
+    });
+    response.headers.set('X-User-Session', userData);
+  }
+
+  return response;
 }
 
 export const config = {

@@ -1,4 +1,4 @@
-import AuthLogin from "@/app/login/components/AuthLogin";
+import AuthLogin from "@/components/common/AuthLogin";
 
 export default function Login() {
   return (
