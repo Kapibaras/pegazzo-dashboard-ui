@@ -1,4 +1,4 @@
-import { getUsernameFromSession } from '@/actions/getUsername';
+import { getUsernameFromSession } from '@/actions';
 import LogoutButton from '@/components/common/LogoutBotton';
 
 export default async function HomePage() {
