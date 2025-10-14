@@ -1,0 +1,11 @@
+"use server";
+import { cookies } from "next/headers";
+
+export async function logout() {
+  const cookieStore = await cookies();
+  cookieStore.delete({
+    name: "session",
+    path: "/",
+  });
+  return { success: true };
+}
