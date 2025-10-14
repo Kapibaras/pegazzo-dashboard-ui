@@ -105,6 +105,15 @@
   letter-spacing: 0.36px;
 }
 
+.small-text {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%;
+  letter-spacing: 0.36px;
+}
+
 .textBold {
   font-family: var(--font-sans);
   font-size: 18px;

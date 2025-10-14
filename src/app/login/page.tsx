@@ -1,9 +1,9 @@
-import AuthLogin from "@/components/common/AuthLogin";
+import { AuthLogin } from '@/components/auth';
 
 export default function Login() {
   return (
     <>
-        <AuthLogin />
+      <AuthLogin />
     </>
   );
 }
