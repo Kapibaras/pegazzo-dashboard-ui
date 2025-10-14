@@ -6,10 +6,10 @@ export default async function HomePage() {
 
   return (
     <div className="p-8">
-      <header className="flex justify-end">
+      <header className="flex flex-wrap justify-between gap-4">
+        <h1 className="typo-title">Bienvenido al Dashboard</h1>
         <LogoutButton initialUsername={username} />
       </header>
-      <h1 className="title">Bienvenido al Dashboard</h1>
     </div>
   );
 }

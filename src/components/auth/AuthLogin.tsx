@@ -102,7 +102,7 @@ const AuthLogin = () => {
           <FieldSet>
             <FieldGroup className="flex flex-col gap-8">
               <Field data-invalid={!!errors.username}>
-                <FieldLabel htmlFor="username" className="textBold text-black">
+                <FieldLabel htmlFor="username" className="typo-bold-text">
                   Username
                 </FieldLabel>
                 <Input
@@ -110,13 +110,13 @@ const AuthLogin = () => {
                   name="username"
                   placeholder="Nombre de usuario"
                   aria-invalid={!!errors.username}
-                  className="text border-surface-700 bg-surface-400 flex items-center self-stretch rounded-md border px-4.5 py-5.5 shadow-sm placeholder:text-left focus:border-blue-600 focus:outline-none"
+                  className="typo-text border-surface-700 bg-surface-400 flex items-center self-stretch rounded-md border px-4.5 py-5.5 shadow-sm placeholder:text-left focus:border-blue-600 focus:outline-none"
                 />
-                {errors.username && <FieldError className="small-text">{errors.username}</FieldError>}
+                {errors.username && <FieldError className="typo-sm-text">{errors.username}</FieldError>}
               </Field>
 
               <Field data-invalid={!!errors.password}>
-                <FieldLabel htmlFor="password" className="textBold text-black">
+                <FieldLabel htmlFor="password" className="typo-bold-text">
                   Contraseña
                 </FieldLabel>
                 <Input
@@ -125,16 +125,16 @@ const AuthLogin = () => {
                   type="password"
                   placeholder="******"
                   aria-invalid={!!errors.password}
-                  className="text border-surface-700 bg-surface-400 flex items-center self-stretch rounded-md border px-4.5 py-5.5 shadow-sm placeholder:text-left focus:border-blue-600 focus:outline-none"
+                  className="typo-text border-surface-700 bg-surface-400 flex items-center self-stretch rounded-md border px-4.5 py-5.5 shadow-sm placeholder:text-left focus:border-blue-600 focus:outline-none"
                 />
-                {errors.password && <FieldError className="small-text">{errors.password}</FieldError>}
+                {errors.password && <FieldError className="typo-sm-text">{errors.password}</FieldError>}
               </Field>
             </FieldGroup>
           </FieldSet>
 
           <Button
             type="submit"
-            className="bg-terciary-500 hover:bg-primary-700 text-primary-100 textBold flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm"
+            className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm"
           >
             Iniciar Sesión
           </Button>
