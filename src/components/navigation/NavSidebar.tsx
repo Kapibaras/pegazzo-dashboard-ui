@@ -59,7 +59,7 @@ const NavSidebar = () => {
   const { toggleSidebar, state } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="shadow-[6px_0_13px_2px_rgba(0,0,0,0.16)]">
       <SidebarRail />
 
       <SidebarHeader>
