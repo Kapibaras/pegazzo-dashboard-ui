@@ -23,11 +23,21 @@ import {
   CarFront,
   Building2,
   ChevronRight,
+  ChevronsUpDown,
+  CircleUserRound,
+  LogOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { useSidebar } from '../ui/sidebar';
 import { useRouter } from 'next/navigation';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const NavMain = [
   {
@@ -38,30 +48,31 @@ const NavMain = [
   {
     title: 'Balance',
     icon: CircleDollarSign,
-    url: '/balance',
+    url: '/#',
   },
   {
     title: 'Coches',
     icon: CarFront,
-    url: '/coches',
+    url: '/#',
   },
   {
     title: 'Organización',
     icon: Building2,
     subroutes: [
       { title: 'Usuarios', url: '/usuarios' },
-      { title: 'Configuración', url: '/settings' },
+      { title: 'Configuración', url: '/#' },
     ],
   },
 ];
 
 const NavSidebar = () => {
   const { toggleSidebar, state } = useSidebar();
+  const isExpanded = state === 'expanded';
 
   return (
     <Sidebar collapsible="icon" className="shadow-[6px_0_13px_2px_rgba(0,0,0,0.16)]">
       <SidebarRail />
-
+      {/* Sidebar Header */}
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem className="flex flex-row justify-between">
@@ -85,7 +96,7 @@ const NavSidebar = () => {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-
+      {/* Sidebar Content */}
       <SidebarContent className="pt-5">
         <SidebarGroup className="p-0">
           <SidebarMenu className="gap-3">
@@ -105,8 +116,42 @@ const NavSidebar = () => {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-
-      <SidebarFooter />
+      {/* Sidebar Footer */}
+      <SidebarFooter className="px-0 py-0">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton className="bg-terciary-500 h-fit cursor-pointer gap-3 rounded-none px-5 py-3.5 group-data-[state=collapsed]:h-[4.15rem]! group-data-[state=collapsed]:w-full!">
+                  <CircleUserRound className="size-9! group-data-[state=collapsed]:ml-[0.3rem]" />
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="typo-bold-text truncate">{'Ruben35'}</span>
+                    <span className="typo-sm-text truncate">{'Rubén Hernández'}</span>
+                  </div>
+                  <ChevronsUpDown className="ml-auto size-6!" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side={isExpanded ? 'top' : 'right'}
+                align={isExpanded ? 'start' : 'end'}
+                sideOffset={isExpanded ? 15 : 10}
+                alignOffset={isExpanded ? 15 : 30}
+                className="bg-terciary-500 border-terciary-700 w-64 rounded-xl border-2 p-3"
+              >
+                <DropdownMenuGroup>
+                  <DropdownMenuItem
+                    className="hover:bg-primary-200/20! hover:text-carbon-50! typo-text text-primary-100 [&>svg]:text-primary-100! hover:[&>svg]:text-carbon-50! cursor-pointer flex-row items-center gap-2 rounded-lg p-3 [&>svg]:size-5!"
+                    onSelect={() => console.log('Close')}
+                  >
+                    <LogOut />
+                    Cerrar Sesión
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 };
