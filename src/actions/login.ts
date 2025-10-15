@@ -31,7 +31,7 @@ export async function login(formData: FormData) {
       value: sessionToken,
       httpOnly: true,
       path: '/',
-      secure: true,
+      secure: VARIABLES.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 3600,
     });
