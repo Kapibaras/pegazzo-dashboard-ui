@@ -8,6 +8,9 @@ import {
 } from '@radix-ui/react-dropdown-menu';
 import { ChevronsUpDown, CircleUserRound, LogOut, ShieldUser } from 'lucide-react';
 import CONFIG from '@/config';
+import { logout } from '@/actions';
+import { useToast } from '@/components/ui/use-toast';
+import { useRouter } from 'next/navigation';
 
 const NavFooter = ({
   isExpanded,
@@ -23,8 +26,31 @@ const NavFooter = ({
   role: string;
 }) => {
   const firstSurname = surnames.split(' ')[0] || '';
-
   const IconRole = role === CONFIG.USER_ROLES.OWNER ? ShieldUser : CircleUserRound;
+
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      const result = await logout();
+      if (result.success) {
+        toast({
+          title: 'Sesión cerrada',
+          description: 'Has cerrado sesión correctamente.',
+          variant: 'success',
+        });
+        router.push('/login');
+      }
+    } catch (err: unknown) {
+      console.error('Logout error:', err);
+      toast({
+        title: 'Error inesperado',
+        description: 'Algo salió mal al cerrar sesión.',
+        variant: 'destructive',
+      });
+    }
+  };
 
   return (
     <SidebarFooter className="px-0 py-0">
@@ -50,8 +76,8 @@ const NavFooter = ({
             >
               <DropdownMenuGroup>
                 <DropdownMenuItem
-                  className="hover:bg-primary-200/20! hover:text-carbon-50! typo-text text-primary-100 [&>svg]:text-primary-100! hover:[&>svg]:text-carbon-50! cursor-pointer flex-row items-center gap-2 rounded-lg p-3 [&>svg]:size-5!"
-                  onSelect={() => console.log('Close')}
+                  className="hover:bg-primary-200/20! hover:text-carbon-50! typo-text text-primary-100 [&>svg]:text-primary-100! hover:[&>svg]:text-carbon-50! flex cursor-pointer flex-row items-center gap-2 rounded-lg p-3 [&>svg]:size-5!"
+                  onSelect={handleLogout}
                 >
                   <LogOut />
                   Cerrar Sesión
