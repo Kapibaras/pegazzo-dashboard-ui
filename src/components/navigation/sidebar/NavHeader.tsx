@@ -14,7 +14,7 @@ const NavHeader = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             width={181}
             height={29}
             priority
-            className="mt-1.5 shrink-0 object-contain group-data-[state=collapsed]:w-0 group-data-[state=collapsed]:opacity-0 group-data-[state=expanded]:ml-3"
+            className="mt-1.5 ml-3 shrink-0 object-contain group-data-[state=collapsed]:w-0 group-data-[state=collapsed]:opacity-0 group-data-[state=expanded]:ml-3 md:ml-0"
           />
           <Button
             variant="ghost"
