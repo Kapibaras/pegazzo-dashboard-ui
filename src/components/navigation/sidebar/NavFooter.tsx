@@ -13,7 +13,7 @@ const NavFooter = ({
   isExpanded,
   username,
   name,
-  surnames,
+  surnames = '',
   role,
 }: {
   isExpanded: boolean;

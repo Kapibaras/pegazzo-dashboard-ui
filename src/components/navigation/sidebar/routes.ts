@@ -21,7 +21,7 @@ const routes = [
     icon: Building2,
     subroutes: [
       { title: 'Usuarios', url: '/usuarios' },
-      { title: 'Configuración', url: '/#' },
+      { title: 'Configuración', url: '#' },
     ],
   },
 ];

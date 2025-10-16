@@ -6,9 +6,11 @@ import NavHeader from './NavHeader';
 import NavContent from './NavContent';
 import routes from './routes';
 import NavFooter from './NavFooter';
+import { useUser } from '@/contexts/UserProvider';
 
 const NavSidebar = () => {
   const { toggleSidebar, state } = useSidebar();
+  const { user } = useUser();
   const isExpanded = state === 'expanded';
 
   return (
@@ -16,7 +18,7 @@ const NavSidebar = () => {
       <SidebarRail />
       <NavHeader toggleSidebar={toggleSidebar} />
       <NavContent routes={routes} isExpanded={isExpanded} />
-      <NavFooter isExpanded={isExpanded} username="Ruben35" name="Rubén" surnames="García López" role="propietario" />
+      <NavFooter isExpanded={isExpanded} {...user} />
     </Sidebar>
   );
 };
