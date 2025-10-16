@@ -39,8 +39,8 @@ export default async function DashboardLayout({
       <UserProvider initialUser={user}>
         <NavSidebar />
         <SidebarInset>
-          <main className="w-full bg-red-500">
-            <Header title="Inicio" />
+          <main className="h-full w-full">
+            <Header />
             {children}
           </main>
         </SidebarInset>

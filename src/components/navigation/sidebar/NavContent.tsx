@@ -1,7 +1,7 @@
 import { SidebarContent, SidebarGroup, SidebarMenu } from '@/components/ui/sidebar';
 import NavCollapsibleRoutes from './NavCollapsibleRoutes';
 import NavRoute from './NavRoute';
-import { RoutesType } from './routes';
+import { RoutesType } from '@/data/navigation';
 
 const NavContent = ({ routes, isExpanded }: { routes: RoutesType; isExpanded: boolean }) => {
   return (

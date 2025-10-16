@@ -1,6 +1,6 @@
 import { Building2, CarFront, CircleDollarSign, House } from 'lucide-react';
 
-const routes = [
+const ROUTES_WITH_ICONS = [
   {
     title: 'Inicio',
     icon: House,
@@ -26,5 +26,12 @@ const routes = [
   },
 ];
 
-export default routes;
-export type RoutesType = typeof routes;
+const ROUTES_PATHNAMES: Record<string, string> = {
+  '/': 'Inicio',
+  '/usuarios': 'Usuarios',
+  '/settings': 'Configuración',
+};
+
+export { ROUTES_WITH_ICONS, ROUTES_PATHNAMES };
+
+export type RoutesType = typeof ROUTES_WITH_ICONS;
