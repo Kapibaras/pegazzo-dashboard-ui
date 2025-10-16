@@ -1,9 +1,8 @@
 'use server';
 
 import { AuthService } from '@/services';
-import getCookiesServer from '@/utils/getCookiesServer';
+import { getCookiesServer, setCookiesOnServer } from '@/utils/cookies/server';
 import { ScopedAPIClient } from '@/api';
-import { cookies } from 'next/headers';
 import { sign } from 'jsonwebtoken';
 import VARIABLES from '@/config/variables';
 import isAPIErrorType from '@/api/errors';
@@ -19,13 +18,19 @@ export async function login(formData: FormData) {
   try {
     const initialCookieHeader = await getCookiesServer();
     const scopedClient = new ScopedAPIClient(initialCookieHeader);
-    await new AuthService(scopedClient).login({ username, password });
+    const { setCookiesHeaders } = await new AuthService(scopedClient).login({ username, password });
+
+    const cookieStore = await setCookiesOnServer(setCookiesHeaders);
 
     const sessionToken = sign({ username }, VARIABLES.NEXT_SESSION_SECRET, {
       expiresIn: '1h',
     });
 
-    const cookieStore = await cookies();
+    //TODO: Right now we have a session provided by Next.js and another by the API (httpOnly).
+    // We should ideally unify both sessions into one. For now, we keep both.
+    // The Next.js session is used to identify the user in the frontend (hardcoded in 1 hour duration),
+    // while the API session is used for authenticating API requests.
+
     cookieStore.set({
       name: 'session',
       value: sessionToken,

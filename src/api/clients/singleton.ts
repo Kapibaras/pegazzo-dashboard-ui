@@ -1,9 +1,8 @@
-import axios from "axios";
-import APIClientBase from "./base";
-import CONFIG from "@/config";
-import { APIError, APIRequestFailed } from "../index";
-import getCookie from "@/utils/getCookie";
-import getCookiesClient from "@/utils/getCookiesClient";
+import axios from 'axios';
+import APIClientBase from './base';
+import CONFIG from '@/config';
+import { APIError, APIRequestFailed } from '../index';
+import { getCookie, getCookiesClient } from '@/utils/cookies';
 
 export default class SingletonAPIClient extends APIClientBase {
   private static instance: SingletonAPIClient;
@@ -12,8 +11,8 @@ export default class SingletonAPIClient extends APIClientBase {
     const axiosInstance = axios.create({
       baseURL: CONFIG.BASE_URL,
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
       withCredentials: true,
     });
@@ -23,34 +22,29 @@ export default class SingletonAPIClient extends APIClientBase {
     this.getRawAxiosInstance().interceptors.response.use(
       (response) => response,
       (error) => {
-        if (axios.isCancel(error) || error.code === "ERR_CANCELED") {
-          console.debug("[API] request canceled:", error.message);
+        if (axios.isCancel(error) || error.code === 'ERR_CANCELED') {
+          console.debug('[API] request canceled:', error.message);
           return;
         }
         if (error.response) {
           const status = error.response.status;
-          const message =
-            error.response.data?.detail ||
-            error.response.statusText ||
-            "Server error";
+          const message = error.response.data?.detail || error.response.statusText || 'Server error';
           return Promise.reject(new APIError(message, status));
         }
-        return Promise.reject(
-          new APIRequestFailed(error.message || "Request failed", 500)
-        );
-      }
+        return Promise.reject(new APIRequestFailed(error.message || 'Request failed', 500));
+      },
     );
 
     this.getRawAxiosInstance().interceptors.request.use((config) => {
       const cookiesClient = getCookiesClient();
-      const csrfAccess = getCookie(cookiesClient, "csrf_access_token");
-      const csrfRefresh = getCookie(cookiesClient, "csrf_refresh_token");
+      const csrfAccess = getCookie(cookiesClient, 'csrf_access_token');
+      const csrfRefresh = getCookie(cookiesClient, 'csrf_refresh_token');
 
       if (csrfAccess) {
-        config.headers["X-CSRF-ACCESS"] = csrfAccess;
+        config.headers['X-CSRF-ACCESS'] = csrfAccess;
       }
       if (csrfRefresh) {
-        config.headers["X-CSRF-REFRESH"] = csrfRefresh;
+        config.headers['X-CSRF-REFRESH'] = csrfRefresh;
       }
       return config;
     });
