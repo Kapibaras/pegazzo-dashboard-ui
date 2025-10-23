@@ -2,9 +2,11 @@
 
 import { flexRender, Table as TableType } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { UserTableData, columnsLength } from './columns';
+import { columnsLength } from './columns';
+import ViewUserSheet from '../ViewUserSheet';
+import { User } from '@/types/user';
 
-const UsersTable = ({ table }: { table: TableType<UserTableData> }) => {
+const UsersTable = ({ table }: { table: TableType<User> }) => {
   return (
     <div className="border-secondary-100 overflow-hidden rounded-md border">
       <Table>
@@ -24,13 +26,18 @@ const UsersTable = ({ table }: { table: TableType<UserTableData> }) => {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'} className="border-secondary-100">
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="lg:px-7 [&:has(.username)]:w-[85%]">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
+              <ViewUserSheet key={row.id} user={row.original}>
+                <TableRow
+                  data-state={row.getIsSelected() && 'selected'}
+                  className="border-secondary-100 hover:bg-primary-50 cursor-pointer"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="lg:px-7 [&:has(.username)]:w-[85%]">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </ViewUserSheet>
             ))
           ) : (
             <TableRow>
