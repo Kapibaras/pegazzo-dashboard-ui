@@ -14,4 +14,15 @@ export default class UserService extends AbstractAPIService {
   async getUserByUsername(username: string): Promise<User> {
     return (await this.client.get(`/internal/user/${username}`)).data;
   }
+
+  async createUser(data: {
+    username: string;
+    name: string;
+    surnames: string;
+    password: string;
+    role: string;
+  }): Promise<User> {
+    const response = await this.client.post('/internal/user', data);
+    return response.data;
+  }
 }
