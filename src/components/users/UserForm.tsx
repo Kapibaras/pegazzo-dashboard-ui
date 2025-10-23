@@ -6,27 +6,41 @@ import { useToast } from '@/components/ui/use-toast';
 
 import { UserFormValues, userSchema, Role } from '@/lib/schemas/userSchema';
 import { createUserAction } from '@/actions/createUser';
+import { updateUserNamesAction } from '@/actions/updateUserNames';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
+type FormMode = 'create' | 'updateNames';
+
 interface UserFormProps {
+  mode: FormMode;
   onSuccess: () => void;
+  userId?: string;
 }
 
-export function UserForm({ onSuccess }: UserFormProps) {
+export function UserForm({ mode, onSuccess, userId }: UserFormProps) {
   const { toast } = useToast();
+
+  const defaultValues: Partial<UserFormValues> =
+    mode === 'updateNames'
+      ? {
+          name: '',
+          surnames: '',
+        }
+      : {
+          username: '',
+          name: '',
+          surnames: '',
+          password: '',
+          role: Role.EMPLOYEE,
+        };
+
   const form = useForm<UserFormValues>({
     resolver: zodResolver(userSchema),
-    defaultValues: {
-      username: '',
-      name: '',
-      surnames: '',
-      password: '',
-      role: Role.EMPLOYEE,
-    },
+    defaultValues: defaultValues as UserFormValues,
     mode: 'onChange',
   });
 
@@ -34,20 +48,35 @@ export function UserForm({ onSuccess }: UserFormProps) {
 
   async function onSubmit(values: UserFormValues) {
     const formData = new FormData();
-    Object.entries(values).forEach(([key, value]) => {
-      formData.append(key, value);
+    const fieldsToSubmit = mode === 'updateNames' ? { name: values.name, surnames: values.surnames } : values;
+
+    Object.entries(fieldsToSubmit).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, value);
+      }
     });
 
-    const result = await createUserAction(formData);
+    let result;
+    if (mode === 'create') {
+      result = await createUserAction(formData);
+    } else if (mode === 'updateNames' && userId) {
+      formData.append('userId', userId);
+      result = await updateUserNamesAction(formData);
+    } else {
+      toast({ title: 'Error', description: 'Modo de formulario o ID de usuario no válido.', variant: 'destructive' });
+      return;
+    }
+
+    const actionText = mode === 'create' ? 'Usuario' : 'Nombres';
 
     if (result.success) {
       toast({
-        title: 'Success',
-        description: result.message,
+        title: 'Éxito',
+        description: `${actionText} actualizado/creado correctamente.`,
         variant: 'success',
       });
       onSuccess();
-      form.reset();
+      form.reset(defaultValues as UserFormValues);
     } else {
       toast({
         title: 'Error',
@@ -57,26 +86,30 @@ export function UserForm({ onSuccess }: UserFormProps) {
     }
   }
 
+  const isCreateMode = mode === 'create';
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem className="mb-6 gap-2 md:mt-3 md:mb-3">
-              <FormLabel className="typo-subtitle text-carbon-500">Username</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="JuanOvando"
-                  {...field}
-                  className="typo-text border-surface-700 bg-surface-400 w-93 rounded-md border py-6 shadow-sm focus:border-blue-600 focus:outline-none md:w-88 md:py-3"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {isCreateMode && (
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem className="mb-4 gap-1 md:mt-3 md:mb-3">
+                <FormLabel className="typo-subtitle text-carbon-500">Username</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Nombre de usuario"
+                    {...field}
+                    className="typo-text border-surface-700 bg-surface-400 flex items-center self-stretch rounded-md border px-4.5 py-5.5 shadow-sm placeholder:text-left focus:border-blue-600 focus:outline-none"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}
@@ -86,9 +119,9 @@ export function UserForm({ onSuccess }: UserFormProps) {
               <FormLabel className="typo-subtitle text-carbon-500">Nombre</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Juan"
+                  placeholder="Nombre"
                   {...field}
-                  className="typo-text border-surface-700 bg-surface-400 w-93 rounded-md border py-6 shadow-sm focus:border-blue-600 focus:outline-none md:w-88 md:py-3"
+                  className="typo-text border-surface-700 bg-surface-400 flex items-center self-stretch rounded-md border px-4.5 py-5.5 shadow-sm placeholder:text-left focus:border-blue-600 focus:outline-none"
                 />
               </FormControl>
               <FormMessage />
@@ -104,9 +137,9 @@ export function UserForm({ onSuccess }: UserFormProps) {
               <FormLabel className="typo-subtitle text-carbon-500">Apellidos</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Velázquez Ovando"
+                  placeholder="Apellidos"
                   {...field}
-                  className="typo-text border-surface-700 bg-surface-400 w-93 rounded-md border py-6 shadow-sm focus:border-blue-600 focus:outline-none md:w-88 md:py-3"
+                  className="typo-text border-surface-700 bg-surface-400 flex items-center self-stretch rounded-md border px-4.5 py-5.5 shadow-sm placeholder:text-left focus:border-blue-600 focus:outline-none"
                 />
               </FormControl>
               <FormMessage />
@@ -114,62 +147,76 @@ export function UserForm({ onSuccess }: UserFormProps) {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem className="mb-6 gap-2 md:mb-3">
-              <FormLabel className="typo-subtitle text-carbon-500">Password</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  placeholder="******"
-                  {...field}
-                  className="typo-text border-surface-700 bg-surface-400 w-93 rounded-md border py-6 shadow-sm focus:border-blue-600 focus:outline-none md:w-88 md:py-3"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {isCreateMode && (
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="mb-6 gap-2 md:mb-3">
+                <FormLabel className="typo-subtitle text-carbon-500">Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="******"
+                    {...field}
+                    className="typo-text border-surface-700 bg-surface-400 flex items-center self-stretch rounded-md border px-4.5 py-5.5 shadow-sm placeholder:text-left focus:border-blue-600 focus:outline-none"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
-        <FormField
-          control={form.control}
-          name="role"
-          render={({ field }) => (
-            <FormItem className="mb-22 gap-2 md:mb-25">
-              <FormLabel className="typo-subtitle text-carbon-500">Rol</FormLabel>
-              <Controller
-                control={form.control}
-                name="role"
-                render={({ field: controllerField }) => (
-                  <Select
-                    value={controllerField.value}
-                    onValueChange={(value) => controllerField.onChange(value as Role)}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="typo-text border-surface-700 bg-surface-400 w-93 rounded-md border py-6 text-left shadow-sm placeholder:text-left focus:border-blue-600 focus:outline-none md:w-88 md:py-3">
-                        <SelectValue placeholder="Selecciona un rol" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value={Role.EMPLOYEE}>Empleado</SelectItem>
-                      <SelectItem value={Role.ADMIN}>Administrador</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {isCreateMode && (
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <FormItem className="mb-20 gap-2 md:mb-12">
+                <FormLabel className="typo-subtitle text-carbon-500">Rol</FormLabel>
+                <Controller
+                  control={form.control}
+                  name="role"
+                  render={({ field: controllerField }) => (
+                    <Select
+                      value={controllerField.value}
+                      onValueChange={(value) => controllerField.onChange(value as Role)}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="typo-text border-surface-700 bg-surface-400 flex w-full cursor-pointer items-center self-stretch rounded-md border px-4.5 py-5.5 capitalize shadow-sm placeholder:text-left focus:border-blue-600 focus:outline-none">
+                          <SelectValue placeholder="Selecciona un rol" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="capitalize">
+                        <SelectItem className="cursor-pointer" value={Role.EMPLOYEE}>
+                          {Role.EMPLOYEE}
+                        </SelectItem>
+                        <SelectItem className="cursor-pointer" value={Role.ADMIN}>
+                          {Role.ADMIN}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <Button
           type="submit"
           disabled={!isValid || isSubmitting}
-          className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex min-h-10 w-93 cursor-pointer items-center justify-center gap-1 rounded-md py-6 text-center hover:shadow-sm md:w-88"
+          className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex w-full cursor-pointer items-center justify-center rounded-md py-5.5 text-center hover:shadow-sm"
         >
-          {isSubmitting ? 'Creando Usuario...' : 'Crear Usuario'}
+          {isSubmitting
+            ? isCreateMode
+              ? 'Creando Usuario...'
+              : 'Editando Usuario...'
+            : isCreateMode
+              ? 'Crear Usuario'
+              : 'Editar Usuario'}
         </Button>
       </form>
     </Form>
