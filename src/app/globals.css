@@ -74,8 +74,7 @@
   --font-source-code-pro: 'Source Code Pro', monospace;
 
   --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
-  --font-numbers:
-    var(--font-source-code-pro), ui-monospace, SFMono-Regular, monospace;
+  --font-numbers: var(--font-source-code-pro), ui-monospace, SFMono-Regular, monospace;
 }
 
 .typo-title {
@@ -196,13 +195,13 @@
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: var(--color-secondary-500);
-  --sidebar-foreground:  var(--color-primary-100);
+  --sidebar-foreground: var(--color-primary-100);
   --sidebar-primary: oklch(63.741% 0.19623 144.88);
   --sidebar-primary-foreground: oklch(65.93% 0.23005 35.209);
-  --sidebar-accent:  color-mix(in oklab, var(--color-primary-200) 20%, transparent);
+  --sidebar-accent: color-mix(in oklab, var(--color-primary-200) 20%, transparent);
   --sidebar-accent-foreground: var(--color-carbon-50);
   --sidebar-border: var(--color-secondary-400);
-  --sidebar-ring: var(--color-primary-100)
+  --sidebar-ring: var(--color-primary-100);
 }
 
 .dark {
