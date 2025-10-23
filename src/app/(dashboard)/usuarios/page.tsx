@@ -1,8 +1,7 @@
 import { ScopedAPIClient } from '@/api';
 import { Container } from '@/components/common';
-import { Input } from '@/components/ui/input';
-import { CreateUserSheet } from '@/components/users/CreateUserSheet';
-import { UsersTable } from '@/components/users';
+import { UsersTableView } from '@/components/users';
+
 import { UserService } from '@/services';
 import { getCookiesServer } from '@/utils/cookies/server';
 
@@ -14,16 +13,7 @@ export default async function UsersPage() {
 
   return (
     <Container>
-      <div className="flex items-center gap-3">
-        <Input
-          id="Buscar usuario..."
-          name="Buscar usuario..."
-          placeholder="Buscar usuario..."
-          className="typo-text border-surface-700 bg-surface-400 flex max-w-md items-center self-stretch rounded-md border px-2.5 py-5.5 shadow-sm placeholder:text-left focus:border-blue-600 focus:outline-none"
-        />
-        <CreateUserSheet />
-      </div>
-      <UsersTable users={users} />
+      <UsersTableView users={users} />
     </Container>
   );
 }

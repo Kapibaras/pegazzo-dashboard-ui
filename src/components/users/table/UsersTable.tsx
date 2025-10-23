@@ -1,25 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
+import { flexRender, Table as TableType } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { columns } from './table/columns';
-import { User } from '@/types/user';
+import { UserTableData, columnsLength } from './columns';
 
-const UsersTable = ({ users }: { users: User[] }) => {
-  const [sorting, setSorting] = useState<SortingState>([]);
-
-  const table = useReactTable({
-    data: users,
-    columns,
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    getCoreRowModel: getCoreRowModel(),
-    state: {
-      sorting,
-    },
-  });
-
+const UsersTable = ({ table }: { table: TableType<UserTableData> }) => {
   return (
     <div className="border-secondary-100 overflow-hidden rounded-md border">
       <Table>
@@ -49,8 +34,8 @@ const UsersTable = ({ users }: { users: User[] }) => {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+              <TableCell colSpan={columnsLength} className="typo-text h-24 text-center">
+                No hay usuarios para mostrar.
               </TableCell>
             </TableRow>
           )}

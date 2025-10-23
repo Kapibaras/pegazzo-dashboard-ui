@@ -16,7 +16,16 @@ export type UserTableData = {
 export const columns: ColumnDef<UserTableData>[] = [
   {
     accessorKey: 'username',
-    header: () => <div className="text-primary-100 typo-bold-text">Usuario</div>,
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className="text-primary-100 typo-bold-text hover:bg-primary-100 cursor-pointer"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Usuario
+        <ArrowUpDown className="h-5! w-5!" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const { name, surnames, username } = row.original;
       return (
@@ -54,4 +63,21 @@ export const columns: ColumnDef<UserTableData>[] = [
       );
     },
   },
+  {
+    id: 'search',
+    accessorFn: (row) => [row.name ?? '', row.surnames ?? '', row.username ?? ''].join(' ').toLowerCase(),
+    header: 'Search',
+    enableSorting: false,
+    enableHiding: true,
+    filterFn: (row, id, value) => {
+      const haystack = (row.getValue<string>(id) ?? '').toString();
+      const needle = String(value ?? '')
+        .toLowerCase()
+        .trim();
+      if (!needle) return true;
+      return haystack.includes(needle);
+    },
+  },
 ];
+
+export const columnsLength = columns.length - 1;
