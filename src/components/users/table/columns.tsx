@@ -5,15 +5,9 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, CircleUserRound, ShieldUser } from 'lucide-react';
 
 import CONFIG from '@/config';
+import { User } from '@/types/user';
 
-export type UserTableData = {
-  username: string;
-  name: string;
-  surnames: string;
-  role: string;
-};
-
-export const columns: ColumnDef<UserTableData>[] = [
+export const columns: ColumnDef<User>[] = [
   {
     accessorKey: 'username',
     header: ({ column }) => (
@@ -30,7 +24,7 @@ export const columns: ColumnDef<UserTableData>[] = [
       const { name, surnames, username } = row.original;
       return (
         <div className="username flex w-full flex-col gap-0.5 p-2.5">
-          <span className="text-primary-600 typo-bold-text max-w-3/4 text-wrap">
+          <span className="text-primary-600 typo-bold-text max-w-[90%] text-wrap">
             {name} {surnames}
           </span>
           <span className="typo-text">{username}</span>
