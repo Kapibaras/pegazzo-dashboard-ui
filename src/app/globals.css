@@ -79,7 +79,7 @@
 
 .typo-title {
   font-family: var(--font-sans);
-  font-size: 32px;
+  font-size: 2rem;
   font-style: normal;
   font-weight: 700;
   line-height: 120%;
@@ -88,7 +88,7 @@
 
 .typo-subtitle {
   font-family: var(--font-sans);
-  font-size: 20px;
+  font-size: 1.25rem;
   font-style: normal;
   font-weight: 600;
   line-height: 120%;
@@ -97,7 +97,7 @@
 
 .typo-text {
   font-family: var(--font-sans);
-  font-size: 18px;
+  font-size: 1.125rem;
   font-style: normal;
   font-weight: 400;
   line-height: 120%;
@@ -106,7 +106,7 @@
 
 .typo-sm-text {
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
   line-height: 120%;
@@ -115,7 +115,7 @@
 
 .typo-bold-text {
   font-family: var(--font-sans);
-  font-size: 18px;
+  font-size: 1.125rem;
   font-style: normal;
   font-weight: 600;
   line-height: 120%;
@@ -124,7 +124,7 @@
 
 .typo-numbers {
   font-family: var(--font-numbers);
-  font-size: 18px;
+  font-size: 1.125rem;
   font-style: normal;
   font-weight: 500;
   line-height: 120%;
