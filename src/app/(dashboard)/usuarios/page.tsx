@@ -1,8 +1,17 @@
+import { ScopedAPIClient } from '@/api';
 import { Container } from '@/components/common';
 import { Input } from '@/components/ui/input';
 import { CreateUserSheet } from '@/components/users/CreateUserSheet';
+import { UsersTable } from '@/components/users';
+import { UserService } from '@/services';
+import { getCookiesServer } from '@/utils/cookies/server';
 
 export default async function UsersPage() {
+  const cookies = await getCookiesServer();
+  const service = new UserService(new ScopedAPIClient(cookies));
+
+  const users = await service.getAllUsers();
+
   return (
     <Container>
       <div className="flex items-center gap-3">
@@ -14,6 +23,7 @@ export default async function UsersPage() {
         />
         <CreateUserSheet />
       </div>
+      <UsersTable users={users} />
     </Container>
   );
 }
