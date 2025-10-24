@@ -1,12 +1,12 @@
 'use server';
-
 import handleUserAction from '@/helpers/handleUserAction';
 
 export async function updateUserNamesAction(formData: FormData) {
   return handleUserAction({
     formData,
-    action: async (userService, data) =>
-      userService.updateUserName(data.username, {
+    actionType: 'updateNames',
+    action: async (userService, username, data) =>
+      userService.updateUserName(username, {
         name: data.name,
         surnames: data.surnames,
       }),
