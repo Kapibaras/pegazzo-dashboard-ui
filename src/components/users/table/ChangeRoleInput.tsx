@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Role } from '@/lib/schemas/userSchema';
 import { Controller, useForm } from 'react-hook-form';
 import { useToast } from '@/components/ui/use-toast';
-import { updateUserRoleAction } from '@/actions/updateUserRole';
+import { updateUserRoleAction } from '@/actions/users';
 
 interface ChangeRoleInputProps {
   currentRole: Role;

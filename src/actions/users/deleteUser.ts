@@ -5,7 +5,7 @@ import { ScopedAPIClient } from '@/api';
 import { UserService } from '@/services';
 import { getCookiesServer } from '@/utils/cookies/server';
 
-export async function deleteUserAction(username: string) {
+export default async function deleteUserAction(username: string) {
   if (!username) {
     return { success: false, message: 'Datos incompletos.' };
   }

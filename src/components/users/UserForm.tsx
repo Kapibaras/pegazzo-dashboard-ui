@@ -14,10 +14,7 @@ import {
   UpdatePasswordFormValues,
 } from '@/lib/schemas/userSchema';
 
-import { createUserAction } from '@/actions/createUser';
-import { updateUserNamesAction } from '@/actions/updateUserNames';
-import { updateUserPasswordAction } from '@/actions/updateUserPassword';
-
+import { createUserAction, updateUserNamesAction, updateUserPasswordAction } from '@/actions/users';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';

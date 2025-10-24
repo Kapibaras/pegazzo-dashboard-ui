@@ -1,16 +1,16 @@
-'use server'; 
+'use server';
 
-import { cookies } from "next/headers";
-import { jwtVerify } from "jose"; 
-import VARIABLES from "@/config/variables";
+import { cookies } from 'next/headers';
+import { jwtVerify } from 'jose';
+import VARIABLES from '@/config/variables';
 
 interface SessionPayload {
   username: string;
 }
 
-export async function getUsernameFromSession(): Promise<string | null> {
+export default async function getUsernameFromSession(): Promise<string | null> {
   const cookieStore = await cookies();
-  const sessionToken = cookieStore.get("session")?.value;
+  const sessionToken = cookieStore.get('session')?.value;
 
   if (!sessionToken) {
     return null;
@@ -22,7 +22,7 @@ export async function getUsernameFromSession(): Promise<string | null> {
 
     return payload.username || null;
   } catch (error) {
-    console.error("JWT verification failed:", error);
+    console.error('JWT verification failed:', error);
     return null;
   }
 }

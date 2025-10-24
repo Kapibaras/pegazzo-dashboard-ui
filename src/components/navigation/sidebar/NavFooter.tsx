@@ -8,7 +8,7 @@ import {
 } from '@radix-ui/react-dropdown-menu';
 import { ChevronsUpDown, CircleUserRound, LogOut, ShieldUser } from 'lucide-react';
 import CONFIG from '@/config';
-import { logout } from '@/actions';
+import { logout } from '@/actions/auth';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 

@@ -6,7 +6,7 @@ import { UserService } from '@/services';
 import { getCookiesServer } from '@/utils/cookies/server';
 import { Role } from '@/lib/schemas/userSchema';
 
-export async function updateUserRoleAction(formData: FormData) {
+export default async function updateUserRoleAction(formData: FormData) {
   const username = formData.get('username') as string;
   const role = formData.get('role') as Role;
 

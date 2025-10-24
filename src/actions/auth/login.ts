@@ -7,7 +7,7 @@ import { sign } from 'jsonwebtoken';
 import VARIABLES from '@/config/variables';
 import isAPIErrorType from '@/api/errors';
 
-export async function login(formData: FormData) {
+export default async function login(formData: FormData) {
   const username = (formData.get('username') as string)?.trim();
   const password = (formData.get('password') as string)?.trim();
 

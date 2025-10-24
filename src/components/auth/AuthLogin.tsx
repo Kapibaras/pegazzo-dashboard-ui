@@ -6,7 +6,7 @@ import { Field, FieldSet, FieldGroup, FieldLabel, FieldError } from '@/component
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { login } from '@/actions';
+import { login } from '@/actions/auth';
 import { useRouter } from 'next/navigation';
 import { SpanishMessages as M } from '@/i18n/es';
 
