@@ -50,7 +50,7 @@ const ViewUserSheet = ({ user, children }: { user: User; children: React.ReactNo
               </span>
             </div>
           </div>
-          <ChangeRoleInput currentRole={user.role as Role} />
+          <ChangeRoleInput currentRole={user.role as Role} username={user.username} />
         </section>
         <SheetFooter className="mb-[4rem] flex flex-col gap-5 lg:mb-0">
           <UpdateUserNamesSheet userId={user.username}>
