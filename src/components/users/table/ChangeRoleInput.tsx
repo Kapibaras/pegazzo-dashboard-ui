@@ -1,17 +1,49 @@
+'use client';
+
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Role } from '@/lib/schemas/userSchema';
 import { Controller, useForm } from 'react-hook-form';
+import { useToast } from '@/components/ui/use-toast';
+import { updateUserRoleAction } from '@/actions/updateUserRole';
 
-const ChangeRoleInput = ({ currentRole }: { currentRole: Role }) => {
+interface ChangeRoleInputProps {
+  currentRole: Role;
+  username: string;
+  onRoleUpdated?: () => void;
+}
+
+const ChangeRoleInput = ({ currentRole, username, onRoleUpdated }: ChangeRoleInputProps) => {
+  const { toast } = useToast();
   const isOwner = currentRole === Role.OWNER;
 
   const form = useForm<{ role: Role }>({
-    defaultValues: {
-      role: currentRole,
-    },
+    defaultValues: { role: currentRole },
     mode: 'onChange',
   });
+
+  async function handleRoleChange(value: Role) {
+    form.setValue('role', value);
+
+    if (value === currentRole) return;
+
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('role', value);
+
+    const result = await updateUserRoleAction(formData);
+
+    if (!result.success) {
+      toast({
+        title: 'Error',
+        description: result.message || 'No se pudo actualizar el rol.',
+        variant: 'destructive',
+      });
+      form.setValue('role', currentRole);
+    } else {
+      onRoleUpdated?.();
+    }
+  }
 
   return (
     <Form {...form}>
@@ -24,10 +56,10 @@ const ChangeRoleInput = ({ currentRole }: { currentRole: Role }) => {
             <Controller
               control={form.control}
               name="role"
-              render={({ field: controllerField }) => (
+              render={({ field }) => (
                 <Select
-                  value={controllerField.value}
-                  onValueChange={(value) => controllerField.onChange(value as Role)}
+                  value={field.value}
+                  onValueChange={(value) => handleRoleChange(value as Role)}
                   disabled={isOwner}
                 >
                   <FormControl>
@@ -36,12 +68,8 @@ const ChangeRoleInput = ({ currentRole }: { currentRole: Role }) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="capitalize">
-                    <SelectItem value={Role.EMPLOYEE} className="cursor-pointer">
-                      {Role.EMPLOYEE}
-                    </SelectItem>
-                    <SelectItem value={Role.ADMIN} className="cursor-pointer">
-                      {Role.ADMIN}
-                    </SelectItem>
+                    <SelectItem value={Role.EMPLOYEE}>{Role.EMPLOYEE}</SelectItem>
+                    <SelectItem value={Role.ADMIN}>{Role.ADMIN}</SelectItem>
                     {isOwner && <SelectItem value={Role.OWNER}>{Role.OWNER}</SelectItem>}
                   </SelectContent>
                 </Select>

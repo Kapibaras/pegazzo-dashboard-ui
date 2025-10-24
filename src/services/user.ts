@@ -25,4 +25,25 @@ export default class UserService extends AbstractAPIService {
     const response = await this.client.post('/internal/user', data);
     return response.data;
   }
+
+  async updateUserName(
+    username: string,
+    data: {
+      name: string;
+      surnames: string;
+    },
+  ): Promise<User> {
+    const response = await this.client.patch(`/internal/user/${username}/name`, data);
+    return response.data;
+  }
+
+  async updateUserPassword(username: string, data: { password: string }): Promise<User> {
+    const response = await this.client.patch(`/internal/user/${username}/password`, data);
+    return response.data;
+  }
+
+  async updateUserRole(username: string, role: string): Promise<User> {
+    const response = await this.client.patch(`/internal/user/${username}/role`, { role });
+    return response.data;
+  }
 }

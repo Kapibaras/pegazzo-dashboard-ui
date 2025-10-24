@@ -15,6 +15,8 @@ import { User } from '@/types/user';
 import { formatLongDatetime } from '@/utils/datetime';
 import ChangeRoleInput from './table/ChangeRoleInput';
 import { Role } from '@/lib/schemas/userSchema';
+import { UpdateUserNamesSheet } from './UpdateUserNamesSheet';
+import { UpdateUserPasswordSheet } from './UpdateUserPasswordSheet';
 
 const ViewUserSheet = ({ user, children }: { user: User; children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
@@ -48,15 +50,19 @@ const ViewUserSheet = ({ user, children }: { user: User; children: React.ReactNo
               </span>
             </div>
           </div>
-          <ChangeRoleInput currentRole={user.role as Role} />
+          <ChangeRoleInput currentRole={user.role as Role} username={user.username} />
         </section>
         <SheetFooter className="mb-[4rem] flex flex-col gap-5 lg:mb-0">
-          <Button className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm">
-            Editar Nombre
-          </Button>
-          <Button className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm">
-            Cambiar Contraseña
-          </Button>
+          <UpdateUserNamesSheet userId={user.username}>
+            <Button className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm">
+              Editar Nombre
+            </Button>
+          </UpdateUserNamesSheet>
+          <UpdateUserPasswordSheet userId={user.username}>
+            <Button className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm">
+              Cambiar Contraseña
+            </Button>
+          </UpdateUserPasswordSheet>
           <Button className="bg-error-400 hover:bg-error-500 text-error-50 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:text-white hover:shadow-sm">
             Eliminar Usuario
           </Button>
