@@ -17,6 +17,7 @@ import ChangeRoleInput from './table/ChangeRoleInput';
 import { Role } from '@/lib/schemas/userSchema';
 import { UpdateUserNamesSheet } from './UpdateUserNamesSheet';
 import { UpdateUserPasswordSheet } from './UpdateUserPasswordSheet';
+import AlertDeleteUser from './AlertDeleteUser';
 
 const ViewUserSheet = ({ user, children }: { user: User; children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
@@ -42,7 +43,6 @@ const ViewUserSheet = ({ user, children }: { user: User; children: React.ReactNo
                   {user.name} {user.surnames}
                 </span>
               </span>
-
               <span className="typo-bold-text text-primary-800 w-fit">{user.username}</span>
             </div>
             <div className="typo-sm-text text-carbon-300 flex flex-col">
@@ -67,9 +67,14 @@ const ViewUserSheet = ({ user, children }: { user: User; children: React.ReactNo
               Cambiar Contraseña
             </Button>
           </UpdateUserPasswordSheet>
-          <Button className="bg-error-400 hover:bg-error-500 text-error-50 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:text-white hover:shadow-sm">
-            Eliminar Usuario
-          </Button>
+          <AlertDeleteUser username={user.username} onSuccess={() => setOpen(false)}>
+            <Button
+              disabled={user.role === CONFIG.USER_ROLES.OWNER}
+              className="bg-error-400 hover:bg-error-500 text-error-50 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:text-white hover:shadow-sm"
+            >
+              Eliminar Usuario
+            </Button>
+          </AlertDeleteUser>
         </SheetFooter>
       </SheetContent>
     </Sheet>
