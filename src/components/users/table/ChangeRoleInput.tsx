@@ -68,9 +68,17 @@ const ChangeRoleInput = ({ currentRole, username, onRoleUpdated }: ChangeRoleInp
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="capitalize">
-                    <SelectItem value={Role.EMPLOYEE}>{Role.EMPLOYEE}</SelectItem>
-                    <SelectItem value={Role.ADMIN}>{Role.ADMIN}</SelectItem>
-                    {isOwner && <SelectItem value={Role.OWNER}>{Role.OWNER}</SelectItem>}
+                    <SelectItem value={Role.EMPLOYEE} className="cursor-pointer">
+                      {Role.EMPLOYEE}
+                    </SelectItem>
+                    <SelectItem value={Role.ADMIN} className="cursor-pointer">
+                      {Role.ADMIN}
+                    </SelectItem>
+                    {isOwner && (
+                      <SelectItem value={Role.OWNER} className="cursor-pointer">
+                        {Role.OWNER}
+                      </SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               )}
