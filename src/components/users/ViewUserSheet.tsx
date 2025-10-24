@@ -15,6 +15,7 @@ import { User } from '@/types/user';
 import { formatLongDatetime } from '@/utils/datetime';
 import ChangeRoleInput from './table/ChangeRoleInput';
 import { Role } from '@/lib/schemas/userSchema';
+import { UpdateUserSheet } from './UpdateUserSheet';
 
 const ViewUserSheet = ({ user, children }: { user: User; children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
@@ -51,9 +52,11 @@ const ViewUserSheet = ({ user, children }: { user: User; children: React.ReactNo
           <ChangeRoleInput currentRole={user.role as Role} />
         </section>
         <SheetFooter className="mb-[4rem] flex flex-col gap-5 lg:mb-0">
-          <Button className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm">
-            Editar Nombre
-          </Button>
+          <UpdateUserSheet userId={user.username}>
+            <Button className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm">
+              Editar Nombre
+            </Button>
+          </UpdateUserSheet>
           <Button className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm">
             Cambiar Contraseña
           </Button>
