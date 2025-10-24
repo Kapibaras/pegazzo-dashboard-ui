@@ -31,12 +31,24 @@ interface UserFormProps {
   userId?: string;
 }
 
-const buttonLabels: Record<FormMode, { idle: string; submitting: string }> = {
-  create: { idle: 'Crear Usuario', submitting: 'Creando Usuario...' },
-  updateNames: { idle: 'Editar Usuario', submitting: 'Editando Usuario...' },
+const buttonLabels: Record<FormMode, { idle: string; submitting: string; title: string; success: string }> = {
+  create: {
+    idle: 'Crear Usuario',
+    submitting: 'Creando Usuario...',
+    title: 'Creación de Usuario',
+    success: 'Usuario creado correctamente.',
+  },
+  updateNames: {
+    idle: 'Editar Usuario',
+    submitting: 'Editando Usuario...',
+    title: 'Edición de Usuario',
+    success: 'Usuario editado correctamente.',
+  },
   updatePassword: {
     idle: 'Guardar Contraseña',
     submitting: 'Guardando Contraseña...',
+    title: 'Cambio de Contraseña',
+    success: 'Contraseña cambiada correctamente.',
   },
 };
 
@@ -84,8 +96,8 @@ export function UserForm({ mode, onSuccess, userId }: UserFormProps) {
 
       if (result.success) {
         toast({
-          title: 'Éxito',
-          description: buttonLabels[mode].idle,
+          title: buttonLabels[mode].title,
+          description: buttonLabels[mode].success,
           variant: 'success',
         });
         onSuccess();

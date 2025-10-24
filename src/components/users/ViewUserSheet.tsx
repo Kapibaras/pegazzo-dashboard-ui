@@ -53,12 +53,12 @@ const ViewUserSheet = ({ user, children }: { user: User; children: React.ReactNo
           <ChangeRoleInput currentRole={user.role as Role} username={user.username} />
         </section>
         <SheetFooter className="mb-[4rem] flex flex-col gap-5 lg:mb-0">
-          <UpdateUserNamesSheet userId={user.username}>
+          <UpdateUserNamesSheet userId={user.username} onSuccess={() => setOpen(false)}>
             <Button className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm">
               Editar Nombre
             </Button>
           </UpdateUserNamesSheet>
-          <UpdateUserPasswordSheet userId={user.username}>
+          <UpdateUserPasswordSheet userId={user.username} onSuccess={() => setOpen(false)}>
             <Button className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm">
               Cambiar Contraseña
             </Button>
