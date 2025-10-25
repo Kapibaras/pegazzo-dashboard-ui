@@ -1,7 +1,7 @@
 'use server';
 import handleUserAction from '@/helpers/handleUserAction';
 
-export async function updateUserPasswordAction(formData: FormData) {
+export default async function updateUserPasswordAction(formData: FormData) {
   return handleUserAction({
     formData,
     actionType: 'updatePassword',

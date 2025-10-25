@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Role } from '@/lib/schemas/userSchema';
 import { Controller, useForm } from 'react-hook-form';
 import { useToast } from '@/components/ui/use-toast';
-import { updateUserRoleAction } from '@/actions/updateUserRole';
+import { updateUserRoleAction } from '@/actions/users';
 
 interface ChangeRoleInputProps {
   currentRole: Role;
@@ -51,7 +51,7 @@ const ChangeRoleInput = ({ currentRole, username, onRoleUpdated }: ChangeRoleInp
         control={form.control}
         name="role"
         render={() => (
-          <FormItem className="mb-22 gap-2 md:mb-25">
+          <FormItem className="gap-2">
             <FormLabel className="typo-subtitle text-carbon-500">Rol</FormLabel>
             <Controller
               control={form.control}
@@ -68,9 +68,17 @@ const ChangeRoleInput = ({ currentRole, username, onRoleUpdated }: ChangeRoleInp
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="capitalize">
-                    <SelectItem value={Role.EMPLOYEE}>{Role.EMPLOYEE}</SelectItem>
-                    <SelectItem value={Role.ADMIN}>{Role.ADMIN}</SelectItem>
-                    {isOwner && <SelectItem value={Role.OWNER}>{Role.OWNER}</SelectItem>}
+                    <SelectItem value={Role.EMPLOYEE} className="cursor-pointer">
+                      {Role.EMPLOYEE}
+                    </SelectItem>
+                    <SelectItem value={Role.ADMIN} className="cursor-pointer">
+                      {Role.ADMIN}
+                    </SelectItem>
+                    {isOwner && (
+                      <SelectItem value={Role.OWNER} className="cursor-pointer">
+                        {Role.OWNER}
+                      </SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               )}

@@ -7,10 +7,18 @@ import { UserForm } from './UserForm';
 interface UpdateUserPasswordSheetProps {
   children: React.ReactNode;
   userId: string;
+  onSuccess?: () => void;
 }
 
-export function UpdateUserPasswordSheet({ children, userId }: UpdateUserPasswordSheetProps) {
+export function UpdateUserPasswordSheet({ children, userId, onSuccess }: UpdateUserPasswordSheetProps) {
   const [open, setOpen] = useState(false);
+
+  const handleOnSuccess = () => {
+    setOpen(false);
+    if (onSuccess) {
+      onSuccess();
+    }
+  };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -23,7 +31,7 @@ export function UpdateUserPasswordSheet({ children, userId }: UpdateUserPassword
           </SheetDescription>
         </SheetHeader>
         <div className="flex flex-1 flex-col px-4.5">
-          <UserForm mode="updatePassword" userId={userId} onSuccess={() => setOpen(false)} />
+          <UserForm mode="updatePassword" userId={userId} onSuccess={handleOnSuccess} />
         </div>
       </SheetContent>
     </Sheet>

@@ -14,10 +14,7 @@ import {
   UpdatePasswordFormValues,
 } from '@/lib/schemas/userSchema';
 
-import { createUserAction } from '@/actions/createUser';
-import { updateUserNamesAction } from '@/actions/updateUserNames';
-import { updateUserPasswordAction } from '@/actions/updateUserPassword';
-
+import { createUserAction, updateUserNamesAction, updateUserPasswordAction } from '@/actions/users';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -29,25 +26,39 @@ interface UserFormProps {
   mode: FormMode;
   onSuccess: () => void;
   userId?: string;
+  name?: string;
+  surnames?: string;
 }
 
-const buttonLabels: Record<FormMode, { idle: string; submitting: string }> = {
-  create: { idle: 'Crear Usuario', submitting: 'Creando Usuario...' },
-  updateNames: { idle: 'Editar Usuario', submitting: 'Editando Usuario...' },
+const buttonLabels: Record<FormMode, { idle: string; submitting: string; title: string; success: string }> = {
+  create: {
+    idle: 'Crear Usuario',
+    submitting: 'Creando Usuario...',
+    title: 'Creación de Usuario',
+    success: 'Usuario creado correctamente.',
+  },
+  updateNames: {
+    idle: 'Editar Usuario',
+    submitting: 'Editando Usuario...',
+    title: 'Edición de Usuario',
+    success: 'Usuario editado correctamente.',
+  },
   updatePassword: {
     idle: 'Guardar Contraseña',
     submitting: 'Guardando Contraseña...',
+    title: 'Cambio de Contraseña',
+    success: 'Contraseña cambiada correctamente.',
   },
 };
 
-export function UserForm({ mode, onSuccess, userId }: UserFormProps) {
+export function UserForm({ mode, onSuccess, userId, name, surnames }: UserFormProps) {
   const { toast } = useToast();
 
   const schema = mode === 'create' ? userSchema : mode === 'updateNames' ? updateNamesSchema : updatePasswordSchema;
 
   const defaultValues: Partial<UserFormValues | UpdateNamesFormValues | UpdatePasswordFormValues> =
     mode === 'updateNames'
-      ? { name: '', surnames: '' }
+      ? { name: name, surnames: surnames }
       : mode === 'updatePassword'
         ? { password: '', passwordConfirmation: '' }
         : {
@@ -84,8 +95,8 @@ export function UserForm({ mode, onSuccess, userId }: UserFormProps) {
 
       if (result.success) {
         toast({
-          title: 'Éxito',
-          description: buttonLabels[mode].idle,
+          title: buttonLabels[mode].title,
+          description: buttonLabels[mode].success,
           variant: 'success',
         });
         onSuccess();

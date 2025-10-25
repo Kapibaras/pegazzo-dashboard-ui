@@ -1,7 +1,7 @@
 'use server';
 import handleUserAction from '@/helpers/handleUserAction';
 
-export async function createUserAction(formData: FormData) {
+export default async function createUserAction(formData: FormData) {
   return handleUserAction({
     formData,
     actionType: 'create',

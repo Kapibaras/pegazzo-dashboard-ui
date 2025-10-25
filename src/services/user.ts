@@ -46,4 +46,8 @@ export default class UserService extends AbstractAPIService {
     const response = await this.client.patch(`/internal/user/${username}/role`, { role });
     return response.data;
   }
+
+  async deleteUser(username: string): Promise<void> {
+    await this.client.delete(`/internal/user/${username}`);
+  }
 }

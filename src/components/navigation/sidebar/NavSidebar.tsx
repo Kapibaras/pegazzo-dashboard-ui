@@ -17,7 +17,7 @@ const NavSidebar = () => {
     <Sidebar collapsible="icon" className="shadow-[6px_0_13px_2px_rgba(0,0,0,0.16)]">
       <SidebarRail />
       <NavHeader toggleSidebar={toggleSidebar} />
-      <NavContent routes={ROUTES_WITH_ICONS} isExpanded={isExpanded} />
+      <NavContent routes={ROUTES_WITH_ICONS} isExpanded={isExpanded} role={user.role} />
       <NavFooter isExpanded={isExpanded} {...user} />
     </Sidebar>
   );
