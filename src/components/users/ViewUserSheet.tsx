@@ -21,8 +21,7 @@ import AlertDeleteUser from './AlertDeleteUser';
 
 const ViewUserSheet = ({ user, children }: { user: User; children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
-  const role = 'empleado';
-  const IconRole = role === CONFIG.USER_ROLES.OWNER ? ShieldUser : CircleUserRound;
+  const IconRole = user.role === CONFIG.USER_ROLES.OWNER ? ShieldUser : CircleUserRound;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -37,12 +36,12 @@ const ViewUserSheet = ({ user, children }: { user: User; children: React.ReactNo
         <section className="mx-3 flex flex-col gap-6">
           <div className="bg-surface-100 border-secondary-100 flex flex-col gap-2.5 rounded-md border p-4">
             <div className="flex flex-col items-center">
-              <span className="typo-subtitle text-primary-600 inline-flex flex-none items-center gap-1">
-                <IconRole className="h-7 w-7" />
-                <span className="inline-block max-w-[275px] text-center text-balance break-words whitespace-normal">
+              <div className="typo-subtitle text-primary-600 text-center">
+                <IconRole className="mr-1 mb-1 inline h-7 w-7" />
+                <span className="inline w-fit text-center text-balance break-words whitespace-normal">
                   {user.name} {user.surnames}
                 </span>
-              </span>
+              </div>
               <span className="typo-bold-text text-primary-800 w-fit">{user.username}</span>
             </div>
             <div className="typo-sm-text text-carbon-300 flex flex-col">
