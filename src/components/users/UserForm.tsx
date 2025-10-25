@@ -26,6 +26,8 @@ interface UserFormProps {
   mode: FormMode;
   onSuccess: () => void;
   userId?: string;
+  name?: string;
+  surnames?: string;
 }
 
 const buttonLabels: Record<FormMode, { idle: string; submitting: string; title: string; success: string }> = {
@@ -49,14 +51,14 @@ const buttonLabels: Record<FormMode, { idle: string; submitting: string; title: 
   },
 };
 
-export function UserForm({ mode, onSuccess, userId }: UserFormProps) {
+export function UserForm({ mode, onSuccess, userId, name, surnames }: UserFormProps) {
   const { toast } = useToast();
 
   const schema = mode === 'create' ? userSchema : mode === 'updateNames' ? updateNamesSchema : updatePasswordSchema;
 
   const defaultValues: Partial<UserFormValues | UpdateNamesFormValues | UpdatePasswordFormValues> =
     mode === 'updateNames'
-      ? { name: '', surnames: '' }
+      ? { name: name, surnames: surnames }
       : mode === 'updatePassword'
         ? { password: '', passwordConfirmation: '' }
         : {

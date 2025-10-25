@@ -8,9 +8,11 @@ interface UpdateUserNamesSheetProps {
   children: React.ReactNode;
   userId: string;
   onSuccess?: () => void;
+  name: string;
+  surnames: string;
 }
 
-export function UpdateUserNamesSheet({ children, userId, onSuccess }: UpdateUserNamesSheetProps) {
+export function UpdateUserNamesSheet({ children, userId, onSuccess, name, surnames }: UpdateUserNamesSheetProps) {
   const [open, setOpen] = useState(false);
 
   const handleOnSuccess = () => {
@@ -31,7 +33,7 @@ export function UpdateUserNamesSheet({ children, userId, onSuccess }: UpdateUser
           </SheetDescription>
         </SheetHeader>
         <div className="flex flex-1 flex-col px-4.5">
-          <UserForm mode="updateNames" userId={userId} onSuccess={handleOnSuccess} />
+          <UserForm mode="updateNames" userId={userId} onSuccess={handleOnSuccess} name={name} surnames={surnames} />
         </div>
       </SheetContent>
     </Sheet>
