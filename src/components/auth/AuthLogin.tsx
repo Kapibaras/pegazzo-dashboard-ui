@@ -6,14 +6,16 @@ import { Field, FieldSet, FieldGroup, FieldLabel, FieldError } from '@/component
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { login } from '@/actions';
+import { login } from '@/actions/auth';
 import { useRouter } from 'next/navigation';
 import { SpanishMessages as M } from '@/i18n/es';
+import { LoaderCircle } from 'lucide-react';
 
 const AuthLogin = () => {
   const router = useRouter();
   const { toast } = useToast();
   const [errors, setErrors] = useState({ username: '', password: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const sendErrorToast = (title: string, message: string) => {
     const { dismiss } = toast({
@@ -38,6 +40,7 @@ const AuthLogin = () => {
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) return;
 
+    setIsSubmitting(true);
     const result = await login(formData);
 
     const ERROR_TITLE = M.LOGIN.TITLE;
@@ -66,12 +69,13 @@ const AuthLogin = () => {
     } else {
       router.push('/');
     }
+    setIsSubmitting(false);
   };
 
   return (
     <main className="bg-surface-500 md:bg-terciary-500 box-border flex h-screen w-full items-center justify-center px-6 md:py-24">
-      <div className="bg-surface-500 box-border flex w-full max-w-120 flex-col items-center justify-center gap-10 rounded-lg px-8 pb-16 md:gap-10 md:py-12 md:shadow-sm">
-        <div className="mt-1 flex flex-col items-center justify-center gap-3">
+      <div className="bg-surface-500 box-border flex w-full max-w-120 flex-col items-center justify-center gap-10 rounded-lg pb-16 md:gap-10 md:px-8 md:py-12 md:shadow-sm">
+        <div className="mt-1 flex flex-col items-center justify-center gap-3 px-8">
           <Image
             src="/images/logos/pegazzo.png"
             alt="Pegazzo"
@@ -98,8 +102,8 @@ const AuthLogin = () => {
           />
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-10">
-          <FieldSet>
+        <form onSubmit={handleSubmit} className="flex w-full flex-col gap-10">
+          <FieldSet className="md:px-5">
             <FieldGroup className="flex flex-col gap-8">
               <Field data-invalid={!!errors.username}>
                 <FieldLabel htmlFor="username" className="typo-bold-text">
@@ -131,12 +135,18 @@ const AuthLogin = () => {
               </Field>
             </FieldGroup>
           </FieldSet>
-
           <Button
             type="submit"
-            className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm"
+            disabled={isSubmitting}
+            className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex cursor-pointer items-center justify-center rounded-md py-5.5 text-center hover:shadow-sm md:mx-5"
           >
-            Iniciar Sesión
+            {isSubmitting ? (
+              <>
+                <LoaderCircle className="animate-spin" /> Iniciando Sesión...
+              </>
+            ) : (
+              'Iniciar Sesión'
+            )}
           </Button>
         </form>
       </div>

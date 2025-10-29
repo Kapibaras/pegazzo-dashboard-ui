@@ -1,9 +1,9 @@
 import { Table as TableType } from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
-import { UserTableData } from './columns';
 import { useEffect, useState } from 'react';
+import { User } from '@/types/user';
 
-const UserInputFilter = ({ table }: { table: TableType<UserTableData> }) => {
+const UserInputFilter = ({ table }: { table: TableType<User> }) => {
   const searchCol = table.getColumn('search');
   const [value, setValue] = useState((searchCol?.getFilterValue() as string) ?? '');
 

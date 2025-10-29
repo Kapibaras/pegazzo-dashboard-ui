@@ -1,4 +1,4 @@
-import { getUsernameFromSession } from '@/actions/getUsername';
+import { getUsernameFromSession } from '@/actions/auth';
 import ScopedAPIClient from '@/api/clients/scoped';
 import { Header, NavSidebar } from '@/components/navigation';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';

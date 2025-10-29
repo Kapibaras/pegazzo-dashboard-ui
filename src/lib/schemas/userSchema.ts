@@ -24,4 +24,25 @@ export const userSchema = z.object({
   }),
 });
 
+export const updateNamesSchema = z.object({
+  name: z.string().min(3, {
+    message: 'El nombre debe tener al menos 3 caracteres.',
+  }),
+  surnames: z.string().min(10, {
+    message: 'Los apellidos deben tener al menos 10 caracteres.',
+  }),
+});
+
+export const updatePasswordSchema = z
+  .object({
+    password: z.string().min(6, { message: 'La contraseña debe tener al menos 6 caracteres.' }),
+    passwordConfirmation: z.string(),
+  })
+  .refine((data) => data.password === data.passwordConfirmation, {
+    message: 'Las contraseñas no coinciden.',
+    path: ['passwordConfirmation'],
+  });
+
 export type UserFormValues = z.infer<typeof userSchema>;
+export type UpdateNamesFormValues = z.infer<typeof updateNamesSchema>;
+export type UpdatePasswordFormValues = z.infer<typeof updatePasswordSchema>;
