@@ -5,26 +5,17 @@ import { Button } from '@/components/ui/button';
 import { Field, FieldSet, FieldGroup, FieldLabel, FieldError } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
-import { login } from '@/actions/auth';
 import { useRouter } from 'next/navigation';
-import { SpanishMessages as M } from '@/i18n/es';
 import { LoaderCircle } from 'lucide-react';
+import { login } from '@/actions/auth';
+import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
 
 const AuthLogin = () => {
   const router = useRouter();
-  const { toast } = useToast();
   const [errors, setErrors] = useState({ username: '', password: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const sendErrorToast = (title: string, message: string) => {
-    const { dismiss } = toast({
-      title: title,
-      description: message,
-      variant: 'destructive',
-    });
-    setTimeout(() => dismiss(), 2000);
-  };
+  const { handleApiError } = useApiErrorHandler();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -34,8 +25,9 @@ const AuthLogin = () => {
     const password = (formData.get('password') as string)?.trim() ?? '';
 
     const newErrors = { username: '', password: '' };
-    if (!username) newErrors.username = M.VALIDATION.USERNAME_REQUIRED;
-    if (!password) newErrors.password = M.VALIDATION.PASSWORD_REQUIRED;
+
+    if (!username) newErrors.username = 'El nombre de usuario es obligatorio.';
+    if (!password) newErrors.password = 'La contraseña es obligatoria.';
 
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) return;
@@ -43,32 +35,18 @@ const AuthLogin = () => {
     setIsSubmitting(true);
     const result = await login(formData);
 
-    const ERROR_TITLE = M.LOGIN.TITLE;
-    const GENERIC_ERROR_MESSAGE = M.TOAST_ERROR_TITLE;
-    const CREDENTIALS_ERROR_MESSAGE = M.LOGIN.INVALID_CREDENTIALS;
-    const UNEXPECTED_ERROR_MESSAGE = M.LOGIN.UNEXPECTED_ERROR;
-
-    if (result.error) {
-      switch (result.error) {
-        case 'Required attributes username & password':
-          sendErrorToast(ERROR_TITLE, M.LOGIN.REQUIRED_FIELDS);
-          break;
-
-        case 'Invalid Credentials':
-        case 'User not found':
-          sendErrorToast(ERROR_TITLE, CREDENTIALS_ERROR_MESSAGE);
-          break;
-
-        case 'Something went wrong':
-          sendErrorToast(GENERIC_ERROR_MESSAGE, UNEXPECTED_ERROR_MESSAGE);
-          break;
-
-        default:
-          sendErrorToast(GENERIC_ERROR_MESSAGE, UNEXPECTED_ERROR_MESSAGE);
-      }
+    if ('status' in result && !result.success) {
+      handleApiError(
+        {
+          status: result.status || 500,
+          detail: result.detail || 'Something went wrong',
+        },
+        ['users'],
+      );
     } else {
       router.push('/');
     }
+
     setIsSubmitting(false);
   };
 

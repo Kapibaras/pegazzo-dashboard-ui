@@ -45,14 +45,11 @@ export default async function login(formData: FormData) {
   } catch (err: unknown) {
     if (!isAPIErrorType(err)) {
       console.error('Login failed with non-API error:', err);
-      return { error: 'Something went wrong' };
+      return { status: 500, detail: 'Something went wrong' };
     }
-
-    if (err.status_code === 401) return { error: 'Invalid Credentials' };
-    else if (err.status_code === 404) return { error: 'User not found' };
-    else {
-      console.error('Login failed with unexpected error:', err.message, err.status_code);
-      return { error: 'Something went wrong' };
-    }
+    return {
+      status: err.status_code,
+      detail: err.detail || 'Something went wrong',
+    };
   }
 }

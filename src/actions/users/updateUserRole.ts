@@ -5,13 +5,14 @@ import { ScopedAPIClient } from '@/api';
 import { UserService } from '@/services';
 import { getCookiesServer } from '@/utils/cookies/server';
 import { Role } from '@/lib/schemas/userSchema';
+import { APIError, APIRequestFailed } from '@/api/errors';
 
 export default async function updateUserRoleAction(formData: FormData) {
   const username = formData.get('username') as string;
   const role = formData.get('role') as Role;
 
   if (!username || !role) {
-    return { success: false, message: 'Datos incompletos.' };
+    return { success: false, status: 400, detail: 'Datos incompletos.' };
   }
 
   try {
@@ -24,11 +25,21 @@ export default async function updateUserRoleAction(formData: FormData) {
     revalidatePath('/dashboard/users');
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating user role:', error);
+
+    if (error instanceof APIError || error instanceof APIRequestFailed) {
+      return {
+        success: false,
+        status: error.status_code,
+        detail: error.detail || 'Error actualizando el rol.',
+      };
+    }
+
     return {
       success: false,
-      message: error.message || 'Error actualizando el rol.',
+      status: 500,
+      detail: error instanceof Error ? error.message : 'Error inesperado al actualizar el rol.',
     };
   }
 }

@@ -4,7 +4,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Role } from '@/lib/schemas/userSchema';
 import { Controller, useForm } from 'react-hook-form';
-import { useToast } from '@/components/ui/use-toast';
+import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
 import { updateUserRoleAction } from '@/actions/users';
 
 interface ChangeRoleInputProps {
@@ -14,8 +14,8 @@ interface ChangeRoleInputProps {
 }
 
 const ChangeRoleInput = ({ currentRole, username, onRoleUpdated }: ChangeRoleInputProps) => {
-  const { toast } = useToast();
   const isOwner = currentRole === Role.OWNER;
+  const { handleApiError } = useApiErrorHandler();
 
   const form = useForm<{ role: Role }>({
     defaultValues: { role: currentRole },
@@ -34,15 +34,19 @@ const ChangeRoleInput = ({ currentRole, username, onRoleUpdated }: ChangeRoleInp
     const result = await updateUserRoleAction(formData);
 
     if (!result.success) {
-      toast({
-        title: 'Error',
-        description: result.message || 'No se pudo actualizar el rol.',
-        variant: 'destructive',
-      });
+      handleApiError(
+        {
+          status: result.status || 500,
+          detail: result.detail || 'Error al actualizar el rol.',
+        },
+        ['users', 'common'],
+      );
+
       form.setValue('role', currentRole);
-    } else {
-      onRoleUpdated?.();
+      return;
     }
+
+    onRoleUpdated?.();
   }
 
   return (
