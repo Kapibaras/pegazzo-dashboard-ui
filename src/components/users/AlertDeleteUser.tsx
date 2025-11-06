@@ -11,6 +11,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useState } from 'react';
+import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
 import { useToast } from '../ui/use-toast';
 
 const AlertDeleteUser = ({
@@ -25,6 +26,7 @@ const AlertDeleteUser = ({
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { handleApiError } = useApiErrorHandler();
 
   const handleOnConfirm = async () => {
     setIsLoading(true);
@@ -32,21 +34,26 @@ const AlertDeleteUser = ({
     setIsLoading(false);
 
     if (!result.success) {
-      toast({
-        title: 'Ha ocurrido un problema',
-        description: 'No se pudo eliminar el usuario, por favor intenta de nuevo más tarde.',
-        variant: 'destructive',
-      });
+      handleApiError(
+        {
+          status: result.status || 500,
+          detail: result.detail || 'Error al eliminar el usuario.',
+        },
+        ['users'],
+      );
+
       setOpen(false);
-    } else {
-      toast({
-        title: 'Usuario eliminado',
-        description: `El usuario ${username} ha sido eliminado exitosamente.`,
-        variant: 'success',
-      });
-      setOpen(false);
-      if (onSuccess) onSuccess();
+      return;
     }
+
+    toast({
+      title: 'Usuario eliminado',
+      description: `El usuario ${username} ha sido eliminado exitosamente.`,
+      variant: 'success',
+    });
+
+    setOpen(false);
+    if (onSuccess) onSuccess();
   };
 
   return (

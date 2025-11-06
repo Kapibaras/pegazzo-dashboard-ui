@@ -18,7 +18,7 @@ export function CreateUserSheet() {
         </Button>
       </SheetTrigger>
 
-      <SheetContent className="text-carbon-500 [&>button]:hover:text-terciary-500 [&>button]:text-carbon-500 fixed top-[4rem] flex h-[calc(100vh-4rem)] w-full flex-col gap-3 overflow-hidden md:max-w-sm md:gap-1 [&>button>svg]:h-6 [&>button>svg]:w-6 [&>button>svg]:flex-shrink-0">
+      <SheetContent className="text-carbon-500 [&>button]:hover:text-terciary-500 [&>button]:text-carbon-500 fixed top-[4rem] flex h-[calc(100vh-4rem)] w-full flex-col gap-3 overflow-y-auto md:max-w-sm md:gap-1 [&>button>svg]:h-6 [&>button>svg]:w-6 [&>button>svg]:flex-shrink-0">
         <SheetHeader className="shrink-0">
           <SheetTitle className="typo-subtitle text-carbon-500 mb-1">Nuevo Usuario</SheetTitle>
           <SheetDescription className="typo-text text-carbon-300">
