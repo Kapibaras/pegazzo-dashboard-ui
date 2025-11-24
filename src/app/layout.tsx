@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Figtree, Source_Code_Pro } from 'next/font/google';
 import './globals.css';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from 'sonner';
 
 const figtree = Figtree({
   variable: '--font-figtree',
@@ -36,8 +36,8 @@ export default function RootLayout({
       <body
         className={`${figtree.className} ${figtree.variable} ${sourceCodePro.className} ${sourceCodePro.variable} typo-text`}
       >
+        <Toaster richColors position="top-right" />
         {children}
-        <Toaster />
       </body>
     </html>
   );

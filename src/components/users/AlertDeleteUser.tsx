@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useState } from 'react';
 import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
-import { useToast } from '../ui/use-toast';
+import { ToastService } from '@/services/toast';
 
 const AlertDeleteUser = ({
   username,
@@ -25,7 +25,6 @@ const AlertDeleteUser = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
   const { handleApiError } = useApiErrorHandler();
 
   const handleOnConfirm = async () => {
@@ -46,11 +45,7 @@ const AlertDeleteUser = ({
       return;
     }
 
-    toast({
-      title: 'Usuario eliminado',
-      description: `El usuario ${username} ha sido eliminado exitosamente.`,
-      variant: 'success',
-    });
+    ToastService.success('Usuario eliminado', `El usuario ${username} ha sido eliminado exitosamente.`);
 
     setOpen(false);
     if (onSuccess) onSuccess();

@@ -11,7 +11,7 @@ import CONFIG from '@/config';
 import logout from '@/actions/auth/logout';
 import { useRouter } from 'next/navigation';
 import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
-import { useToast } from '@/components/ui/use-toast';
+import { ToastService } from '@/services/toast';
 
 const NavFooter = ({
   isExpanded,
@@ -30,7 +30,6 @@ const NavFooter = ({
   const IconRole = role === CONFIG.USER_ROLES.OWNER ? ShieldUser : CircleUserRound;
 
   const router = useRouter();
-  const { toast } = useToast();
   const { handleApiError } = useApiErrorHandler();
 
   const handleLogout = async () => {
@@ -46,12 +45,7 @@ const NavFooter = ({
       );
       return;
     }
-
-    toast({
-      title: 'Sesión cerrada',
-      description: 'Has cerrado sesión correctamente.',
-      variant: 'success',
-    });
+    ToastService.success('Sesión cerrada', 'Has cerrado sesión correctamente.');
 
     router.push('/login');
   };

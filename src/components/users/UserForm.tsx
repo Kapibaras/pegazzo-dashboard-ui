@@ -2,7 +2,7 @@
 
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useToast } from '@/components/ui/use-toast';
+import { ToastService } from '@/services/toast';
 import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
 
 import {
@@ -53,7 +53,6 @@ const buttonLabels: Record<FormMode, { idle: string; submitting: string; title: 
 };
 
 export function UserForm({ mode, onSuccess, userId, name, surnames }: UserFormProps) {
-  const { toast } = useToast();
   const { handleApiError } = useApiErrorHandler();
 
   const schema = mode === 'create' ? userSchema : mode === 'updateNames' ? updateNamesSchema : updatePasswordSchema;
@@ -105,11 +104,7 @@ export function UserForm({ mode, onSuccess, userId, name, surnames }: UserFormPr
       return;
     }
 
-    toast({
-      title: buttonLabels[mode].title,
-      description: buttonLabels[mode].success,
-      variant: 'success',
-    });
+    ToastService.success(buttonLabels[mode].title, buttonLabels[mode].success);
 
     onSuccess();
     form.reset(defaultValues as any);
