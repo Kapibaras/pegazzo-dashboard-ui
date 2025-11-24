@@ -8,9 +8,10 @@ import {
 } from '@radix-ui/react-dropdown-menu';
 import { ChevronsUpDown, CircleUserRound, LogOut, ShieldUser } from 'lucide-react';
 import CONFIG from '@/config';
-import { logout } from '@/actions/auth';
-import { useToast } from '@/components/ui/use-toast';
+import logout from '@/actions/auth/logout';
 import { useRouter } from 'next/navigation';
+import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
+import { useToast } from '@/components/ui/use-toast';
 
 const NavFooter = ({
   isExpanded,
@@ -28,28 +29,31 @@ const NavFooter = ({
   const firstSurname = surnames.split(' ')[0] || '';
   const IconRole = role === CONFIG.USER_ROLES.OWNER ? ShieldUser : CircleUserRound;
 
-  const { toast } = useToast();
   const router = useRouter();
+  const { toast } = useToast();
+  const { handleApiError } = useApiErrorHandler();
 
   const handleLogout = async () => {
-    try {
-      const result = await logout();
-      if (result.success) {
-        toast({
-          title: 'Sesión cerrada',
-          description: 'Has cerrado sesión correctamente.',
-          variant: 'success',
-        });
-        router.push('/login');
-      }
-    } catch (err: unknown) {
-      console.error('Logout error:', err);
-      toast({
-        title: 'Error inesperado',
-        description: 'Algo salió mal al cerrar sesión.',
-        variant: 'destructive',
-      });
+    const result = await logout();
+
+    if (!result.success) {
+      handleApiError(
+        {
+          status: result.status || 500,
+          detail: result.detail || 'Error al cerrar sesión.',
+        },
+        ['auth', 'common'],
+      );
+      return;
     }
+
+    toast({
+      title: 'Sesión cerrada',
+      description: 'Has cerrado sesión correctamente.',
+      variant: 'success',
+    });
+
+    router.push('/login');
   };
 
   return (
