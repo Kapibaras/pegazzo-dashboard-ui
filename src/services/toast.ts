@@ -1,30 +1,30 @@
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 export class ToastService {
-  static error(title: string, message: string, duration = 2500) {
-    const { dismiss } = toast({
-      title,
+  static error(title: string, message: string, duration = 3000) {
+    const id = toast.error(title, {
       description: message,
-      variant: 'destructive',
+      duration,
     });
-    setTimeout(() => dismiss(), duration);
+
+    return id;
   }
 
-  static success(title: string, message: string, duration = 2500) {
-    const { dismiss } = toast({
-      title,
+  static success(title: string, message: string, duration = 3000) {
+    const id = toast.success(title, {
       description: message,
-      variant: 'success',
+      duration,
     });
-    setTimeout(() => dismiss(), duration);
+
+    return id;
   }
 
-  static info(title: string, message: string, duration = 2500) {
-    const { dismiss } = toast({
-      title,
+  static info(title: string, message: string, duration = 3000) {
+    const id = toast.info(title, {
       description: message,
-      variant: 'default',
+      duration,
     });
-    setTimeout(() => dismiss(), duration);
+
+    return id;
   }
 }
