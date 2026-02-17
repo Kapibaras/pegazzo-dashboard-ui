@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getBalanceMetrics } from '@/actions/balance';
+import { useUser } from '@/contexts/UserProvider';
 import { BalanceMetricsSimple } from '@/types/balance';
 import HomeDashboardSkeleton from './HomeDashboardSkeleton';
 import IncomeVsExpenseChart from './IncomeVsExpenseChart';
@@ -31,6 +32,7 @@ type State =
   | { status: 'success'; data: BalanceMetricsSimple };
 
 const HomeDashboard = () => {
+  const { user } = useUser();
   const [state, setState] = useState<State>({ status: 'loading' });
 
   const fetchMetrics = useCallback(async () => {
@@ -71,8 +73,10 @@ const HomeDashboard = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="typo-title">Panel de Inicio</h1>
-        <p className="typo-sm-text text-muted-foreground mt-1">{periodLabel}</p>
+        <h1 className="typo-title">Bienvenido, {user.name}</h1>
+        <p className="typo-sm-text text-muted-foreground mt-1">
+          Resumen de <b>{periodLabel}</b>
+        </p>
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <MonthlyBalanceCard balance={data.balance} />
