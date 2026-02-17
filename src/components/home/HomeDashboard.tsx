@@ -1,8 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { AlertCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ErrorCard } from '@/components/common';
 import { getBalanceMetrics } from '@/actions/balance';
 import { useUser } from '@/contexts/UserProvider';
 import { BalanceMetricsSimple } from '@/types/balance';
@@ -57,12 +56,15 @@ const HomeDashboard = () => {
 
   if (state.status === 'error') {
     return (
-      <div className="flex flex-col items-center gap-4 py-12">
-        <AlertCircle className="text-error-500 size-12" />
-        <p className="typo-text text-center">{state.message}</p>
-        <Button onClick={fetchMetrics} variant="outline">
-          Reintentar
-        </Button>
+      <div className="space-y-6">
+        <div>
+          <h1 className="typo-title">Bienvenido, {user.name}</h1>
+        </div>
+        <ErrorCard
+          title="No pudimos cargar tu resumen"
+          message={state.message}
+          onRetry={fetchMetrics}
+        />
       </div>
     );
   }

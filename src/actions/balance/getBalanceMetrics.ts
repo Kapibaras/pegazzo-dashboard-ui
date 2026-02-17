@@ -6,10 +6,10 @@ import { BalanceService } from '@/services';
 import { BalanceMetricsSimple } from '@/types/balance';
 import { getCookiesServer } from '@/utils/cookies/server';
 
-export default async function getBalanceMetrics(params?: { month?: number; year?: number }): Promise<
-  | { success: true; data: BalanceMetricsSimple }
-  | { success: false; message: string; status?: number }
-> {
+export default async function getBalanceMetrics(params?: {
+  month?: number;
+  year?: number;
+}): Promise<{ success: true; data: BalanceMetricsSimple } | { success: false; message: string; status?: number }> {
   try {
     const cookies = await getCookiesServer();
     const client = new ScopedAPIClient(cookies);
@@ -25,7 +25,7 @@ export default async function getBalanceMetrics(params?: { month?: number; year?
       return {
         success: false,
         status: error.status_code,
-        message: error.detail || 'Error al obtener las métricas de balance.',
+        message: 'Error al obtener las métricas del balance, intente más tarde.',
       };
     }
 
