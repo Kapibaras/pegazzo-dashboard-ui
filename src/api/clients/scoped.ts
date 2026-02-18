@@ -25,6 +25,9 @@ export default class ScopedAPIClient extends APIClientBase {
           console.debug('[API] request canceled:', error.message);
           return;
         }
+        if (error.response?.status === 401) {
+          return Promise.reject(error);
+        }
         if (error.response) {
           const status = error.response.status;
           const message = error.response.data?.detail || error.response.statusText || 'Server error';
