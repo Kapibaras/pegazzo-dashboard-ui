@@ -38,6 +38,37 @@ Dual session: backend httpOnly cookies (`access_token`, `refresh_token`, CSRF to
 - **State**: No global state library. `UserProvider` context for current user; local `useState` otherwise. `@tanstack/react-table` for table state.
 - **API endpoints**: All target `/internal/*` paths on the backend.
 
+### Session Expiration & Auth Error Handling
+
+Token refresh is handled automatically by `AbstractAPIService` (Axios response interceptor). If refresh fails, it throws `APIRequestFailed('Session expired', 401, 'SESSION_EXPIRED')`. Session expiration is handled in one place per context — **never add per-action 401 checks**:
+
+| Context | Handler | Behavior |
+|---|---|---|
+| Server Actions | `serverAction()` wrapper (`src/helpers/serverAction.ts`) | Detects `SESSION_EXPIRED` → `redirect('/api/auth/signout')` |
+| SSR layout (`(dashboard)/layout.tsx`) | try/catch around `getCachedUser` | Detects `SESSION_EXPIRED` → `redirect('/api/auth/signout')` |
+| CSR (`SingletonAPIClient`) | `useApiErrorHandler` | On 401 → calls `logout()` + `router.push('/login')` |
+
+**Every new server action must use the `serverAction` wrapper:**
+
+```typescript
+export default async function myAction(input: MyInput) {
+  return serverAction(
+    async () => {
+      const cookies = await getCookiesServer();
+      const result = await new MyService(new ScopedAPIClient(cookies)).doSomething(input);
+      return { success: true as const, data: result };
+    },
+    (error) => ({
+      success: false as const,
+      status: isAPIErrorType(error) ? error.status_code : 500,
+      message: isAPIErrorType(error) ? error.detail : 'Error inesperado.',
+    }),
+  );
+}
+```
+
+`/api/auth/signout` (Route Handler) clears the `session` cookie and redirects to `/login`. 401s from forbidden resource access (non-session errors) are **not** caught by the wrapper and propagate normally to the client.
+
 ### Environment Variables
 
 ```bash

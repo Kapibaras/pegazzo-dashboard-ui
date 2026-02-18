@@ -41,7 +41,7 @@ const AuthLogin = () => {
           status: result.status || 500,
           detail: result.detail || 'Something went wrong',
         },
-        ['users'],
+        ['auth'],
       );
     } else {
       router.push('/');

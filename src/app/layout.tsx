@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body
         className={`${figtree.className} ${figtree.variable} ${sourceCodePro.className} ${sourceCodePro.variable} typo-text`}
       >

@@ -1,6 +1,7 @@
-import { AxiosError } from "axios";
-import APIClientBase from "@/api/clients/base";
-import AuthService from "../auth";
+import { AxiosError } from 'axios';
+import APIClientBase from '@/api/clients/base';
+import { APIRequestFailed } from '@/api/errors';
+import AuthService from '../auth';
 
 export default abstract class AbstractAPIService {
   protected readonly client: APIClientBase;
@@ -15,7 +16,9 @@ export default abstract class AbstractAPIService {
     axiosInstance.interceptors.response.use(
       (response) => response,
       async (error: AxiosError) => {
-        if (error.response?.status === 401) {
+        const isRefreshRequest = error.config?.url?.includes('/auth/refresh');
+
+        if (error.response?.status === 401 && !isRefreshRequest) {
           if (!this.isRefreshing) {
             this.isRefreshing = true;
 
@@ -30,14 +33,14 @@ export default abstract class AbstractAPIService {
             await this.refreshPromise;
 
             if (!error.config) return Promise.reject(error);
-            return axiosInstance.request(error.config);
-          } catch (refreshError) {
-            return Promise.reject(refreshError);
+            return axiosInstance.request({ ...error.config, headers: undefined });
+          } catch {
+            return Promise.reject(new APIRequestFailed('Session expired', 401, 'SESSION_EXPIRED'));
           }
         }
 
         return Promise.reject(error);
-      }
+      },
     );
   }
 }

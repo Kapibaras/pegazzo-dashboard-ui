@@ -5,7 +5,8 @@ import { userSchema, updateNamesSchema, updatePasswordSchema } from '@/lib/schem
 import { ScopedAPIClient } from '@/api';
 import { UserService } from '@/services';
 import { getCookiesServer } from '@/utils/cookies/server';
-import { APIError, APIRequestFailed } from '@/api/errors';
+import isAPIErrorType from '@/api/errors';
+import { serverAction } from '@/helpers/serverAction';
 
 type ActionType = 'create' | 'updateNames' | 'updatePassword';
 
@@ -51,37 +52,27 @@ export default async function handleUserAction({
     return { success: false, errors: fieldErrors };
   }
 
-  try {
-    const cookies = await getCookiesServer();
-    const userService = new UserService(new ScopedAPIClient(cookies));
+  return serverAction(
+    async () => {
+      const cookies = await getCookiesServer();
+      const userService = new UserService(new ScopedAPIClient(cookies));
 
-    const username = actionType === 'create' ? undefined : (data.userId ?? data.username);
-    const args = username !== undefined ? [userService, username, validated.data] : [userService, validated.data];
+      const username = actionType === 'create' ? undefined : (data.userId ?? data.username);
+      const args = username !== undefined ? [userService, username, validated.data] : [userService, validated.data];
 
-    const result = await action(...args);
+      const result = await action(...args);
 
-    revalidatePath('/dashboard/users');
+      revalidatePath('/dashboard/users');
 
-    return {
-      success: true,
-      message: successMessage,
-      data: result,
-    };
-  } catch (error: unknown) {
-    console.error('Error en acción de usuario:', error);
-
-    if (error instanceof APIError || error instanceof APIRequestFailed) {
+      return { success: true, message: successMessage, data: result };
+    },
+    (error) => {
+      console.error('Error en acción de usuario:', error);
       return {
         success: false,
-        status: error.status_code,
-        message: error.detail || errorMessage,
+        status: isAPIErrorType(error) ? error.status_code : 500,
+        message: isAPIErrorType(error) ? error.detail || errorMessage : errorMessage,
       };
-    }
-
-    return {
-      success: false,
-      status: 500,
-      message: error instanceof Error ? error.message : errorMessage,
-    };
-  }
+    },
+  );
 }

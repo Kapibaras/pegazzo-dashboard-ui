@@ -1,29 +1,20 @@
 'use server';
+
 import { cookies } from 'next/headers';
-import { APIError, APIRequestFailed } from '@/api/errors';
+import { ScopedAPIClient } from '@/api';
+import AuthService from '@/services/auth';
+import { getCookiesServer } from '@/utils/cookies/server';
 
 export default async function logout() {
   try {
+    const cookieHeader = await getCookiesServer();
+    const scopedClient = new ScopedAPIClient(cookieHeader);
+    const authService = new AuthService(scopedClient);
+    await authService.logout();
+  } finally {
     const cookieStore = await cookies();
-    cookieStore.delete({
-      name: 'session',
-      path: '/',
-    });
-
-    return { success: true };
-  } catch (error: unknown) {
-    if (error instanceof APIError || error instanceof APIRequestFailed) {
-      return {
-        success: false,
-        status: error.status_code,
-        detail: error.detail || 'Error al cerrar sesión.',
-      };
-    }
-
-    return {
-      success: false,
-      status: 500,
-      detail: error instanceof Error ? error.message : 'Error inesperado al cerrar sesión.',
-    };
+    cookieStore.delete({ name: 'session', path: '/' });
   }
+
+  return { success: true };
 }

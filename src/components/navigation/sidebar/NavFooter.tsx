@@ -10,7 +10,6 @@ import { ChevronsUpDown, CircleUserRound, LogOut, ShieldUser } from 'lucide-reac
 import CONFIG from '@/config';
 import logout from '@/actions/auth/logout';
 import { useRouter } from 'next/navigation';
-import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
 import { ToastService } from '@/services/toast';
 
 const NavFooter = ({
@@ -30,23 +29,10 @@ const NavFooter = ({
   const IconRole = role === CONFIG.USER_ROLES.OWNER ? ShieldUser : CircleUserRound;
 
   const router = useRouter();
-  const { handleApiError } = useApiErrorHandler();
 
   const handleLogout = async () => {
-    const result = await logout();
-
-    if (!result.success) {
-      handleApiError(
-        {
-          status: result.status || 500,
-          detail: result.detail || 'Error al cerrar sesión.',
-        },
-        ['auth', 'common'],
-      );
-      return;
-    }
-    ToastService.success('Sesión cerrada', 'Has cerrado sesión correctamente.');
-
+    await logout();
+    ToastService.success('Sesion cerrada', 'Has cerrado sesion correctamente.');
     router.push('/login');
   };
 
