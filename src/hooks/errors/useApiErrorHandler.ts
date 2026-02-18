@@ -1,3 +1,5 @@
+import { useRouter } from 'next/navigation';
+import { logout } from '@/actions/auth';
 import { ToastService } from '@/services/toast';
 import { ERROR_MESSAGES } from '@/errors';
 
@@ -17,9 +19,11 @@ interface ApiError {
 }
 
 export const useApiErrorHandler = () => {
+  const router = useRouter();
+
   const findErrorMessage = (error: ApiError, modules: ErrorModules[]) => {
-    for (const module of modules) {
-      const moduleErrors = ERROR_MESSAGES[module];
+    for (const errorModule of modules) {
+      const moduleErrors = ERROR_MESSAGES[errorModule];
 
       for (const err of Object.values(moduleErrors) as ErrorDefinition[]) {
         if (
@@ -38,7 +42,13 @@ export const useApiErrorHandler = () => {
     };
   };
 
-  const handleApiError = (error: ApiError, modules: ErrorModules[] = ['common']) => {
+  const handleApiError = async (error: ApiError, modules: ErrorModules[] = ['common']) => {
+    if (error.status === 401) {
+      await logout();
+      router.push('/login');
+      return;
+    }
+
     const { title, message } = findErrorMessage(error, modules);
     ToastService.error(title, message);
   };
