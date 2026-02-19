@@ -1,18 +1,18 @@
+import { Suspense } from 'react';
 import { ScopedAPIClient } from '@/api';
 import { ErrorCard } from '@/components/common';
-import { BalanceDashboard } from '@/components/balance';
+import { BalanceDashboard, BalanceSkeleton } from '@/components/balance';
 import { BalanceService } from '@/services';
 import { parsePeriod, periodToApiParams, periodSubtitle } from '@/lib/balance';
 import { getCookiesServer } from '@/utils/cookies/server';
 import isAPIErrorType from '@/api/errors';
+import { BalancePeriodType } from '@/types/balance';
 
 type BalancePageProps = {
   searchParams: Promise<{ period?: string }>;
 };
 
-export default async function BalancePage({ searchParams }: BalancePageProps) {
-  const { period: periodParam } = await searchParams;
-  const period = parsePeriod(periodParam);
+const BalanceMetrics = async ({ period }: { period: BalancePeriodType }) => {
   const apiParams = periodToApiParams(period);
 
   try {
@@ -26,7 +26,17 @@ export default async function BalancePage({ searchParams }: BalancePageProps) {
     }
 
     const message = isAPIErrorType(error) ? error.detail : 'No se pudieron cargar las métricas del balance.';
-
     return <ErrorCard message={message} />;
   }
+};
+
+export default async function BalancePage({ searchParams }: BalancePageProps) {
+  const { period: periodParam } = await searchParams;
+  const period = parsePeriod(periodParam);
+
+  return (
+    <Suspense key={period} fallback={<BalanceSkeleton />}>
+      <BalanceMetrics period={period} />
+    </Suspense>
+  );
 }
