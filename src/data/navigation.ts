@@ -11,7 +11,7 @@ const ROUTES_WITH_ICONS = [
   {
     title: 'Balance',
     icon: CircleDollarSign,
-    url: '/#',
+    url: '/balance',
     allowed: [Role.OWNER, Role.ADMIN],
   },
   {
@@ -33,6 +33,7 @@ const ROUTES_WITH_ICONS = [
 
 const ROUTES_PATHNAMES: Record<string, string> = {
   '/': 'Inicio',
+  '/balance': 'Balance',
   '/usuarios': 'Usuarios',
   '/settings': 'Configuración',
 };
