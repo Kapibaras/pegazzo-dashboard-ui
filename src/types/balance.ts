@@ -11,12 +11,10 @@ export type BalanceMetricsSimple = {
   period: BalancePeriod;
 };
 
-// Period type matching backend PeriodType enum
 export const BALANCE_PERIODS = ['week', 'month', 'year'] as const;
 export type BalancePeriodType = (typeof BALANCE_PERIODS)[number];
 export const DEFAULT_PERIOD: BalancePeriodType = 'month';
 
-// GET /management/balance/metrics response
 export type PeriodMetrics = {
   balance: number;
   totalIncome: number;
