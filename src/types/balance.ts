@@ -56,3 +56,20 @@ export type BalanceMetricsParams = {
   month?: number;
   year?: number;
 };
+
+export type BalanceTrendDataPoint = {
+  periodStart: string;
+  periodEnd: string;
+  totalIncome: number;
+  totalExpense: number;
+};
+
+export type BalanceTrendResponse = {
+  periodType: BalancePeriodType;
+  data: BalanceTrendDataPoint[];
+};
+
+export type BalanceTrendParams = {
+  period: BalancePeriodType;
+  limit?: number;
+};

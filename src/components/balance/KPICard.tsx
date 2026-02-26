@@ -11,6 +11,7 @@ type KPICardProps = {
     value: number;
     type: 'percent' | 'absolute';
   };
+  invertChange?: boolean;
   iconColorClass?: string;
   iconBgClass?: string;
 };
@@ -20,12 +21,15 @@ const KPICard = ({
   title,
   value,
   change,
+  invertChange = false,
   iconColorClass = 'text-primary-600',
   iconBgClass = 'bg-primary-100',
 }: KPICardProps) => {
   const getChangeColor = (val: number) => {
-    if (val > 0) return 'text-success-400';
-    if (val < 0) return 'text-error-400';
+    const positive = invertChange ? 'text-error-400' : 'text-success-400';
+    const negative = invertChange ? 'text-success-400' : 'text-error-400';
+    if (val > 0) return positive;
+    if (val < 0) return negative;
     return 'text-accent-400';
   };
 

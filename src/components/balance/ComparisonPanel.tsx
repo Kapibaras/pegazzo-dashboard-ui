@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, ArrowLeftRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { formatCurrency, formatPercent } from '@/utils/formatters';
@@ -15,14 +15,20 @@ type ComparisonItem = {
   changePercent: number;
   previousValue: number;
   currentValue: number;
+  invertChange?: boolean;
 };
 
-const ComparisonRow = ({ label, changePercent, previousValue, currentValue }: ComparisonItem) => {
+const ComparisonRow = ({ label, changePercent, previousValue, currentValue, invertChange = false }: ComparisonItem) => {
   const isPositive = changePercent > 0;
   const isNegative = changePercent < 0;
 
-  const colorClass = isPositive ? 'text-success-400' : isNegative ? 'text-error-400' : 'text-accent-400';
-  const bgClass = isPositive ? 'bg-success-50' : isNegative ? 'bg-error-50' : 'bg-accent-50';
+  const positiveColor = invertChange ? 'text-error-400' : 'text-success-400';
+  const negativColor = invertChange ? 'text-success-400' : 'text-error-400';
+  const positiveBg = invertChange ? 'bg-error-50' : 'bg-success-50';
+  const negativeBg = invertChange ? 'bg-success-50' : 'bg-error-50';
+
+  const colorClass = isPositive ? positiveColor : isNegative ? negativColor : 'text-accent-400';
+  const bgClass = isPositive ? positiveBg : isNegative ? negativeBg : 'bg-accent-50';
   const ChangeIcon = isPositive ? TrendingUp : isNegative ? TrendingDown : Minus;
 
   return (
@@ -62,13 +68,19 @@ const ComparisonPanel = ({ comparison, currentPeriod, previousPeriod }: Comparis
       changePercent: comparison.expenseChangePercent,
       previousValue: previousPeriod.totalExpense,
       currentValue: currentPeriod.totalExpense,
+      invertChange: true,
     },
   ];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="typo-subtitle">Comparación con período anterior</CardTitle>
+        <div className="flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-lg bg-primary-100">
+            <ArrowLeftRight className="size-5 text-primary-600" />
+          </div>
+          <CardTitle className="typo-subtitle">Comparación con período anterior</CardTitle>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="divide-y">

@@ -1,6 +1,12 @@
 import AbstractAPIService from './base/AbstractAPIService';
 import APIClientBase from '@/api/clients/base';
-import { BalanceMetricsSimple, BalanceMetricsDetailed, BalanceMetricsParams } from '@/types/balance';
+import {
+  BalanceMetricsSimple,
+  BalanceMetricsDetailed,
+  BalanceMetricsParams,
+  BalanceTrendResponse,
+  BalanceTrendParams,
+} from '@/types/balance';
 
 export default class BalanceService extends AbstractAPIService {
   constructor(client: APIClientBase) {
@@ -13,5 +19,9 @@ export default class BalanceService extends AbstractAPIService {
 
   async getDetailedMetrics(params: BalanceMetricsParams): Promise<BalanceMetricsDetailed> {
     return (await this.client.get('/management/balance/metrics', { params })).data;
+  }
+
+  async getTrendData(params: BalanceTrendParams): Promise<BalanceTrendResponse> {
+    return (await this.client.get('/management/balance/metrics/trend', { params })).data;
   }
 }

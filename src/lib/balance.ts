@@ -1,5 +1,23 @@
 import { BALANCE_PERIODS, BalanceMetricsParams, BalancePeriodType, DEFAULT_PERIOD } from '@/types/balance';
 
+export const TREND_LIMITS: Record<BalancePeriodType, number> = {
+  week: 8,
+  month: 6,
+  year: 3,
+};
+
+export const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  cash: 'Efectivo',
+  personal_transfer: 'Cuenta Personal',
+  pegazzo_transfer: 'Cuenta Pegazzo',
+};
+
+export const PAYMENT_METHOD_COLORS: Record<string, string> = {
+  cash: 'var(--color-chart-2)',
+  personal_transfer: 'var(--color-chart-3)',
+  pegazzo_transfer: 'var(--color-chart-4)',
+};
+
 export const PERIOD_LABELS: Record<BalancePeriodType, string> = {
   week: 'Semana',
   month: 'Mes',
@@ -34,6 +52,22 @@ export const periodToApiParams = (period: BalancePeriodType): BalanceMetricsPara
       return { period, month, year };
     case 'year':
       return { period, year };
+  }
+};
+
+const MONTH_NAMES_SHORT = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+export const formatTrendLabel = (periodStart: string, period: BalancePeriodType): string => {
+  const date = new Date(periodStart);
+  switch (period) {
+    case 'week': {
+      const weekOfMonth = Math.floor((date.getDate() - 1) / 7) + 1;
+      return `Sem ${weekOfMonth}, ${MONTH_NAMES_SHORT[date.getMonth()]}`;
+    }
+    case 'month':
+      return `${MONTH_NAMES_SHORT[date.getMonth()]} ${date.getFullYear()}`;
+    case 'year':
+      return `${date.getFullYear()}`;
   }
 };
 
@@ -81,8 +115,7 @@ export const periodSubtitle = (period: BalancePeriodType): string => {
     case 'week': {
       const monday = getWeekMonday(now);
       const sunday = getWeekSunday(monday);
-      const weekOfMonth =
-        monday.getMonth() === now.getMonth() ? Math.floor((monday.getDate() - 1) / 7) + 1 : 1;
+      const weekOfMonth = monday.getMonth() === now.getMonth() ? Math.floor((monday.getDate() - 1) / 7) + 1 : 1;
       return `Métricas de la Semana ${weekOfMonth} de ${monthName} (${formatDateDMY(monday)} - ${formatDateDMY(sunday)})`;
     }
     case 'month':
