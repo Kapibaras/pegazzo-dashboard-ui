@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, ArrowLeftRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { formatCurrency, formatPercent } from '@/utils/formatters';
@@ -68,7 +68,12 @@ const ComparisonPanel = ({ comparison, currentPeriod, previousPeriod }: Comparis
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="typo-subtitle">Comparación con período anterior</CardTitle>
+        <div className="flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-lg bg-primary-100">
+            <ArrowLeftRight className="size-5 text-primary-600" />
+          </div>
+          <CardTitle className="typo-subtitle">Comparación con período anterior</CardTitle>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="divide-y">

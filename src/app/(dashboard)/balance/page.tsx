@@ -3,7 +3,7 @@ import { ScopedAPIClient } from '@/api';
 import { ErrorCard } from '@/components/common';
 import { BalanceDashboard, BalanceSkeleton } from '@/components/balance';
 import { BalanceService } from '@/services';
-import { parsePeriod, periodToApiParams, periodSubtitle } from '@/lib/balance';
+import { parsePeriod, periodToApiParams, periodSubtitle, TREND_LIMITS } from '@/lib/balance';
 import { getCookiesServer } from '@/utils/cookies/server';
 import isAPIErrorType from '@/api/errors';
 import { BalancePeriodType } from '@/types/balance';
@@ -18,8 +18,11 @@ const BalanceMetrics = async ({ period }: { period: BalancePeriodType }) => {
   try {
     const cookies = await getCookiesServer();
     const service = new BalanceService(new ScopedAPIClient(cookies));
-    const data = await service.getDetailedMetrics(apiParams);
-    return <BalanceDashboard data={data} periodLabel={periodSubtitle(period)} />;
+    const [data, trendData] = await Promise.all([
+      service.getDetailedMetrics(apiParams),
+      service.getTrendData({ period, limit: TREND_LIMITS[period] }).catch(() => null),
+    ]);
+    return <BalanceDashboard data={data} trendData={trendData} period={period} periodLabel={periodSubtitle(period)} />;
   } catch (error) {
     if (isAPIErrorType(error) && error.status_code === 401 && error.detail === 'SESSION_EXPIRED') {
       throw error;

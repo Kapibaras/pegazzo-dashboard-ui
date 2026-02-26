@@ -26,6 +26,20 @@ const ComparisonRowSkeleton = () => (
   </div>
 );
 
+const CardWithIconSkeleton = ({ height = 'h-[200px]' }: { height?: string }) => (
+  <Card>
+    <CardHeader>
+      <div className="flex items-center gap-3">
+        <Skeleton className="size-10 rounded-lg" />
+        <Skeleton className="h-5 w-48" />
+      </div>
+    </CardHeader>
+    <CardContent>
+      <Skeleton className={`w-full rounded-md ${height}`} />
+    </CardContent>
+  </Card>
+);
+
 const BalanceSkeleton = () => {
   return (
     <div className="space-y-6">
@@ -36,18 +50,26 @@ const BalanceSkeleton = () => {
         <KPICardSkeleton />
         <KPICardSkeleton />
       </div>
-      <Card>
-        <CardHeader>
-          <Skeleton className="h-5 w-56" />
-        </CardHeader>
-        <CardContent>
-          <div className="divide-y">
-            <ComparisonRowSkeleton />
-            <ComparisonRowSkeleton />
-            <ComparisonRowSkeleton />
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-5 w-56" />
+          </CardHeader>
+          <CardContent>
+            <div className="divide-y">
+              <ComparisonRowSkeleton />
+              <ComparisonRowSkeleton />
+              <ComparisonRowSkeleton />
+            </div>
+          </CardContent>
+        </Card>
+        <CardWithIconSkeleton />
+      </div>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <CardWithIconSkeleton height="h-[280px]" />
+        <CardWithIconSkeleton height="h-[280px]" />
+      </div>
+      <CardWithIconSkeleton height="h-[100px]" />
     </div>
   );
 };

@@ -16,6 +16,8 @@ const KPIGrid = ({ currentPeriod, comparison }: KPIGridProps) => {
         title="Balance"
         value={formatCurrency(currentPeriod.balance)}
         change={{ value: comparison.balanceChangePercent, type: 'percent' }}
+        iconColorClass="text-chart-4"
+        iconBgClass="bg-chart-4/15"
       />
       <KPICard
         icon={TrendingUp}
@@ -38,8 +40,8 @@ const KPIGrid = ({ currentPeriod, comparison }: KPIGridProps) => {
         title="Transacciones"
         value={String(currentPeriod.transactionCount)}
         change={{ value: comparison.transactionChange, type: 'absolute' }}
-        iconColorClass="text-accent-600"
-        iconBgClass="bg-accent-50"
+        iconColorClass="text-terciary-500"
+        iconBgClass="bg-terciary-50"
       />
     </div>
   );
