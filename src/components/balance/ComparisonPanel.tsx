@@ -15,14 +15,20 @@ type ComparisonItem = {
   changePercent: number;
   previousValue: number;
   currentValue: number;
+  invertChange?: boolean;
 };
 
-const ComparisonRow = ({ label, changePercent, previousValue, currentValue }: ComparisonItem) => {
+const ComparisonRow = ({ label, changePercent, previousValue, currentValue, invertChange = false }: ComparisonItem) => {
   const isPositive = changePercent > 0;
   const isNegative = changePercent < 0;
 
-  const colorClass = isPositive ? 'text-success-400' : isNegative ? 'text-error-400' : 'text-accent-400';
-  const bgClass = isPositive ? 'bg-success-50' : isNegative ? 'bg-error-50' : 'bg-accent-50';
+  const positiveColor = invertChange ? 'text-error-400' : 'text-success-400';
+  const negativColor = invertChange ? 'text-success-400' : 'text-error-400';
+  const positiveBg = invertChange ? 'bg-error-50' : 'bg-success-50';
+  const negativeBg = invertChange ? 'bg-success-50' : 'bg-error-50';
+
+  const colorClass = isPositive ? positiveColor : isNegative ? negativColor : 'text-accent-400';
+  const bgClass = isPositive ? positiveBg : isNegative ? negativeBg : 'bg-accent-50';
   const ChangeIcon = isPositive ? TrendingUp : isNegative ? TrendingDown : Minus;
 
   return (
@@ -62,6 +68,7 @@ const ComparisonPanel = ({ comparison, currentPeriod, previousPeriod }: Comparis
       changePercent: comparison.expenseChangePercent,
       previousValue: previousPeriod.totalExpense,
       currentValue: currentPeriod.totalExpense,
+      invertChange: true,
     },
   ];
 

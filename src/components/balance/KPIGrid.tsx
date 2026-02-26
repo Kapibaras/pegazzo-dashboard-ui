@@ -32,6 +32,7 @@ const KPIGrid = ({ currentPeriod, comparison }: KPIGridProps) => {
         title="Gastos"
         value={formatCurrency(currentPeriod.totalExpense)}
         change={{ value: comparison.expenseChangePercent, type: 'percent' }}
+        invertChange
         iconColorClass="text-error-600"
         iconBgClass="bg-error-50"
       />
