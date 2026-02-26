@@ -61,13 +61,13 @@ export const formatTrendLabel = (periodStart: string, period: BalancePeriodType)
   const date = new Date(periodStart);
   switch (period) {
     case 'week': {
-      const weekOfMonth = Math.floor((date.getDate() - 1) / 7) + 1;
-      return `Sem ${weekOfMonth}, ${MONTH_NAMES_SHORT[date.getMonth()]}`;
+      const weekOfMonth = Math.floor((date.getUTCDate() - 1) / 7) + 1;
+      return `Sem ${weekOfMonth}, ${MONTH_NAMES_SHORT[date.getUTCMonth()]}`;
     }
     case 'month':
-      return `${MONTH_NAMES_SHORT[date.getMonth()]} ${date.getFullYear()}`;
+      return `${MONTH_NAMES_SHORT[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
     case 'year':
-      return `${date.getFullYear()}`;
+      return `${date.getUTCFullYear()}`;
   }
 };
 
