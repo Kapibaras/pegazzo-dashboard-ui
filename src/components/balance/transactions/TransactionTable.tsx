@@ -13,7 +13,12 @@ type TransactionTableProps = {
 
 const TransactionTable = ({ table, isLoading }: TransactionTableProps) => {
   return (
-    <div className={cn('border-secondary-100 overflow-hidden rounded-md border', isLoading && 'opacity-50')}>
+    <div
+      className={cn(
+        'border-secondary-100 min-w-0 overflow-hidden rounded-md border transition-opacity duration-200',
+        isLoading && 'pointer-events-none opacity-60',
+      )}
+    >
       <Table>
         <TableHeader className="bg-secondary-500 border-secondary-100">
           {table.getHeaderGroups().map((headerGroup) => (

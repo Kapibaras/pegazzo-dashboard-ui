@@ -43,7 +43,7 @@ const ROUTES_WITH_ICONS = [
 const ROUTES_PATHNAMES: Record<string, string> = {
   '/': 'Inicio',
   '/balance': 'Balance',
-  '/balance/transacciones': 'Transacciones',
+  '/balance/transacciones': 'Balance',
   '/usuarios': 'Usuarios',
   '/settings': 'Configuración',
 };

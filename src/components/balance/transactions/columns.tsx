@@ -107,7 +107,7 @@ export const getColumns = ({ sortBy, sortOrder, onSort }: GetColumnsParams): Col
     cell: ({ row }) => {
       const description = row.getValue<string>('description');
       return (
-        <span className="block max-w-[200px] truncate" title={description}>
+        <span className="block max-w-[160px] truncate" title={description}>
           {description}
         </span>
       );

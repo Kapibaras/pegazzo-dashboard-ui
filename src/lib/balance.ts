@@ -71,7 +71,7 @@ export const formatTrendLabel = (periodStart: string, period: BalancePeriodType)
   }
 };
 
-const MONTH_NAMES = [
+export const MONTH_NAMES = [
   'Enero',
   'Febrero',
   'Marzo',

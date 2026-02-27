@@ -49,7 +49,7 @@ export default async function DashboardLayout({
       <UserProvider initialUser={user}>
         <NavSidebar />
         <SidebarInset>
-          <main className="h-full w-full">
+          <main className="h-full w-full overflow-x-hidden">
             <Header />
             {children}
           </main>
