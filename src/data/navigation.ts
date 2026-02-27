@@ -11,8 +11,17 @@ const ROUTES_WITH_ICONS = [
   {
     title: 'Balance',
     icon: CircleDollarSign,
-    url: '/balance',
-    allowed: [Role.OWNER, Role.ADMIN],
+    subroutes: [
+      { title: 'Métricas Actuales', url: '/balance' },
+      { title: 'Transacciones', url: '/balance/transacciones' },
+    ],
+    allowed: [Role.OWNER],
+  },
+  {
+    title: 'Balance',
+    icon: CircleDollarSign,
+    url: '/balance/transacciones',
+    allowed: [Role.ADMIN],
   },
   {
     title: 'Coches',
@@ -34,6 +43,7 @@ const ROUTES_WITH_ICONS = [
 const ROUTES_PATHNAMES: Record<string, string> = {
   '/': 'Inicio',
   '/balance': 'Balance',
+  '/balance/transacciones': 'Balance',
   '/usuarios': 'Usuarios',
   '/settings': 'Configuración',
 };

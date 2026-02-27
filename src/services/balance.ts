@@ -7,6 +7,7 @@ import {
   BalanceTrendResponse,
   BalanceTrendParams,
 } from '@/types/balance';
+import { TransactionsParams, TransactionsResponse } from '@/types/transaction';
 
 export default class BalanceService extends AbstractAPIService {
   constructor(client: APIClientBase) {
@@ -23,5 +24,9 @@ export default class BalanceService extends AbstractAPIService {
 
   async getTrendData(params: BalanceTrendParams): Promise<BalanceTrendResponse> {
     return (await this.client.get('/management/balance/metrics/trend', { params })).data;
+  }
+
+  async getTransactions(params: TransactionsParams): Promise<TransactionsResponse> {
+    return (await this.client.get('/management/balance/transactions', { params })).data;
   }
 }

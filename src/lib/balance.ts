@@ -61,17 +61,17 @@ export const formatTrendLabel = (periodStart: string, period: BalancePeriodType)
   const date = new Date(periodStart);
   switch (period) {
     case 'week': {
-      const weekOfMonth = Math.floor((date.getDate() - 1) / 7) + 1;
-      return `Sem ${weekOfMonth}, ${MONTH_NAMES_SHORT[date.getMonth()]}`;
+      const weekOfMonth = Math.floor((date.getUTCDate() - 1) / 7) + 1;
+      return `Sem ${weekOfMonth}, ${MONTH_NAMES_SHORT[date.getUTCMonth()]}`;
     }
     case 'month':
-      return `${MONTH_NAMES_SHORT[date.getMonth()]} ${date.getFullYear()}`;
+      return `${MONTH_NAMES_SHORT[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
     case 'year':
-      return `${date.getFullYear()}`;
+      return `${date.getUTCFullYear()}`;
   }
 };
 
-const MONTH_NAMES = [
+export const MONTH_NAMES = [
   'Enero',
   'Febrero',
   'Marzo',
@@ -116,11 +116,11 @@ export const periodSubtitle = (period: BalancePeriodType): string => {
       const monday = getWeekMonday(now);
       const sunday = getWeekSunday(monday);
       const weekOfMonth = monday.getMonth() === now.getMonth() ? Math.floor((monday.getDate() - 1) / 7) + 1 : 1;
-      return `Métricas de la Semana ${weekOfMonth} de ${monthName} (${formatDateDMY(monday)} - ${formatDateDMY(sunday)})`;
+      return `Datos de la Semana ${weekOfMonth} de ${monthName} (${formatDateDMY(monday)} - ${formatDateDMY(sunday)})`;
     }
     case 'month':
-      return `Métricas del mes de ${monthName} ${year}`;
+      return `Datos del mes de ${monthName} ${year}`;
     case 'year':
-      return `Métricas del año ${year}`;
+      return `Datos del año ${year}`;
   }
 };

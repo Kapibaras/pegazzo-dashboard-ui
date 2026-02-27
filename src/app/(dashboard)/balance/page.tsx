@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { ScopedAPIClient } from '@/api';
 import { ErrorCard } from '@/components/common';
-import { BalanceDashboard, BalanceSkeleton } from '@/components/balance';
+import { BalanceDashboard, BalanceFilters, BalanceSkeleton } from '@/components/balance';
 import { BalanceService } from '@/services';
 import { parsePeriod, periodToApiParams, periodSubtitle, TREND_LIMITS } from '@/lib/balance';
 import { getCookiesServer } from '@/utils/cookies/server';
@@ -38,8 +38,14 @@ export default async function BalancePage({ searchParams }: BalancePageProps) {
   const period = parsePeriod(periodParam);
 
   return (
-    <Suspense key={period} fallback={<BalanceSkeleton />}>
-      <BalanceMetrics period={period} />
-    </Suspense>
+    <>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="typo-title">Métricas Actuales del Balance</h1>
+        <BalanceFilters />
+      </div>
+      <Suspense key={period} fallback={<BalanceSkeleton />}>
+        <BalanceMetrics period={period} />
+      </Suspense>
+    </>
   );
 }
