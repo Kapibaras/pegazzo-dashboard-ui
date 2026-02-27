@@ -1,5 +1,6 @@
 import { ArrowUpDown } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const SKELETON_ROWS = 12;
@@ -17,12 +18,12 @@ const HEADERS: { label: string; sortable: boolean }[] = [
 const TransactionTableSkeleton = () => {
   return (
     <div className="space-y-4">
-      <div className="border-secondary-100 min-w-0 overflow-hidden rounded-md border">
+      <div className="min-w-0 overflow-hidden rounded-lg border border-secondary-100/80 shadow-sm">
         <Table>
-          <TableHeader className="bg-secondary-500">
-            <TableRow className="hover:bg-secondary-500!">
+          <TableHeader className="border-b border-primary-700/20 bg-gradient-to-b from-secondary-500 to-secondary-600">
+            <TableRow className="hover:bg-transparent">
               {HEADERS.map((header) => (
-                <TableHead key={header.label} className="px-5 py-2 lg:px-6 lg:py-3">
+                <TableHead key={header.label} className="px-5 py-3 lg:px-6">
                   {header.sortable ? (
                     <span className="typo-bold-text text-primary-100 inline-flex items-center gap-2 px-3 py-1.5">
                       {header.label}
@@ -37,9 +38,15 @@ const TransactionTableSkeleton = () => {
           </TableHeader>
           <TableBody>
             {Array.from({ length: SKELETON_ROWS }).map((_, rowIdx) => (
-              <TableRow key={rowIdx} className="border-secondary-100">
+              <TableRow
+                key={rowIdx}
+                className={cn(
+                  'border-secondary-100/50',
+                  rowIdx % 2 === 0 ? 'bg-white' : 'bg-surface-300/50',
+                )}
+              >
                 {Array.from({ length: COLUMN_COUNT }).map((_, colIdx) => (
-                  <TableCell key={colIdx} className="px-5 py-3 lg:px-6">
+                  <TableCell key={colIdx} className="px-5 py-3.5 lg:px-6">
                     <Skeleton className="h-4 w-24" />
                   </TableCell>
                 ))}
