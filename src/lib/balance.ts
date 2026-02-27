@@ -116,11 +116,11 @@ export const periodSubtitle = (period: BalancePeriodType): string => {
       const monday = getWeekMonday(now);
       const sunday = getWeekSunday(monday);
       const weekOfMonth = monday.getMonth() === now.getMonth() ? Math.floor((monday.getDate() - 1) / 7) + 1 : 1;
-      return `Métricas de la Semana ${weekOfMonth} de ${monthName} (${formatDateDMY(monday)} - ${formatDateDMY(sunday)})`;
+      return `Datos de la Semana ${weekOfMonth} de ${monthName} (${formatDateDMY(monday)} - ${formatDateDMY(sunday)})`;
     }
     case 'month':
-      return `Métricas del mes de ${monthName} ${year}`;
+      return `Datos del mes de ${monthName} ${year}`;
     case 'year':
-      return `Métricas del año ${year}`;
+      return `Datos del año ${year}`;
   }
 };
