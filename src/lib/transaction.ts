@@ -10,8 +10,8 @@ export const TRANSACTION_PERIOD_OPTIONS: { value: TransactionPeriodType; label: 
 ];
 
 export const TRANSACTION_TYPE_LABELS: Record<string, string> = {
-  debit: 'Gasto',
-  credit: 'Ingreso',
+  debit: 'Cargo',
+  credit: 'Abono',
 };
 
 export const DEFAULT_PAGE = 1;
