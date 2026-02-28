@@ -9,17 +9,17 @@ const NavHeader = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
       <SidebarMenu>
         <SidebarMenuItem className="flex flex-row justify-between">
           <Image
-            src="/images/logos/pegazzo.png"
-            alt="Pegazzo"
-            width={181}
-            height={29}
+            src="/images/logos/pegazzo-horizontal.png"
+            alt="Pegazzo Auto"
+            width={158}
+            height={54}
             priority
-            className="mt-1.5 ml-3 shrink-0 object-contain group-data-[state=collapsed]:w-0 group-data-[state=collapsed]:opacity-0 group-data-[state=expanded]:ml-3 md:ml-0"
+            className="mt-[1rem] ml-[1.8rem] shrink-0 scale-[1.25] object-contain brightness-0 invert group-data-[state=collapsed]:w-0 group-data-[state=collapsed]:opacity-0 group-data-[state=collapsed]:md:ml-0"
           />
           <Button
             variant="ghost"
             size="icon"
-            className="hover:bg-primary-200/20 md:focus-visible:border-1px md:focus-visible:ring-primary-100 mt-1.5 mr-[0.4rem] shrink-0 cursor-pointer border-none p-5.5 focus-visible:border-none focus-visible:ring-0 md:focus-visible:ring-2"
+            className="hover:bg-primary-200/20 md:focus-visible:border-1px md:focus-visible:ring-primary-100 mr-[0.4rem] shrink-0 cursor-pointer border-none p-5.5 focus-visible:border-none focus-visible:ring-0 md:focus-visible:ring-2"
             onClick={toggleSidebar}
           >
             <PanelLeftOpen className="text-primary-100 hidden size-7 group-data-[state=expanded]:hidden md:block" />
