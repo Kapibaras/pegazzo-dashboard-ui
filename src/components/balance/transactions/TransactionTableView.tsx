@@ -1,16 +1,26 @@
 'use client';
 
+import { useState } from 'react';
 import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
 import { useTransactions } from '@/hooks/transactions';
+import { useUser } from '@/contexts/UserProvider';
 import { getTransactionPeriodSubtitle } from '@/lib/transaction';
+import { Role } from '@/lib/schemas/userSchema';
+import { Transaction } from '@/types/transaction';
 import { getColumns } from './columns';
 import TransactionTable from './TransactionTable';
 import TransactionTableSkeleton from './TransactionTableSkeleton';
 import TransactionPagination from './TransactionPagination';
 import TransactionPeriodSelector from './TransactionPeriodSelector';
+import CreateTransactionSheet from './CreateTransactionSheet';
+import TransactionDetailSheet from './TransactionDetailSheet';
 import { ErrorCard } from '@/components/common';
 
 const TransactionTableView = () => {
+  const { user } = useUser();
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
   const {
     transactions,
     pagination,
@@ -43,16 +53,26 @@ const TransactionTableView = () => {
 
   const subtitle = getTransactionPeriodSubtitle(periodType, year, periodType === 'month' ? month : undefined);
 
+  const canAddTransaction = user.role === Role.OWNER || user.role === Role.ADMIN;
+
+  const handleRowClick = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setIsDetailOpen(true);
+  };
+
   return (
     <>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="typo-title">Transacciones</h1>
-        <TransactionPeriodSelector
-          periodType={periodType}
-          year={year}
-          month={month}
-          onPeriodChange={setPeriodParams}
-        />
+        <div className="flex items-center gap-3">
+          {canAddTransaction && <CreateTransactionSheet onRefetch={refetch} />}
+          <TransactionPeriodSelector
+            periodType={periodType}
+            year={year}
+            month={month}
+            onPeriodChange={setPeriodParams}
+          />
+        </div>
       </div>
 
       <div className="min-w-0 space-y-4">
@@ -64,7 +84,7 @@ const TransactionTableView = () => {
           <ErrorCard message={error} onRetry={refetch} />
         ) : (
           <>
-            <TransactionTable table={table} isLoading={isLoading} />
+            <TransactionTable table={table} isLoading={isLoading} onRowClick={canAddTransaction ? handleRowClick : undefined} />
             {pagination && pagination.totalPages > 0 && (
               <TransactionPagination
                 page={page}
@@ -79,6 +99,14 @@ const TransactionTableView = () => {
           </>
         )}
       </div>
+
+      <TransactionDetailSheet
+        transaction={selectedTransaction}
+        open={isDetailOpen}
+        onOpenChange={setIsDetailOpen}
+        onRefetch={refetch}
+        userRole={user.role}
+      />
     </>
   );
 };
