@@ -9,9 +9,10 @@ import { cn } from '@/lib/utils';
 type TransactionTableProps = {
   table: TableType<Transaction>;
   isLoading: boolean;
+  onRowClick?: (transaction: Transaction) => void;
 };
 
-const TransactionTable = ({ table, isLoading }: TransactionTableProps) => {
+const TransactionTable = ({ table, isLoading, onRowClick }: TransactionTableProps) => {
   return (
     <div
       className={cn(
@@ -36,10 +37,12 @@ const TransactionTable = ({ table, isLoading }: TransactionTableProps) => {
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
+                onClick={() => onRowClick?.(row.original)}
                 className={cn(
                   'border-secondary-100/50 transition-colors duration-150',
                   row.index % 2 === 0 ? 'bg-white' : 'bg-surface-300/50',
                   'hover:bg-primary-50/80',
+                  onRowClick && 'cursor-pointer',
                 )}
               >
                 {row.getVisibleCells().map((cell) => (
