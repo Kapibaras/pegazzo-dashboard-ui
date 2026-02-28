@@ -55,27 +55,11 @@ const AuthLogin = () => {
       <div className="bg-surface-500 box-border flex w-full max-w-120 flex-col items-center justify-center gap-10 rounded-lg pb-16 md:gap-10 md:px-8 md:py-12 md:shadow-sm">
         <div className="mt-1 flex flex-col items-center justify-center gap-3 px-8">
           <Image
-            src="/images/logos/pegazzo.png"
-            alt="Pegazzo"
-            width={286}
-            height={46}
-            className="h-auto w-full max-w-71.5 object-contain"
-            priority
-          />
-          <Image
-            src="/images/logos/logo_pegazzo.png"
-            alt="Pegazzo Logo"
-            width={230}
-            height={153}
-            className="h-auto w-full max-w-58 object-contain"
-            priority
-          />
-          <Image
-            src="/images/logos/dashboard.png"
-            alt="Dashboard"
-            width={169}
-            height={29}
-            className="h-auto w-full max-w-42 object-contain"
+            src="/images/logos/pegazzo-vertical.png"
+            alt="Pegazzo Auto"
+            width={254}
+            height={263}
+            className="h-auto w-full max-w-64 object-contain"
             priority
           />
         </div>

@@ -20,6 +20,20 @@ const sourceCodePro = Source_Code_Pro({
 export const metadata: Metadata = {
   title: 'Pegazzo',
   description: 'The management dashboard for Pegazzo',
+  icons: {
+    icon: [
+      {
+        rel: 'icon',
+        media: '(prefers-color-scheme: light)',
+        url: '/icons/favicon-light.ico',
+      },
+      {
+        rel: 'icon',
+        media: '(prefers-color-scheme: dark)',
+        url: '/icons/favicon-dark.ico',
+      },
+    ],
+  },
 };
 
 export const viewport = {
