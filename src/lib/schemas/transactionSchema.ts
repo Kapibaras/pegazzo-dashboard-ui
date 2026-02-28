@@ -1,18 +1,35 @@
 import { z } from 'zod';
+import { isAfter, isBefore, subMonths } from 'date-fns';
 
 export const createTransactionSchema = z.object({
   amount: z
     .coerce
-    .number({ invalid_type_error: 'El monto debe ser un número.' })
+    .number({ error: 'El monto debe ser un número.' })
     .positive('El monto debe ser un número positivo.'),
-  date: z.string().optional(),
-  type: z.enum(['debit', 'credit'], { required_error: 'Selecciona un tipo.' }),
+  date: z
+    .string()
+    .optional()
+    .refine(
+      (val) => {
+        if (!val) return true;
+        return !isAfter(new Date(val), new Date());
+      },
+      { message: 'La fecha no puede ser futura.' },
+    )
+    .refine(
+      (val) => {
+        if (!val) return true;
+        return !isBefore(new Date(val), subMonths(new Date(), 2));
+      },
+      { message: 'La fecha no puede ser de más de 2 meses atrás.' },
+    ),
+  type: z.enum(['debit', 'credit'], { error: 'Selecciona un tipo.' }),
   description: z
     .string()
     .min(1, 'La descripción es requerida.')
     .max(255, 'Máximo 255 caracteres.'),
   payment_method: z.enum(['cash', 'personal_transfer', 'pegazzo_transfer'], {
-    required_error: 'Selecciona un método de pago.',
+    error: 'Selecciona un método de pago.',
   }),
 });
 

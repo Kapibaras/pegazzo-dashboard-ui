@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import DatePickerField from './DatePickerField';
 
 type FormMode = 'create' | 'edit';
 
@@ -36,7 +37,7 @@ const TransactionForm = ({ mode, onSuccess, reference, defaultValues }: Transact
 
   const form = useForm<CreateTransactionFormValues | EditTransactionFormValues>({
     resolver: zodResolver(schema) as any,
-    defaultValues: defaultValues ?? (mode === 'create' ? { amount: undefined, date: '', type: undefined, description: '', payment_method: undefined } : { amount: undefined, description: '', payment_method: undefined }),
+    defaultValues: defaultValues ?? (mode === 'create' ? { amount: '' as any, date: undefined, type: undefined, description: '', payment_method: undefined } : { amount: '' as any, description: '', payment_method: undefined }),
     mode: 'onChange',
   });
 
@@ -68,22 +69,6 @@ const TransactionForm = ({ mode, onSuccess, reference, defaultValues }: Transact
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex h-full flex-col overflow-y-auto px-2 md:px-4">
         <div className="flex-1 space-y-6 pb-6">
-          {mode === 'create' && (
-            <FormField
-              control={form.control}
-              name="date"
-              render={({ field }) => (
-                <FormItem className="mb-4 gap-1 md:mt-3 md:mb-3">
-                  <FormLabel className="typo-subtitle text-carbon-500">Fecha</FormLabel>
-                  <FormControl>
-                    <Input type="datetime-local" {...field} className={inputClass} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-
           <FormField
             control={form.control}
             name="amount"
@@ -178,6 +163,26 @@ const TransactionForm = ({ mode, onSuccess, reference, defaultValues }: Transact
               </FormItem>
             )}
           />
+
+          {mode === 'create' && (
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field, fieldState }) => (
+                <FormItem className="mb-4 gap-1 md:mt-3 md:mb-3">
+                  <FormLabel className="typo-subtitle text-carbon-500">Fecha</FormLabel>
+                  <FormControl>
+                    <DatePickerField
+                      value={field.value as string | undefined}
+                      onChange={field.onChange}
+                      error={fieldState.error?.message}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </div>
 
         <div className="bg-background sticky bottom-0 pt-4 pb-6">
