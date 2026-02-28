@@ -36,3 +36,17 @@ export type TransactionsParams = {
   sort_by?: TransactionSortBy;
   sort_order?: SortOrder;
 };
+
+export type TransactionCreate = {
+  amount: number;
+  date?: string;
+  type: TransactionType;
+  description: string;
+  payment_method: PaymentMethod;
+};
+
+export type TransactionPatch = {
+  amount?: number;
+  description?: string;
+  payment_method?: PaymentMethod;
+};

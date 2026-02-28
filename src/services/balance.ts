@@ -7,7 +7,7 @@ import {
   BalanceTrendResponse,
   BalanceTrendParams,
 } from '@/types/balance';
-import { TransactionsParams, TransactionsResponse } from '@/types/transaction';
+import { Transaction, TransactionCreate, TransactionPatch, TransactionsParams, TransactionsResponse } from '@/types/transaction';
 
 export default class BalanceService extends AbstractAPIService {
   constructor(client: APIClientBase) {
@@ -28,5 +28,21 @@ export default class BalanceService extends AbstractAPIService {
 
   async getTransactions(params: TransactionsParams): Promise<TransactionsResponse> {
     return (await this.client.get('/management/balance/transactions', { params })).data;
+  }
+
+  async createTransaction(data: TransactionCreate): Promise<Transaction> {
+    return (await this.client.post('/management/balance/transaction', data)).data;
+  }
+
+  async getTransaction(reference: string): Promise<Transaction> {
+    return (await this.client.get(`/management/balance/transaction/${reference}`)).data;
+  }
+
+  async updateTransaction(reference: string, data: TransactionPatch): Promise<Transaction> {
+    return (await this.client.patch(`/management/balance/transaction/${reference}`, data)).data;
+  }
+
+  async deleteTransaction(reference: string): Promise<void> {
+    await this.client.delete(`/management/balance/transaction/${reference}`);
   }
 }
