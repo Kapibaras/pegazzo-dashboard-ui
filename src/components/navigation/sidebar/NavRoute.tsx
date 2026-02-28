@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 
 const NavRoute = ({ title, icon: Icon, url }: { title: string; icon: React.ComponentType; url: string }) => {
@@ -8,10 +9,10 @@ const NavRoute = ({ title, icon: Icon, url }: { title: string; icon: React.Compo
         tooltip={title}
         className="typo-subtitle h-fit px-4 py-4 group-data-[state=collapsed]:my-2 group-data-[state=collapsed]:h-[2.75rem]! group-data-[state=collapsed]:w-[2.75rem]! group-data-[state=expanded]:hover:rounded-none group-data-[state=collapsed]:[&>span:last-child]:hidden [&>svg]:size-7"
       >
-        <a href={url}>
+        <Link href={url}>
           <Icon />
           <span>{title}</span>
-        </a>
+        </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>
   );

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   SidebarMenuButton,
@@ -52,9 +53,9 @@ const NavCollapsibleRoutes = ({
                   asChild
                   className="typo-text h-fit px-4 py-4 group-data-[state=expanded]:hover:rounded-sm"
                 >
-                  <a href={route.url}>
+                  <Link href={route.url}>
                     <span>{route.title}</span>
-                  </a>
+                  </Link>
                 </SidebarMenuSubButton>
               </SidebarMenuSubItem>
             ))}
