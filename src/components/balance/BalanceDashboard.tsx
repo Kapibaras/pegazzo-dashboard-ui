@@ -14,6 +14,7 @@ type BalanceDashboardProps = {
 };
 
 const BalanceDashboard = ({ data, trendData, period, periodLabel }: BalanceDashboardProps) => {
+  console.log(data);
   return (
     <div className="space-y-6">
       <p className="typo-text text-muted-foreground">{periodLabel}</p>
@@ -24,15 +25,14 @@ const BalanceDashboard = ({ data, trendData, period, periodLabel }: BalanceDashb
           currentPeriod={data.currentPeriod}
           previousPeriod={data.previousPeriod}
         />
-        <PaymentMethodBreakdown breakdown={data.paymentMethodBreakdown} />
-      </div>
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <HistoricalTrendChart data={trendData?.data ?? []} period={period} />
-        <PaymentMethodDonutChart
-          credit={data.paymentMethodBreakdown.credit}
-          debit={data.paymentMethodBreakdown.debit}
-        />
       </div>
+      <PaymentMethodBreakdown breakdown={data.paymentMethodBreakdown} />
+      <PaymentMethodDonutChart
+        credit={data.paymentMethodBreakdown.credit}
+        debit={data.paymentMethodBreakdown.debit}
+        balance={data.paymentMethodBreakdown.balance}
+      />
       <FinancialSummary weeklyAverages={data.weeklyAverages} incomeExpenseRatio={data.incomeExpenseRatio} />
     </div>
   );

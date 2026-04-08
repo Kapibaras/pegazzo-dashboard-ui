@@ -1,6 +1,6 @@
 'use client';
 
-import { PieChart as PieChartIcon, TrendingUp, TrendingDown, type LucideIcon } from 'lucide-react';
+import { PieChart as PieChartIcon, TrendingUp, TrendingDown, Wallet, type LucideIcon } from 'lucide-react';
 import { Pie, PieChart, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
@@ -11,6 +11,7 @@ import { PaymentMethodBreakdown } from '@/types/balance';
 type PaymentMethodDonutChartProps = {
   credit: PaymentMethodBreakdown;
   debit: PaymentMethodBreakdown;
+  balance: PaymentMethodBreakdown;
 };
 
 const PAYMENT_METHODS = ['cash', 'personal_transfer', 'pegazzo_transfer'];
@@ -22,17 +23,21 @@ const chartConfig = Object.fromEntries(
   ]),
 ) satisfies ChartConfig;
 
-const buildPieData = (breakdown: PaymentMethodBreakdown) =>
-  PAYMENT_METHODS.map((method) => ({
-    name: PAYMENT_METHOD_LABELS[method] ?? method,
-    method,
-    value: breakdown.amounts[method] ?? 0,
-    percentage: breakdown.percentages[method] ?? 0,
-    fill: PAYMENT_METHOD_COLORS[method] ?? 'var(--color-muted-foreground)',
-  }));
+const buildPieData = (breakdown: PaymentMethodBreakdown, absValues = false) =>
+  PAYMENT_METHODS.map((method) => {
+    const raw = breakdown.amounts[method] ?? 0;
+    return {
+      name: PAYMENT_METHOD_LABELS[method] ?? method,
+      method,
+      value: absValues ? Math.abs(raw) : raw,
+      rawValue: raw,
+      percentage: breakdown.percentages[method] ?? 0,
+      fill: PAYMENT_METHOD_COLORS[method] ?? 'var(--color-muted-foreground)',
+    };
+  });
 
 const hasValues = (breakdown: PaymentMethodBreakdown) =>
-  PAYMENT_METHODS.some((m) => (breakdown.amounts[m] ?? 0) > 0);
+  PAYMENT_METHODS.some((m) => Math.abs(breakdown.amounts[m] ?? 0) > 0);
 
 type DonutSectionProps = {
   title: string;
@@ -40,10 +45,11 @@ type DonutSectionProps = {
   iconBg: string;
   iconColor: string;
   breakdown: PaymentMethodBreakdown;
+  absValues?: boolean;
 };
 
-const DonutSection = ({ title, icon: Icon, iconBg, iconColor, breakdown }: DonutSectionProps) => {
-  const data = buildPieData(breakdown);
+const DonutSection = ({ title, icon: Icon, iconBg, iconColor, breakdown, absValues }: DonutSectionProps) => {
+  const data = buildPieData(breakdown, absValues);
   const empty = !hasValues(breakdown);
 
   return (
@@ -73,7 +79,7 @@ const DonutSection = ({ title, icon: Icon, iconBg, iconColor, breakdown }: Donut
                         <span className="font-medium">{entry.name}</span>
                       </div>
                       <div className="text-muted-foreground mt-1">
-                        <span className="font-numbers">{formatCurrency(entry.value)}</span>
+                        <span className="font-numbers">{formatCurrency(entry.rawValue ?? entry.value)}</span>
                         <span className="ml-1">({entry.percentage.toFixed(1)}%)</span>
                       </div>
                     </div>
@@ -102,7 +108,7 @@ const DonutSection = ({ title, icon: Icon, iconBg, iconColor, breakdown }: Donut
   );
 };
 
-const PaymentMethodDonutChart = ({ credit, debit }: PaymentMethodDonutChartProps) => {
+const PaymentMethodDonutChart = ({ credit, debit, balance }: PaymentMethodDonutChartProps) => {
   return (
     <Card>
       <CardHeader>
@@ -114,9 +120,10 @@ const PaymentMethodDonutChart = ({ credit, debit }: PaymentMethodDonutChartProps
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-3">
           <DonutSection title="Ingresos" icon={TrendingUp} iconBg="bg-success-50" iconColor="text-success-400" breakdown={credit} />
           <DonutSection title="Gastos" icon={TrendingDown} iconBg="bg-error-50" iconColor="text-error-400" breakdown={debit} />
+          <DonutSection title="Balance" icon={Wallet} iconBg="bg-chart-4/15" iconColor="text-chart-4" breakdown={balance} absValues />
         </div>
       </CardContent>
     </Card>
