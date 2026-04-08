@@ -27,7 +27,7 @@ const HistoricalTrendChart = ({ data, period }: HistoricalTrendChartProps) => {
   const hasData = data.length > 0;
 
   return (
-    <Card>
+    <Card className="flex h-full flex-col">
       <CardHeader>
         <div className="flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-lg bg-primary-100">
@@ -36,9 +36,9 @@ const HistoricalTrendChart = ({ data, period }: HistoricalTrendChartProps) => {
           <CardTitle className="typo-subtitle">Tendencia histórica</CardTitle>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-1 flex-col">
         {hasData ? (
-          <ChartContainer config={chartConfig} className="aspect-auto h-[280px] w-full">
+          <ChartContainer config={chartConfig} className="aspect-auto min-h-[280px] w-full flex-1">
             <LineChart data={chartData} margin={{ left: 12, right: 12, top: 8 }}>
               <CartesianGrid vertical={false} />
               <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={8} />
@@ -87,7 +87,7 @@ const HistoricalTrendChart = ({ data, period }: HistoricalTrendChartProps) => {
             </LineChart>
           </ChartContainer>
         ) : (
-          <div className="flex h-[280px] flex-col items-center justify-center gap-2 text-muted-foreground">
+          <div className="flex min-h-[280px] flex-1 flex-col items-center justify-center gap-2 text-muted-foreground">
             <TrendingUp className="size-10 opacity-30" />
             <p className="typo-text">Sin datos históricos</p>
           </div>

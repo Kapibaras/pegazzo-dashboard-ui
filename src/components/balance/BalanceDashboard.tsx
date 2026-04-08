@@ -19,13 +19,15 @@ const BalanceDashboard = ({ data, trendData, period, periodLabel }: BalanceDashb
     <div className="space-y-6">
       <p className="typo-text text-muted-foreground">{periodLabel}</p>
       <KPIGrid currentPeriod={data.currentPeriod} comparison={data.comparison} />
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <ComparisonPanel
           comparison={data.comparison}
           currentPeriod={data.currentPeriod}
           previousPeriod={data.previousPeriod}
         />
-        <HistoricalTrendChart data={trendData?.data ?? []} period={period} />
+        <div className="lg:col-span-2">
+          <HistoricalTrendChart data={trendData?.data ?? []} period={period} />
+        </div>
       </div>
       <PaymentMethodBreakdown breakdown={data.paymentMethodBreakdown} />
       <PaymentMethodDonutChart
