@@ -37,7 +37,8 @@ const HomeDashboard = () => {
   const fetchMetrics = useCallback(async () => {
     setState({ status: 'loading' });
 
-    const result = await getBalanceMetrics();
+    const now = new Date();
+    const result = await getBalanceMetrics({ month: now.getMonth() + 1, year: now.getFullYear() });
 
     if (result.success) {
       setState({ status: 'success', data: result.data });
