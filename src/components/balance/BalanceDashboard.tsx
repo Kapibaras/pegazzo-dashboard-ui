@@ -14,7 +14,6 @@ type BalanceDashboardProps = {
 };
 
 const BalanceDashboard = ({ data, trendData, period, periodLabel }: BalanceDashboardProps) => {
-  console.log(data);
   return (
     <div className="space-y-6">
       <p className="typo-text text-muted-foreground">{periodLabel}</p>
