@@ -37,6 +37,7 @@ export type PaymentMethodBreakdown = {
 export type PaymentMethodBreakdownByType = {
   credit: PaymentMethodBreakdown;
   debit: PaymentMethodBreakdown;
+  balance: PaymentMethodBreakdown;
 };
 
 export type WeeklyAverages = { income: number; expense: number };
