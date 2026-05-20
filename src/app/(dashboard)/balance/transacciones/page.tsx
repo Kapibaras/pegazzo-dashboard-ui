@@ -1,4 +1,5 @@
 import { TransactionTableView } from '@/components/balance/transactions';
+
 import { TransactionStatus } from '@/types/transaction';
 
 const VALID_STATUSES: TransactionStatus[] = ['PENDING', 'CONFIRMED', 'REJECTED'];
