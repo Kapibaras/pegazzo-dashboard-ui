@@ -4,6 +4,7 @@ export type TransactionType = 'debit' | 'credit';
 export type PaymentMethod = 'cash' | 'personal_transfer' | 'pegazzo_transfer';
 export type TransactionSortBy = 'date' | 'amount' | 'reference';
 export type SortOrder = 'asc' | 'desc';
+export type TransactionStatus = 'PENDING' | 'CONFIRMED' | 'REJECTED';
 
 export type Transaction = {
   amount: number;
@@ -12,6 +13,9 @@ export type Transaction = {
   type: TransactionType;
   description: string;
   paymentMethod: PaymentMethod;
+  status: TransactionStatus;
+  category?: string | null;
+  carId?: number | null;
 };
 
 export type PaginationMeta = {
@@ -31,6 +35,7 @@ export type TransactionsParams = {
   week?: number;
   month?: number;
   year?: number;
+  status?: TransactionStatus;
   page?: number;
   limit?: number;
   sort_by?: TransactionSortBy;
@@ -49,4 +54,19 @@ export type TransactionPatch = {
   amount?: number;
   description?: string;
   payment_method?: PaymentMethod;
+};
+
+export type TransactionAuthorizationPayload = {
+  status: TransactionStatus;
+};
+
+export type TransactionCount = {
+  count: number;
+  period: { month: number; year: number };
+};
+
+export type TransactionsCountParams = {
+  month?: number;
+  year?: number;
+  status?: TransactionStatus;
 };
