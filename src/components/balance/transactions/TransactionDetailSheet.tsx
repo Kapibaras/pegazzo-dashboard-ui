@@ -18,6 +18,7 @@ import SingletonAPIClient from '@/api/clients/singleton';
 import BalanceService from '@/services/balance';
 import TransactionForm from './TransactionForm';
 import DeleteTransactionDialog from './DeleteTransactionDialog';
+import StatusBadge from './StatusBadge';
 
 interface TransactionDetailSheetProps {
   transaction: Transaction | null;
@@ -45,8 +46,14 @@ const InfoRow = ({
   <div className={cn('flex gap-4 px-5 py-4', multiline ? 'items-start' : 'items-center')}>
     <Icon className={cn('text-carbon-300 h-7 w-7 shrink-0', multiline && 'mt-0.5')} strokeWidth={1.75} />
     <div className="min-w-0 flex-1">
-      <p className="typo-text text-carbon-200 mb-0.5 text-xs uppercase tracking-wider">{label}</p>
-      <div className={cn('typo-text text-carbon-500 break-words', mono && 'font-mono text-sm', scrollable && 'max-h-24 overflow-y-auto pr-1')}>
+      <p className="typo-text text-carbon-200 mb-0.5 text-xs tracking-wider uppercase">{label}</p>
+      <div
+        className={cn(
+          'typo-text text-carbon-500 break-words',
+          mono && 'font-mono text-sm',
+          scrollable && 'max-h-24 overflow-y-auto pr-1',
+        )}
+      >
         {children}
       </div>
     </div>
@@ -65,6 +72,9 @@ const TransactionDetailSheet = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const { handleApiError } = useApiErrorHandler();
   const isOwner = userRole === Role.OWNER;
+  const isAdminOnRejected = userRole === Role.ADMIN && transaction?.status === 'REJECTED';
+  const isOnRejected = transaction?.status === 'REJECTED' && (isOwner || isAdminOnRejected);
+  const canManage = isOwner || isAdminOnRejected;
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
@@ -124,16 +134,19 @@ const TransactionDetailSheet = ({
                   )}
                 >
                   <div className="mb-3 flex items-center justify-between">
-                    <Badge
-                      className={cn(
-                        'rounded-md px-2.5 py-0.5 text-xs font-semibold tracking-wide',
-                        isCredit
-                          ? 'bg-success-100 text-success-700 hover:bg-success-100'
-                          : 'bg-error-100 text-error-700 hover:bg-error-100',
-                      )}
-                    >
-                      {typeLabel}
-                    </Badge>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge
+                        className={cn(
+                          'rounded-md px-2.5 py-0.5 text-xs font-semibold tracking-wide',
+                          isCredit
+                            ? 'bg-success-100 text-success-700 hover:bg-success-100'
+                            : 'bg-error-100 text-error-700 hover:bg-error-100',
+                        )}
+                      >
+                        {typeLabel}
+                      </Badge>
+                      <StatusBadge status={transaction.status} className="rounded-md px-2.5 py-0.5 tracking-wide" />
+                    </div>
                     <div
                       className={cn(
                         'flex h-8 w-8 items-center justify-center rounded-full',
@@ -175,8 +188,8 @@ const TransactionDetailSheet = ({
                   </InfoRow>
                 </div>
 
-                {/* ── OWNER action buttons (sticky bottom) ─────────── */}
-                {isOwner && (
+                {/* ── Action buttons (sticky bottom): OWNER siempre, ADMIN solo en REJECTED ─── */}
+                {canManage && (
                   <div className="border-surface-700/20 mt-auto border-t px-4 pt-4 pb-6">
                     <div className="flex gap-3">
                       <Button
@@ -214,16 +227,19 @@ const TransactionDetailSheet = ({
                     <p className="text-primary-600 font-mono text-sm font-semibold">{transaction.reference}</p>
                     <p className="typo-text text-carbon-300 text-xs">{formatLongDatetime(transaction.date)}</p>
                   </div>
-                  <Badge
-                    className={cn(
-                      'shrink-0 text-xs font-semibold',
-                      isCredit
-                        ? 'bg-success-100 text-success-700 hover:bg-success-100'
-                        : 'bg-error-100 text-error-700 hover:bg-error-100',
-                    )}
-                  >
-                    {typeLabel}
-                  </Badge>
+                  <div className="flex shrink-0 flex-col items-end gap-1.5">
+                    <Badge
+                      className={cn(
+                        'text-xs font-semibold',
+                        isCredit
+                          ? 'bg-success-100 text-success-700 hover:bg-success-100'
+                          : 'bg-error-100 text-error-700 hover:bg-error-100',
+                      )}
+                    >
+                      {typeLabel}
+                    </Badge>
+                    <StatusBadge status={transaction.status} />
+                  </div>
                 </div>
 
                 <div className="flex-1 px-4 pb-4">
@@ -235,6 +251,7 @@ const TransactionDetailSheet = ({
                       description: transaction.description,
                       payment_method: transaction.paymentMethod,
                     }}
+                    requireResubmissionPrompt={isOnRejected}
                     onSuccess={() => {
                       setSheetMode('view');
                       onOpenChange(false);

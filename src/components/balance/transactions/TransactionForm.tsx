@@ -1,10 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ToastService } from '@/services/toast';
 import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
-import { createTransactionSchema, editTransactionSchema, CreateTransactionFormValues, EditTransactionFormValues } from '@/lib/schemas/transactionSchema';
+import {
+  createTransactionSchema,
+  editTransactionSchema,
+  CreateTransactionFormValues,
+  EditTransactionFormValues,
+} from '@/lib/schemas/transactionSchema';
 import { createTransactionAction } from '@/actions/balance';
 import SingletonAPIClient from '@/api/clients/singleton';
 import BalanceService from '@/services/balance';
@@ -15,6 +21,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import DatePickerField from './DatePickerField';
+import SaveOptionsDialog from './SaveOptionsDialog';
 
 type FormMode = 'create' | 'edit';
 
@@ -23,6 +30,8 @@ interface TransactionFormProps {
   onSuccess: () => void;
   reference?: string;
   defaultValues?: Partial<EditTransactionFormValues>;
+  /** Cuando el form edita una transacción REJECTED siendo ADMIN: muestra diálogo Guardar / Guardar y reenviar. */
+  requireResubmissionPrompt?: boolean;
 }
 
 const PAYMENT_METHOD_OPTIONS = Object.entries(PAYMENT_METHOD_LABELS).map(([value, label]) => ({ value, label }));
@@ -30,39 +39,121 @@ const PAYMENT_METHOD_OPTIONS = Object.entries(PAYMENT_METHOD_LABELS).map(([value
 const inputClass =
   'typo-text border-surface-700 bg-surface-400 flex items-center self-stretch rounded-md border px-4.5 py-5.5 shadow-sm placeholder:text-left focus:border-blue-600 focus:outline-none';
 
-const TransactionForm = ({ mode, onSuccess, reference, defaultValues }: TransactionFormProps) => {
+const TransactionForm = ({
+  mode,
+  onSuccess,
+  reference,
+  defaultValues,
+  requireResubmissionPrompt,
+}: TransactionFormProps) => {
   const { handleApiError } = useApiErrorHandler();
+  const [pendingValues, setPendingValues] = useState<EditTransactionFormValues | null>(null);
+  const [isSavingFromDialog, setIsSavingFromDialog] = useState(false);
 
   const schema = mode === 'create' ? createTransactionSchema : editTransactionSchema;
 
   const form = useForm<CreateTransactionFormValues | EditTransactionFormValues>({
     resolver: zodResolver(schema) as any,
-    defaultValues: defaultValues ?? (mode === 'create' ? { amount: '' as any, date: undefined, type: undefined, description: '', payment_method: undefined } : { amount: '' as any, description: '', payment_method: undefined }),
+    defaultValues:
+      defaultValues ??
+      (mode === 'create'
+        ? { amount: '' as any, date: undefined, type: undefined, description: '', payment_method: undefined }
+        : { amount: '' as any, description: '', payment_method: undefined }),
     mode: 'onChange',
   });
 
   const { isSubmitting, isValid } = form.formState;
 
+  const updateTransaction = async (values: EditTransactionFormValues) => {
+    await new BalanceService(SingletonAPIClient.getInstance()).updateTransaction(reference!, values);
+  };
+
   const onSubmit = async (values: CreateTransactionFormValues | EditTransactionFormValues) => {
     if (mode === 'create') {
       const result = await createTransactionAction(values as CreateTransactionFormValues);
       if (!result.success) {
-        handleApiError({ status: result.status || 500, detail: result.message || 'Error al crear la transacción.' }, ['balance', 'common']);
+        handleApiError({ status: result.status || 500, detail: result.message || 'Error al crear la transacción.' }, [
+          'balance',
+          'common',
+        ]);
         return;
       }
       ToastService.success('Transacción creada', 'La transacción fue creada exitosamente.');
-    } else {
-      try {
-        await new BalanceService(SingletonAPIClient.getInstance()).updateTransaction(reference!, values as EditTransactionFormValues);
-        ToastService.success('Transacción actualizada', 'La transacción fue actualizada exitosamente.');
-      } catch (err) {
-        const apiErr = err as { status_code?: number; detail?: string };
-        handleApiError({ status: apiErr?.status_code ?? 500, detail: apiErr?.detail ?? 'Error al actualizar la transacción.' }, ['balance', 'common']);
-        return;
-      }
+      onSuccess();
+      form.reset();
+      return;
+    }
+
+    if (requireResubmissionPrompt) {
+      setPendingValues(values as EditTransactionFormValues);
+      return;
+    }
+
+    try {
+      await updateTransaction(values as EditTransactionFormValues);
+      ToastService.success('Transacción actualizada', 'La transacción fue actualizada exitosamente.');
+    } catch (err) {
+      const apiErr = err as { status_code?: number; detail?: string };
+      handleApiError(
+        { status: apiErr?.status_code ?? 500, detail: apiErr?.detail ?? 'Error al actualizar la transacción.' },
+        ['balance', 'common'],
+      );
+      return;
     }
     onSuccess();
     form.reset();
+  };
+
+  const handleSaveOnly = async () => {
+    if (!pendingValues) return;
+    setIsSavingFromDialog(true);
+    try {
+      await updateTransaction(pendingValues);
+      ToastService.success('Transacción actualizada', 'La transacción fue actualizada exitosamente.');
+      setPendingValues(null);
+      onSuccess();
+      form.reset();
+    } catch (err) {
+      const apiErr = err as { status_code?: number; detail?: string };
+      handleApiError(
+        { status: apiErr?.status_code ?? 500, detail: apiErr?.detail ?? 'Error al actualizar la transacción.' },
+        ['balance', 'common'],
+      );
+    } finally {
+      setIsSavingFromDialog(false);
+    }
+  };
+
+  const handleSaveAndResubmit = async () => {
+    if (!pendingValues) return;
+    setIsSavingFromDialog(true);
+    const service = new BalanceService(SingletonAPIClient.getInstance());
+    try {
+      await service.updateTransaction(reference!, pendingValues);
+    } catch (err) {
+      const apiErr = err as { status_code?: number; detail?: string };
+      handleApiError(
+        { status: apiErr?.status_code ?? 500, detail: apiErr?.detail ?? 'Error al actualizar la transacción.' },
+        ['balance', 'common'],
+      );
+      setIsSavingFromDialog(false);
+      return;
+    }
+
+    try {
+      await service.authorizeTransaction(reference!, { status: 'PENDING' });
+      ToastService.success('Cambios reenviados', 'La transacción fue actualizada y enviada a revisión.');
+    } catch {
+      ToastService.info(
+        'Cambios guardados',
+        'Se guardaron los cambios, pero no se pudo reenviar a revisión. Vuelve a intentarlo desde el detalle.',
+      );
+    } finally {
+      setIsSavingFromDialog(false);
+      setPendingValues(null);
+      onSuccess();
+      form.reset();
+    }
   };
 
   return (
@@ -101,8 +192,12 @@ const TransactionForm = ({ mode, onSuccess, reference, defaultValues }: Transact
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem className="cursor-pointer" value="debit">Cargo</SelectItem>
-                          <SelectItem className="cursor-pointer" value="credit">Abono</SelectItem>
+                          <SelectItem className="cursor-pointer" value="debit">
+                            Cargo
+                          </SelectItem>
+                          <SelectItem className="cursor-pointer" value="credit">
+                            Abono
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     )}
@@ -188,15 +283,27 @@ const TransactionForm = ({ mode, onSuccess, reference, defaultValues }: Transact
         <div className="bg-background sticky bottom-0 pt-4 pb-6">
           <Button
             type="submit"
-            disabled={!isValid || isSubmitting}
+            disabled={!isValid || isSubmitting || isSavingFromDialog}
             className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text z-10 w-full cursor-pointer items-center justify-center rounded-md py-5.5 text-center hover:shadow-sm"
           >
-            {isSubmitting
-              ? mode === 'create' ? 'Creando...' : 'Guardando...'
-              : mode === 'create' ? 'Crear transacción' : 'Guardar cambios'}
+            {isSubmitting || isSavingFromDialog
+              ? mode === 'create'
+                ? 'Creando...'
+                : 'Guardando...'
+              : mode === 'create'
+                ? 'Crear transacción'
+                : 'Guardar cambios'}
           </Button>
         </div>
       </form>
+
+      <SaveOptionsDialog
+        open={pendingValues !== null}
+        isSaving={isSavingFromDialog}
+        onOpenChange={(next) => (!next && !isSavingFromDialog ? setPendingValues(null) : undefined)}
+        onSaveOnly={handleSaveOnly}
+        onSaveAndResubmit={handleSaveAndResubmit}
+      />
     </Form>
   );
 };

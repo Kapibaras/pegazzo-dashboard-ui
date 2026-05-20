@@ -6,17 +6,22 @@ import { useTransactions } from '@/hooks/transactions';
 import { useUser } from '@/contexts/UserProvider';
 import { getTransactionPeriodSubtitle } from '@/lib/transaction';
 import { Role } from '@/lib/schemas/userSchema';
-import { Transaction } from '@/types/transaction';
+import { Transaction, TransactionStatus } from '@/types/transaction';
 import { getColumns } from './columns';
 import TransactionTable from './TransactionTable';
 import TransactionTableSkeleton from './TransactionTableSkeleton';
 import TransactionPagination from './TransactionPagination';
 import TransactionPeriodSelector from './TransactionPeriodSelector';
+import TransactionStatusFilter from './TransactionStatusFilter';
 import CreateTransactionSheet from './CreateTransactionSheet';
 import TransactionDetailSheet from './TransactionDetailSheet';
 import { ErrorCard } from '@/components/common';
 
-const TransactionTableView = () => {
+type TransactionTableViewProps = {
+  initialStatus?: TransactionStatus;
+};
+
+const TransactionTableView = ({ initialStatus }: TransactionTableViewProps) => {
   const { user } = useUser();
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -33,12 +38,14 @@ const TransactionTableView = () => {
     periodType,
     year,
     month,
+    status,
     setPage,
     setLimit,
     setPeriodParams,
+    setStatus,
     handleSort,
     refetch,
-  } = useTransactions();
+  } = useTransactions(initialStatus);
 
   const columns = getColumns({ sortBy, sortOrder, onSort: handleSort });
 
@@ -64,8 +71,9 @@ const TransactionTableView = () => {
     <>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="typo-title">Transacciones</h1>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {canAddTransaction && <CreateTransactionSheet onRefetch={refetch} />}
+          <TransactionStatusFilter value={status} onChange={setStatus} />
           <TransactionPeriodSelector
             periodType={periodType}
             year={year}

@@ -11,7 +11,7 @@ import {
   DEFAULT_SORT_ORDER,
   TransactionPeriodType,
 } from '@/lib/transaction';
-import { PaginationMeta, Transaction, TransactionsParams, TransactionSortBy, SortOrder } from '@/types/transaction';
+import { PaginationMeta, Transaction, TransactionsParams, TransactionSortBy, SortOrder, TransactionStatus } from '@/types/transaction';
 
 export type PeriodParams = {
   period: TransactionPeriodType;
@@ -19,7 +19,7 @@ export type PeriodParams = {
   month?: number;
 };
 
-const useTransactions = () => {
+const useTransactions = (initialStatus?: TransactionStatus) => {
   const { handleApiError } = useApiErrorHandler();
 
   const now = new Date();
@@ -35,6 +35,7 @@ const useTransactions = () => {
   const [limit, setLimitState] = useState(DEFAULT_LIMIT);
   const [sortBy, setSortBy] = useState<TransactionSortBy>(DEFAULT_SORT_BY);
   const [sortOrder, setSortOrder] = useState<SortOrder>(DEFAULT_SORT_ORDER);
+  const [status, setStatusState] = useState<TransactionStatus | undefined>(initialStatus);
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const handleApiErrorRef = useRef(handleApiError);
@@ -65,6 +66,10 @@ const useTransactions = () => {
         params.month = month;
       }
 
+      if (status) {
+        params.status = status;
+      }
+
       const response = await service.getTransactions(params);
 
       if (controller.signal.aborted) return;
@@ -86,7 +91,7 @@ const useTransactions = () => {
         setIsLoading(false);
       }
     }
-  }, [periodType, year, month, page, limit, sortBy, sortOrder]);
+  }, [periodType, year, month, page, limit, sortBy, sortOrder, status]);
 
   useEffect(() => {
     fetchTransactions();
@@ -105,6 +110,11 @@ const useTransactions = () => {
 
   const setLimit = useCallback((newLimit: number) => {
     setLimitState(newLimit);
+    setPage(DEFAULT_PAGE);
+  }, []);
+
+  const setStatus = useCallback((newStatus: TransactionStatus | undefined) => {
+    setStatusState(newStatus);
     setPage(DEFAULT_PAGE);
   }, []);
 
@@ -133,9 +143,11 @@ const useTransactions = () => {
     periodType,
     year,
     month,
+    status,
     setPage,
     setLimit,
     setPeriodParams,
+    setStatus,
     handleSort,
     refetch: fetchTransactions,
   };
