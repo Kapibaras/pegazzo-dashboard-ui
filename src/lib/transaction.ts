@@ -1,4 +1,4 @@
-import { TransactionSortBy, SortOrder } from '@/types/transaction';
+import { TransactionSortBy, SortOrder, TransactionStatus } from '@/types/transaction';
 import { MONTH_NAMES } from '@/lib/balance';
 import CONSTANTS from '@/config/constants';
 
@@ -12,6 +12,12 @@ export const TRANSACTION_PERIOD_OPTIONS: { value: TransactionPeriodType; label: 
 export const TRANSACTION_TYPE_LABELS: Record<string, string> = {
   debit: 'Cargo',
   credit: 'Abono',
+};
+
+export const TRANSACTION_STATUS_LABELS: Record<TransactionStatus, string> = {
+  PENDING: 'Pendiente',
+  CONFIRMED: 'Confirmada',
+  REJECTED: 'Rechazada',
 };
 
 export const DEFAULT_PAGE = 1;

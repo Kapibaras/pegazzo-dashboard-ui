@@ -4,12 +4,13 @@ import { cn } from '@/lib/utils';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const SKELETON_ROWS = 12;
-const COLUMN_COUNT = 6;
+const COLUMN_COUNT = 7;
 
 const HEADERS: { label: string; sortable: boolean }[] = [
   { label: 'Referencia', sortable: true },
   { label: 'Fecha', sortable: true },
   { label: 'Tipo', sortable: false },
+  { label: 'Estado', sortable: false },
   { label: 'Monto', sortable: true },
   { label: 'Método de Pago', sortable: false },
   { label: 'Descripción', sortable: false },
@@ -18,9 +19,9 @@ const HEADERS: { label: string; sortable: boolean }[] = [
 const TransactionTableSkeleton = () => {
   return (
     <div className="space-y-4">
-      <div className="min-w-0 overflow-hidden rounded-lg border border-secondary-100/80 shadow-sm">
+      <div className="border-secondary-100/80 min-w-0 overflow-hidden rounded-lg border shadow-sm">
         <Table>
-          <TableHeader className="border-b border-primary-700/20 bg-gradient-to-b from-secondary-500 to-secondary-600">
+          <TableHeader className="border-primary-700/20 from-secondary-500 to-secondary-600 border-b bg-gradient-to-b">
             <TableRow className="hover:bg-transparent">
               {HEADERS.map((header) => (
                 <TableHead key={header.label} className="px-5 py-3 lg:px-6">
@@ -40,10 +41,7 @@ const TransactionTableSkeleton = () => {
             {Array.from({ length: SKELETON_ROWS }).map((_, rowIdx) => (
               <TableRow
                 key={rowIdx}
-                className={cn(
-                  'border-secondary-100/50',
-                  rowIdx % 2 === 0 ? 'bg-white' : 'bg-surface-300/50',
-                )}
+                className={cn('border-secondary-100/50', rowIdx % 2 === 0 ? 'bg-white' : 'bg-surface-300/50')}
               >
                 {Array.from({ length: COLUMN_COUNT }).map((_, colIdx) => (
                   <TableCell key={colIdx} className="px-5 py-3.5 lg:px-6">

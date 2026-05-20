@@ -14,6 +14,7 @@ const ROUTES_WITH_ICONS = [
     subroutes: [
       { title: 'Métricas Actuales', url: '/balance' },
       { title: 'Transacciones', url: '/balance/transacciones' },
+      { title: 'Autorizaciones', url: '/balance/autorizaciones' },
     ],
     allowed: [Role.OWNER],
   },
@@ -44,6 +45,7 @@ const ROUTES_PATHNAMES: Record<string, string> = {
   '/': 'Inicio',
   '/balance': 'Balance',
   '/balance/transacciones': 'Balance',
+  '/balance/autorizaciones': 'Balance',
   '/usuarios': 'Usuarios',
   '/settings': 'Configuración',
 };

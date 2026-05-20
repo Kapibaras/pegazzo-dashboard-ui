@@ -10,6 +10,7 @@ import { PAYMENT_METHOD_LABELS } from '@/lib/balance';
 import { formatCurrency } from '@/utils/formatters';
 import { formatLongDatetime } from '@/utils/datetime/date';
 import { cn } from '@/lib/utils';
+import StatusBadge from './StatusBadge';
 
 type SortableHeaderProps = {
   label: string;
@@ -77,6 +78,11 @@ export const getColumns = ({ sortBy, sortOrder, onSort }: GetColumnsParams): Col
     },
   },
   {
+    accessorKey: 'status',
+    header: () => <span className="text-primary-100 typo-bold-text">Estado</span>,
+    cell: ({ row }) => <StatusBadge status={row.original.status} />,
+  },
+  {
     accessorKey: 'amount',
     header: () => (
       <SortableHeader label="Monto" columnKey="amount" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort} />
@@ -115,4 +121,4 @@ export const getColumns = ({ sortBy, sortOrder, onSort }: GetColumnsParams): Col
   },
 ];
 
-export const columnsLength = 6;
+export const columnsLength = 7;
