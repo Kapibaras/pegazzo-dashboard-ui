@@ -20,6 +20,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Badge } from '@/components/ui/badge';
 import DatePickerField from './DatePickerField';
 import SaveOptionsDialog from './SaveOptionsDialog';
 
@@ -278,6 +279,18 @@ const TransactionForm = ({
               )}
             />
           )}
+
+          <div className="gap-1 space-y-1 md:mt-3 md:mb-3">
+            <div className="flex items-center gap-2">
+              <span className="typo-subtitle text-carbon-500">Coche</span>
+              <Badge className="self-center text-xs bg-warning-100 text-warning-700 hover:bg-warning-100">🚧 En desarrollo</Badge>
+            </div>
+            <Select disabled>
+              <SelectTrigger className={`${inputClass} w-full`} aria-disabled="true">
+                <SelectValue placeholder="Próximamente..." />
+              </SelectTrigger>
+            </Select>
+          </div>
         </div>
 
         <div className="bg-background sticky bottom-0 pt-4 pb-6">
