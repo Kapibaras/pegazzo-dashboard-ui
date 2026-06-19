@@ -1,6 +1,8 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+RUN apk upgrade --no-cache
+
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
@@ -10,10 +12,12 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 # Required at runtime (pass via -e or --env-file):
 # MONOLITH_API_BASE_URL=
 
-RUN addgroup --system --gid 1001 nodejs && \
+RUN apk upgrade --no-cache && \
+    addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
