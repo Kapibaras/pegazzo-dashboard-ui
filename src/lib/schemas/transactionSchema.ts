@@ -24,6 +24,8 @@ export const createTransactionSchema = z.object({
       { message: 'La fecha no puede ser de más de 2 meses atrás.' },
     ),
   type: z.enum(['debit', 'credit'], { error: 'Selecciona un tipo.' }),
+  category_group: z.string().min(1, 'Selecciona un rubro.'),
+  category_subcategory: z.string().min(1, 'Selecciona una categoría.'),
   description: z
     .string()
     .min(1, 'La descripción es requerida.')
@@ -37,6 +39,8 @@ export const editTransactionSchema = createTransactionSchema.pick({
   amount: true,
   description: true,
   payment_method: true,
+  category_group: true,
+  category_subcategory: true,
 });
 
 export type CreateTransactionFormValues = z.infer<typeof createTransactionSchema>;

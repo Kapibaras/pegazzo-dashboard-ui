@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ToastService } from '@/services/toast';
@@ -15,6 +15,8 @@ import { createTransactionAction } from '@/actions/balance';
 import SingletonAPIClient from '@/api/clients/singleton';
 import BalanceService from '@/services/balance';
 import { PAYMENT_METHOD_LABELS } from '@/lib/balance';
+import { buildCategoryPayload, getCategoriesByType } from '@/lib/transaction';
+import { TransactionCreate, TransactionPatch, TransactionType } from '@/types/transaction';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -31,6 +33,8 @@ interface TransactionFormProps {
   onSuccess: () => void;
   reference?: string;
   defaultValues?: Partial<EditTransactionFormValues>;
+  /** Tipo de la transacción en modo edit (debit/credit). Determina las categorías disponibles. */
+  transactionType?: TransactionType;
   /** Cuando el form edita una transacción REJECTED siendo ADMIN: muestra diálogo Guardar / Guardar y reenviar. */
   requireResubmissionPrompt?: boolean;
 }
@@ -45,6 +49,7 @@ const TransactionForm = ({
   onSuccess,
   reference,
   defaultValues,
+  transactionType,
   requireResubmissionPrompt,
 }: TransactionFormProps) => {
   const { handleApiError } = useApiErrorHandler();
@@ -58,20 +63,69 @@ const TransactionForm = ({
     defaultValues:
       defaultValues ??
       (mode === 'create'
-        ? { amount: '' as any, date: undefined, type: undefined, description: '', payment_method: undefined }
-        : { amount: '' as any, description: '', payment_method: undefined }),
+        ? {
+            amount: '' as any,
+            date: undefined,
+            type: undefined,
+            category_group: '',
+            category_subcategory: '',
+            description: '',
+            payment_method: undefined,
+          }
+        : {
+            amount: '' as any,
+            description: '',
+            payment_method: undefined,
+            category_group: '',
+            category_subcategory: '',
+          }),
     mode: 'onChange',
   });
 
   const { isSubmitting, isValid } = form.formState;
 
+  const watchedType = (form.watch as (name: string) => unknown)('type') as TransactionType | undefined;
+  const watchedGroup = form.watch('category_group') as string | undefined;
+
+  const prevTypeRef = useRef<TransactionType | undefined>(watchedType);
+  const prevGroupRef = useRef<string>(watchedGroup ?? '');
+
+  useEffect(() => {
+    if (mode !== 'create') return;
+    if (prevTypeRef.current === watchedType) return;
+    prevTypeRef.current = watchedType;
+    form.setValue('category_group', '', { shouldValidate: false, shouldDirty: false });
+    form.setValue('category_subcategory', '', { shouldValidate: false, shouldDirty: false });
+  }, [watchedType, mode, form]);
+
+  useEffect(() => {
+    if (prevGroupRef.current === (watchedGroup ?? '')) return;
+    prevGroupRef.current = watchedGroup ?? '';
+    form.setValue('category_subcategory', '', { shouldValidate: false, shouldDirty: false });
+  }, [watchedGroup, form]);
+
+  const effectiveType: TransactionType | undefined = mode === 'create' ? watchedType : transactionType;
+  const availableGroups = effectiveType ? Object.keys(getCategoriesByType(effectiveType)) : [];
+  const availableSubcategories =
+    effectiveType && watchedGroup ? (getCategoriesByType(effectiveType)[watchedGroup] ?? []) : [];
+
+  const toCreatePayload = (values: CreateTransactionFormValues): TransactionCreate => {
+    const { category_group, category_subcategory, ...rest } = values;
+    return { ...rest, category: buildCategoryPayload(category_group, category_subcategory) };
+  };
+
+  const toPatchPayload = (values: EditTransactionFormValues): TransactionPatch => {
+    const { category_group, category_subcategory, ...rest } = values;
+    return { ...rest, category: buildCategoryPayload(category_group, category_subcategory) };
+  };
+
   const updateTransaction = async (values: EditTransactionFormValues) => {
-    await new BalanceService(SingletonAPIClient.getInstance()).updateTransaction(reference!, values);
+    await new BalanceService(SingletonAPIClient.getInstance()).updateTransaction(reference!, toPatchPayload(values));
   };
 
   const onSubmit = async (values: CreateTransactionFormValues | EditTransactionFormValues) => {
     if (mode === 'create') {
-      const result = await createTransactionAction(values as CreateTransactionFormValues);
+      const result = await createTransactionAction(toCreatePayload(values as CreateTransactionFormValues));
       if (!result.success) {
         handleApiError({ status: result.status || 500, detail: result.message || 'Error al crear la transacción.' }, [
           'balance',
@@ -130,7 +184,7 @@ const TransactionForm = ({
     setIsSavingFromDialog(true);
     const service = new BalanceService(SingletonAPIClient.getInstance());
     try {
-      await service.updateTransaction(reference!, pendingValues);
+      await service.updateTransaction(reference!, toPatchPayload(pendingValues));
     } catch (err) {
       const apiErr = err as { status_code?: number; detail?: string };
       handleApiError(
@@ -208,6 +262,80 @@ const TransactionForm = ({
               )}
             />
           )}
+
+          <FormField
+            control={form.control}
+            name="category_group"
+            render={() => (
+              <FormItem className="gap-1 md:mt-3 md:mb-3">
+                <FormLabel className="typo-subtitle text-carbon-500">Rubro</FormLabel>
+                <Controller
+                  control={form.control}
+                  name="category_group"
+                  render={({ field: controllerField }) => (
+                    <Select
+                      value={controllerField.value}
+                      onValueChange={controllerField.onChange}
+                      disabled={!effectiveType}
+                    >
+                      <FormControl>
+                        <SelectTrigger className={`${inputClass} w-full cursor-pointer`}>
+                          <SelectValue
+                            placeholder={effectiveType ? 'Selecciona un rubro' : 'Selecciona primero un tipo'}
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {availableGroups.map((group) => (
+                          <SelectItem key={group} className="cursor-pointer" value={group}>
+                            {group}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="category_subcategory"
+            render={() => (
+              <FormItem className="gap-1 md:mt-3 md:mb-3">
+                <FormLabel className="typo-subtitle text-carbon-500">Categoría</FormLabel>
+                <Controller
+                  control={form.control}
+                  name="category_subcategory"
+                  render={({ field: controllerField }) => (
+                    <Select
+                      value={controllerField.value}
+                      onValueChange={controllerField.onChange}
+                      disabled={!watchedGroup}
+                    >
+                      <FormControl>
+                        <SelectTrigger className={`${inputClass} w-full cursor-pointer`}>
+                          <SelectValue
+                            placeholder={watchedGroup ? 'Selecciona una categoría' : 'Selecciona primero un rubro'}
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {availableSubcategories.map((sub) => (
+                          <SelectItem key={sub} className="cursor-pointer" value={sub}>
+                            {sub}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}

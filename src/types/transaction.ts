@@ -48,12 +48,14 @@ export type TransactionCreate = {
   type: TransactionType;
   description: string;
   payment_method: PaymentMethod;
+  category: string;
 };
 
 export type TransactionPatch = {
   amount?: number;
   description?: string;
   payment_method?: PaymentMethod;
+  category?: string;
 };
 
 export type TransactionAuthorizationPayload = {
