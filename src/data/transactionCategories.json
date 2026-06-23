@@ -1,0 +1,31 @@
+{
+  "debit": {
+    "Taller": [
+      "Mantenimientos",
+      "Reparaciones",
+      "Llantas",
+      "Accesorios vehículos",
+      "GPS anualidad",
+      "Traslados",
+      "Otros"
+    ],
+    "Nomina": ["Sueldo", "Bonos", "Horas extra"],
+    "Prestamos": ["Empleados", "Conductores"],
+    "Operativos": [
+      "Despacho jurídico",
+      "Oficina/Servicios",
+      "Sistemas operativos",
+      "Artículos de oficina",
+      "Gasolina"
+    ],
+    "Socios": ["Pago mensual"],
+    "Activos": ["Adquisición autos", "Enganche", "Mensualidad auto", "Seguros"]
+  },
+  "credit": {
+    "Conductores": ["Rentas", "Ventas", "Pago adicional", "Recargos", "Daños"],
+    "Adeudos": ["Conductores", "Empleados", "Socios"],
+    "Prestamos": ["Empleados", "Conductores"],
+    "Socios": ["Adquisición autos", "Seguros", "Sistemas o GPS", "Otros"],
+    "Activos": ["Vehículos", "Otros"]
+  }
+}
