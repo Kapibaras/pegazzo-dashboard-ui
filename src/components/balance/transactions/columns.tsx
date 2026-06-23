@@ -78,6 +78,18 @@ export const getColumns = ({ sortBy, sortOrder, onSort }: GetColumnsParams): Col
     },
   },
   {
+    accessorKey: 'category',
+    header: () => <span className="text-primary-100 typo-bold-text">Categoría</span>,
+    cell: ({ row }) => {
+      const category = row.getValue<string | null>('category');
+      return (
+        <span className="block max-w-[160px] truncate" title={category ?? undefined}>
+          {category ?? '—'}
+        </span>
+      );
+    },
+  },
+  {
     accessorKey: 'status',
     header: () => <span className="text-primary-100 typo-bold-text">Estado</span>,
     cell: ({ row }) => <StatusBadge status={row.original.status} />,
@@ -121,4 +133,4 @@ export const getColumns = ({ sortBy, sortOrder, onSort }: GetColumnsParams): Col
   },
 ];
 
-export const columnsLength = 7;
+export const columnsLength = 8;

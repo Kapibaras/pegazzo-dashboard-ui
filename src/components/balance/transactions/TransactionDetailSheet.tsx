@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Pencil, Trash2, CreditCard, FileText, Hash, Calendar, ArrowDownLeft, ArrowUpRight } from 'lucide-react';
+import { Pencil, Trash2, CreditCard, FileText, Hash, Calendar, ArrowDownLeft, ArrowUpRight, Tag } from 'lucide-react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Transaction } from '@/types/transaction';
-import { TRANSACTION_TYPE_LABELS } from '@/lib/transaction';
+import { TRANSACTION_TYPE_LABELS, parseCategoryPayload } from '@/lib/transaction';
 import { PAYMENT_METHOD_LABELS } from '@/lib/balance';
 import { formatCurrency } from '@/utils/formatters';
 import { formatLongDatetime } from '@/utils/datetime/date';
@@ -179,6 +179,10 @@ const TransactionDetailSheet = ({
                     <span className="text-primary-600">{transaction.reference}</span>
                   </InfoRow>
                   <div className="border-surface-700/15 mx-3 border-t" />
+                  <InfoRow icon={Tag} label="Categoría">
+                    {transaction.category ?? '—'}
+                  </InfoRow>
+                  <div className="border-surface-700/15 mx-3 border-t" />
                   <InfoRow icon={CreditCard} label="Método de pago">
                     {PAYMENT_METHOD_LABELS[transaction.paymentMethod] ?? transaction.paymentMethod}
                   </InfoRow>
@@ -188,7 +192,6 @@ const TransactionDetailSheet = ({
                   </InfoRow>
                 </div>
 
-                {/* ── Action buttons (sticky bottom): OWNER siempre, ADMIN solo en REJECTED ─── */}
                 {canManage && (
                   <div className="border-surface-700/20 mt-auto border-t px-4 pt-4 pb-6">
                     <div className="flex gap-3">
@@ -243,21 +246,29 @@ const TransactionDetailSheet = ({
                 </div>
 
                 <div className="flex-1 px-4 pb-4">
-                  <TransactionForm
-                    mode="edit"
-                    reference={transaction.reference}
-                    defaultValues={{
-                      amount: transaction.amount,
-                      description: transaction.description,
-                      payment_method: transaction.paymentMethod,
-                    }}
-                    requireResubmissionPrompt={isOnRejected}
-                    onSuccess={() => {
-                      setSheetMode('view');
-                      onOpenChange(false);
-                      onRefetch();
-                    }}
-                  />
+                  {(() => {
+                    const parsedCategory = parseCategoryPayload(transaction.category);
+                    return (
+                      <TransactionForm
+                        mode="edit"
+                        reference={transaction.reference}
+                        transactionType={transaction.type}
+                        defaultValues={{
+                          amount: transaction.amount,
+                          description: transaction.description,
+                          payment_method: transaction.paymentMethod,
+                          category_group: parsedCategory?.group ?? '',
+                          category_subcategory: parsedCategory?.subcategory ?? '',
+                        }}
+                        requireResubmissionPrompt={isOnRejected}
+                        onSuccess={() => {
+                          setSheetMode('view');
+                          onOpenChange(false);
+                          onRefetch();
+                        }}
+                      />
+                    );
+                  })()}
                 </div>
 
                 <div className="border-surface-700/20 border-t px-4 pt-3 pb-6">
