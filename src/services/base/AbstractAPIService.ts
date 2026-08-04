@@ -6,7 +6,7 @@ import AuthService from '../auth';
 export default abstract class AbstractAPIService {
   protected readonly client: APIClientBase;
   private isRefreshing = false;
-  private refreshPromise: Promise<any> | null = null;
+  private refreshPromise: Promise<unknown> | null = null;
 
   constructor(client: APIClientBase) {
     this.client = client;

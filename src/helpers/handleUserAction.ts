@@ -13,7 +13,7 @@ type ActionType = 'create' | 'updateNames' | 'updatePassword';
 interface HandleUserActionProps {
   formData: FormData;
   actionType: ActionType;
-  action: (...args: any[]) => Promise<any>;
+  action: (...args: unknown[]) => Promise<unknown>;
   successMessage: string;
   errorMessage: string;
 }
@@ -21,7 +21,7 @@ interface HandleUserActionProps {
 interface HandleUserActionResult {
   success: boolean;
   message?: string;
-  data?: any;
+  data?: unknown;
   errors?: Record<string, string[]>;
   status?: number;
 }
