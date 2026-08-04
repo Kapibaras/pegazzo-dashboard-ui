@@ -61,7 +61,7 @@ export default async function handleUserAction({
       const username = actionType === 'create' ? undefined : (data.userId ?? data.username);
       const args = username !== undefined ? [userService, username, validated.data] : [userService, validated.data];
 
-      const result = await action(...args);
+      const result = await action(...(args as [UserService, ...unknown[]]));
 
       revalidatePath('/dashboard/users');
 
