@@ -1,6 +1,6 @@
 'use client';
 
-const GlobalError = (_props: { error: Error & { digest?: string }; reset: () => void }) => {
+const GlobalError = () => {
   return (
     <html lang="es">
       <body className="flex min-h-screen items-center justify-center bg-[#0a192b] p-6">
