@@ -24,31 +24,31 @@ export default class BalanceService extends AbstractAPIService {
   }
 
   async getSimpleMetrics(params?: { month?: number; year?: number }): Promise<BalanceMetricsSimple> {
-    return (await this.client.get('/management/balance/metrics/simple', { params })).data;
+    return (await this.client.get<BalanceMetricsSimple>('/management/balance/metrics/simple', { params })).data;
   }
 
   async getDetailedMetrics(params: BalanceMetricsParams): Promise<BalanceMetricsDetailed> {
-    return (await this.client.get('/management/balance/metrics', { params })).data;
+    return (await this.client.get<BalanceMetricsDetailed>('/management/balance/metrics', { params })).data;
   }
 
   async getTrendData(params: BalanceTrendParams): Promise<BalanceTrendResponse> {
-    return (await this.client.get('/management/balance/metrics/trend', { params })).data;
+    return (await this.client.get<BalanceTrendResponse>('/management/balance/metrics/trend', { params })).data;
   }
 
   async getTransactions(params: TransactionsParams): Promise<TransactionsResponse> {
-    return (await this.client.get('/management/balance/transactions', { params })).data;
+    return (await this.client.get<TransactionsResponse>('/management/balance/transactions', { params })).data;
   }
 
   async createTransaction(data: TransactionCreate): Promise<Transaction> {
-    return (await this.client.post('/management/balance/transaction', data)).data;
+    return (await this.client.post<Transaction>('/management/balance/transaction', data)).data;
   }
 
   async getTransaction(reference: string): Promise<Transaction> {
-    return (await this.client.get(`/management/balance/transaction/${reference}`)).data;
+    return (await this.client.get<Transaction>(`/management/balance/transaction/${reference}`)).data;
   }
 
   async updateTransaction(reference: string, data: TransactionPatch): Promise<Transaction> {
-    return (await this.client.patch(`/management/balance/transaction/${reference}`, data)).data;
+    return (await this.client.patch<Transaction>(`/management/balance/transaction/${reference}`, data)).data;
   }
 
   async deleteTransaction(reference: string): Promise<void> {
@@ -56,10 +56,10 @@ export default class BalanceService extends AbstractAPIService {
   }
 
   async authorizeTransaction(reference: string, payload: TransactionAuthorizationPayload): Promise<Transaction> {
-    return (await this.client.post(`/management/balance/transaction/${reference}/authorization`, payload)).data;
+    return (await this.client.post<Transaction>(`/management/balance/transaction/${reference}/authorization`, payload)).data;
   }
 
   async getTransactionsCount(params?: TransactionsCountParams): Promise<TransactionCount> {
-    return (await this.client.get('/management/balance/transactions/count', { params })).data;
+    return (await this.client.get<TransactionCount>('/management/balance/transactions/count', { params })).data;
   }
 }

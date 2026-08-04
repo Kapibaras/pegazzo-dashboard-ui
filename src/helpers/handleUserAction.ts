@@ -14,7 +14,7 @@ interface HandleUserActionProps {
   formData: FormData;
   actionType: ActionType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  action: (...args: any[]) => Promise<any>;
+  action: (service: UserService, ...args: any[]) => Promise<unknown>;
   successMessage: string;
   errorMessage: string;
 }

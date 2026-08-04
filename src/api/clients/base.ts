@@ -12,16 +12,14 @@ export default class APIClientBase {
     return this.axiosInstance;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public async get<T = any>(
+  public async get<T = unknown>(
     url: string,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
     return this.axiosInstance.get<T>(url, config);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public async post<T = any>(
+  public async post<T = unknown>(
     url: string,
     data?: unknown,
     config?: AxiosRequestConfig
@@ -29,8 +27,7 @@ export default class APIClientBase {
     return this.axiosInstance.post<T>(url, data, config);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public async put<T = any>(
+  public async put<T = unknown>(
     url: string,
     data?: unknown,
     config?: AxiosRequestConfig
@@ -38,8 +35,7 @@ export default class APIClientBase {
     return this.axiosInstance.put<T>(url, data, config);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public async patch<T = any>(
+  public async patch<T = unknown>(
     url: string,
     data?: unknown,
     config?: AxiosRequestConfig
@@ -47,8 +43,7 @@ export default class APIClientBase {
     return this.axiosInstance.patch<T>(url, data, config);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public async delete<T = any>(
+  public async delete<T = unknown>(
     url: string,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
