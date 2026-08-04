@@ -13,7 +13,8 @@ type ActionType = 'create' | 'updateNames' | 'updatePassword';
 interface HandleUserActionProps {
   formData: FormData;
   actionType: ActionType;
-  action: (...args: unknown[]) => Promise<unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  action: (...args: any[]) => Promise<any>;
   successMessage: string;
   errorMessage: string;
 }
