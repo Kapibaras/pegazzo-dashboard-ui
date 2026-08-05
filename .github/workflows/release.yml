@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Retag :main → :<tag> + :latest on KVM
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
+        uses: appleboy/ssh-action@v1.2.0
         env:
           IMAGE: registry.pegazzoauto.com/pegazzo-dashboard
           TAG: ${{ github.ref_name }}
