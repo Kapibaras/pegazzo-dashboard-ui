@@ -52,19 +52,3 @@ jobs:
         env:
           WEBHOOK_URL: ${{ secrets.DOKPLOY_DASHBOARD_STAGING_WEBHOOK }}
         run: curl -fsS -X POST "$WEBHOOK_URL"
-
-  deploy-production:
-    name: Deploy to Production
-    needs: deploy-staging
-    runs-on: ubuntu-latest
-    environment: production
-
-    concurrency:
-      group: deploy-production
-      cancel-in-progress: false
-
-    steps:
-      - name: Trigger Dokploy production webhook
-        env:
-          WEBHOOK_URL: ${{ secrets.DOKPLOY_DASHBOARD_PRODUCTION_WEBHOOK }}
-        run: curl -fsS -X POST "$WEBHOOK_URL"

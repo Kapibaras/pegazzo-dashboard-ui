@@ -1,9 +1,8 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [published]
 
 concurrency:
   group: release-${{ github.ref }}
@@ -19,7 +18,7 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         env:
           IMAGE: registry.pegazzoauto.com/pegazzo-dashboard
-          TAG: ${{ github.ref_name }}
+          TAG: ${{ github.event.release.tag_name }}
         with:
           host: 2.24.115.10
           username: pegazzo
@@ -32,3 +31,19 @@ jobs:
             docker tag $IMAGE:main $IMAGE:latest
             docker push $IMAGE:$TAG
             docker push $IMAGE:latest
+
+  deploy-production:
+    name: Deploy to Production
+    needs: retag
+    runs-on: ubuntu-latest
+    environment: production
+
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+
+    steps:
+      - name: Trigger Dokploy production webhook
+        env:
+          WEBHOOK_URL: ${{ secrets.DOKPLOY_DASHBOARD_PRODUCTION_WEBHOOK }}
+        run: curl -fsS -X POST "$WEBHOOK_URL"
