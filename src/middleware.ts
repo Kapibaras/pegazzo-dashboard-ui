@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
       const secret = new TextEncoder().encode(VARIABLES.NEXT_SESSION_SECRET);
       const { payload } = await jwtVerify(session, secret);
       sessionPayload = payload;
-    } catch (error) {
+    } catch {
     }
   }
   

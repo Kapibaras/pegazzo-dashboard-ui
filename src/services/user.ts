@@ -8,11 +8,11 @@ export default class UserService extends AbstractAPIService {
   }
 
   async getAllUsers(role?: string): Promise<User[]> {
-    return (await this.client.get('/internal/user', { params: role ? { role } : {} })).data;
+    return (await this.client.get<User[]>('/internal/user', { params: role ? { role } : {} })).data;
   }
 
   async getUserByUsername(username: string): Promise<User> {
-    return (await this.client.get(`/internal/user/${username}`)).data;
+    return (await this.client.get<User>(`/internal/user/${username}`)).data;
   }
 
   async createUser(data: {
@@ -22,7 +22,7 @@ export default class UserService extends AbstractAPIService {
     password: string;
     role: string;
   }): Promise<User> {
-    const response = await this.client.post('/internal/user', data);
+    const response = await this.client.post<User>('/internal/user', data);
     return response.data;
   }
 
@@ -33,17 +33,17 @@ export default class UserService extends AbstractAPIService {
       surnames: string;
     },
   ): Promise<User> {
-    const response = await this.client.patch(`/internal/user/${username}/name`, data);
+    const response = await this.client.patch<User>(`/internal/user/${username}/name`, data);
     return response.data;
   }
 
   async updateUserPassword(username: string, data: { password: string }): Promise<User> {
-    const response = await this.client.patch(`/internal/user/${username}/password`, data);
+    const response = await this.client.patch<User>(`/internal/user/${username}/password`, data);
     return response.data;
   }
 
   async updateUserRole(username: string, role: string): Promise<User> {
-    const response = await this.client.patch(`/internal/user/${username}/role`, { role });
+    const response = await this.client.patch<User>(`/internal/user/${username}/role`, { role });
     return response.data;
   }
 

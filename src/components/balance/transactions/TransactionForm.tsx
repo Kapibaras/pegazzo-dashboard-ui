@@ -59,12 +59,13 @@ const TransactionForm = ({
   const schema = mode === 'create' ? createTransactionSchema : editTransactionSchema;
 
   const form = useForm<CreateTransactionFormValues | EditTransactionFormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(schema) as any,
     defaultValues:
       defaultValues ??
       (mode === 'create'
         ? {
-            amount: '' as any,
+            amount: '' as unknown as number,
             date: undefined,
             type: undefined,
             category_group: '',
@@ -73,7 +74,7 @@ const TransactionForm = ({
             payment_method: undefined,
           }
         : {
-            amount: '' as any,
+            amount: '' as unknown as number,
             description: '',
             payment_method: undefined,
             category_group: '',

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { format, subMonths, isAfter, isBefore } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { CalendarDays, Clock } from 'lucide-react';
+import { CalendarDays } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { parseDateOnly, toLocalISOWithOffset } from '@/utils/formatters';
 import { Calendar } from '@/components/ui/calendar';

@@ -13,7 +13,8 @@ type ActionType = 'create' | 'updateNames' | 'updatePassword';
 interface HandleUserActionProps {
   formData: FormData;
   actionType: ActionType;
-  action: (...args: any[]) => Promise<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  action: (service: UserService, ...args: any[]) => Promise<unknown>;
   successMessage: string;
   errorMessage: string;
 }
@@ -21,7 +22,7 @@ interface HandleUserActionProps {
 interface HandleUserActionResult {
   success: boolean;
   message?: string;
-  data?: any;
+  data?: unknown;
   errors?: Record<string, string[]>;
   status?: number;
 }
@@ -60,7 +61,7 @@ export default async function handleUserAction({
       const username = actionType === 'create' ? undefined : (data.userId ?? data.username);
       const args = username !== undefined ? [userService, username, validated.data] : [userService, validated.data];
 
-      const result = await action(...args);
+      const result = await action(...(args as [UserService, ...unknown[]]));
 
       revalidatePath('/dashboard/users');
 

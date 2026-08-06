@@ -71,8 +71,9 @@ export function UserForm({ mode, onSuccess, userId, name, surnames }: UserFormPr
           };
 
   const form = useForm<UserFormValues | UpdateNamesFormValues | UpdatePasswordFormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(schema) as any,
-    defaultValues: defaultValues as any,
+    defaultValues: defaultValues as Partial<UserFormValues | UpdateNamesFormValues | UpdatePasswordFormValues>,
     mode: 'onChange',
   });
 
@@ -107,7 +108,7 @@ export function UserForm({ mode, onSuccess, userId, name, surnames }: UserFormPr
     ToastService.success(buttonLabels[mode].title, buttonLabels[mode].success);
 
     onSuccess();
-    form.reset(defaultValues as any);
+    form.reset(defaultValues as Partial<UserFormValues | UpdateNamesFormValues | UpdatePasswordFormValues>);
   }
 
   return (
