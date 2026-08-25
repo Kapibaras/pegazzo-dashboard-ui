@@ -19,12 +19,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           IMAGE: registry.pegazzoauto.com/pegazzo-dashboard
+          WEBHOOK_URL: ${{ secrets.DOKPLOY_DASHBOARD_STAGING_WEBHOOK }}
         with:
           host: 2.24.115.10
           username: pegazzo
           key: ${{ secrets.KVM_SSH_KEY }}
           command_timeout: 30m
-          envs: GH_TOKEN,IMAGE
+          envs: GH_TOKEN,IMAGE,WEBHOOK_URL
           script: |
             docker pull $IMAGE:main && \
               docker tag $IMAGE:main $IMAGE:previous && \
@@ -37,6 +38,9 @@ jobs:
             docker push $IMAGE:main
             rm -rf /tmp/dashboard-build
 
+            LOCAL_URL=$(echo "$WEBHOOK_URL" | sed 's|https://dokploy\.pegazzoauto\.com|http://localhost:3000|')
+            curl -fsSL -X POST "$LOCAL_URL"
+
   deploy-staging:
     name: Deploy to Staging
     needs: build-and-push
@@ -48,19 +52,6 @@ jobs:
       cancel-in-progress: false
 
     steps:
-      - name: Trigger Dokploy staging webhook
-        uses: appleboy/ssh-action@v1.2.0
-        env:
-          WEBHOOK_URL: ${{ secrets.DOKPLOY_DASHBOARD_STAGING_WEBHOOK }}
-        with:
-          host: 2.24.115.10
-          username: pegazzo
-          key: ${{ secrets.KVM_SSH_KEY }}
-          envs: WEBHOOK_URL
-          script: |
-            LOCAL_URL=$(echo "$WEBHOOK_URL" | sed 's|https://dokploy\.pegazzoauto\.com|http://localhost:3000|')
-            curl -fsSL -X POST "$LOCAL_URL"
-
       - name: Print deployed URL
         run: |
           echo "✅ SUCCESS — Dashboard deployed to staging"
