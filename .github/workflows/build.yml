@@ -56,4 +56,4 @@ jobs:
       - name: Print deployed URL
         run: |
           echo "✅ SUCCESS — Dashboard deployed to staging"
-          echo "   URL: https://staging.dashboard.pegazzo.com"
+          echo "   URL: https://staging.dashboard.pegazzoauto.com"
