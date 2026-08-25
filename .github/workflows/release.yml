@@ -47,3 +47,8 @@ jobs:
         env:
           WEBHOOK_URL: ${{ secrets.DOKPLOY_DASHBOARD_PRODUCTION_WEBHOOK }}
         run: curl -fsS -X POST "$WEBHOOK_URL"
+
+      - name: Print deployed URL
+        run: |
+          echo "✅ SUCCESS — Dashboard released to production"
+          echo "   URL: https://dashboard.pegazzo.com"
