@@ -26,8 +26,7 @@ export default class ScopedAPIClient extends APIClientBase {
           return;
         }
         if (error.response?.status === 401) {
-          const message = error.response.data?.detail || 'Unauthorized';
-          return Promise.reject(new APIError(message, 401));
+          return Promise.reject(error);
         }
         if (error.response) {
           const status = error.response.status;
