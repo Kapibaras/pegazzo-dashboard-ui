@@ -25,5 +25,10 @@ export class APIRequestFailed extends Error {
 }
 
 export default function isAPIErrorType(error: unknown): error is APIError | APIRequestFailed {
-  return error instanceof APIError || error instanceof APIRequestFailed;
+  return (
+    error !== null &&
+    typeof error === 'object' &&
+    'status_code' in error &&
+    'detail' in error
+  );
 }

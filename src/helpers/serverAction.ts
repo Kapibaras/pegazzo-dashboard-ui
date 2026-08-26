@@ -1,8 +1,12 @@
 import { redirect } from 'next/navigation';
-import { APIRequestFailed } from '@/api/errors';
 
 const isSessionExpired = (error: unknown): boolean =>
-  error instanceof APIRequestFailed && error.status_code === 401 && error.detail === 'SESSION_EXPIRED';
+  error !== null &&
+  typeof error === 'object' &&
+  'status_code' in error &&
+  'detail' in error &&
+  (error as { status_code: number; detail: string }).status_code === 401 &&
+  (error as { status_code: number; detail: string }).detail === 'SESSION_EXPIRED';
 
 export async function serverAction<TSuccess, TError>(
   fn: () => Promise<TSuccess>,
