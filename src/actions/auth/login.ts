@@ -46,6 +46,10 @@ export default async function login(formData: FormData) {
       const apiErr = err as { status_code: number; detail: string };
       return { status: apiErr.status_code, detail: apiErr.detail || 'Something went wrong' };
     }
+    if (err !== null && typeof err === 'object' && 'response' in err) {
+      const axiosErr = err as { response: { status: number; data?: { detail?: string } } };
+      return { status: axiosErr.response.status, detail: axiosErr.response.data?.detail || 'Something went wrong' };
+    }
     return { status: 500, detail: 'Something went wrong' };
   }
 }
