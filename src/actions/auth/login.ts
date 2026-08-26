@@ -5,7 +5,6 @@ import { getCookiesServer, setCookiesOnServer } from '@/utils/cookies/server';
 import { ScopedAPIClient } from '@/api';
 import { sign } from 'jsonwebtoken';
 import VARIABLES from '@/config/variables';
-import isAPIErrorType from '@/api/errors';
 
 export default async function login(formData: FormData) {
   const username = (formData.get('username') as string)?.trim();
@@ -43,13 +42,10 @@ export default async function login(formData: FormData) {
 
     return { success: true };
   } catch (err: unknown) {
-    if (!isAPIErrorType(err)) {
-      console.error('Login failed with non-API error:', err);
-      return { status: 500, detail: 'Something went wrong' };
+    if (err !== null && typeof err === 'object' && 'status_code' in err && 'detail' in err) {
+      const apiErr = err as { status_code: number; detail: string };
+      return { status: apiErr.status_code, detail: apiErr.detail || 'Something went wrong' };
     }
-    return {
-      status: err.status_code,
-      detail: err.detail || 'Something went wrong',
-    };
+    return { status: 500, detail: 'Something went wrong' };
   }
 }
