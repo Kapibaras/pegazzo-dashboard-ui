@@ -5,6 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ToastService } from '@/services/toast';
 import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
+import isAPIErrorType from '@/api/errors';
 import {
   createTransactionSchema,
   editTransactionSchema,
@@ -128,7 +129,7 @@ const TransactionForm = ({
     if (mode === 'create') {
       const result = await createTransactionAction(toCreatePayload(values as CreateTransactionFormValues));
       if (!result.success) {
-        handleApiError({ status: result.status || 500, detail: result.message || 'Error al crear la transacción.' }, [
+        handleApiError({ status: result.status || 500, detail: result.detail || 'Unknown error' }, [
           'balance',
           'common',
         ]);
@@ -149,11 +150,11 @@ const TransactionForm = ({
       await updateTransaction(values as EditTransactionFormValues);
       ToastService.success('Transacción actualizada', 'La transacción fue actualizada exitosamente.');
     } catch (err) {
-      const apiErr = err as { status_code?: number; detail?: string };
-      handleApiError(
-        { status: apiErr?.status_code ?? 500, detail: apiErr?.detail ?? 'Error al actualizar la transacción.' },
-        ['balance', 'common'],
-      );
+      if (isAPIErrorType(err)) {
+        handleApiError({ status: err.status_code, detail: err.detail }, ['balance', 'common']);
+      } else {
+        handleApiError({ status: 500, detail: 'Unknown error' }, ['balance', 'common']);
+      }
       return;
     }
     onSuccess();
@@ -170,11 +171,11 @@ const TransactionForm = ({
       onSuccess();
       form.reset();
     } catch (err) {
-      const apiErr = err as { status_code?: number; detail?: string };
-      handleApiError(
-        { status: apiErr?.status_code ?? 500, detail: apiErr?.detail ?? 'Error al actualizar la transacción.' },
-        ['balance', 'common'],
-      );
+      if (isAPIErrorType(err)) {
+        handleApiError({ status: err.status_code, detail: err.detail }, ['balance', 'common']);
+      } else {
+        handleApiError({ status: 500, detail: 'Unknown error' }, ['balance', 'common']);
+      }
     } finally {
       setIsSavingFromDialog(false);
     }
@@ -187,11 +188,11 @@ const TransactionForm = ({
     try {
       await service.updateTransaction(reference!, toPatchPayload(pendingValues));
     } catch (err) {
-      const apiErr = err as { status_code?: number; detail?: string };
-      handleApiError(
-        { status: apiErr?.status_code ?? 500, detail: apiErr?.detail ?? 'Error al actualizar la transacción.' },
-        ['balance', 'common'],
-      );
+      if (isAPIErrorType(err)) {
+        handleApiError({ status: err.status_code, detail: err.detail }, ['balance', 'common']);
+      } else {
+        handleApiError({ status: 500, detail: 'Unknown error' }, ['balance', 'common']);
+      }
       setIsSavingFromDialog(false);
       return;
     }

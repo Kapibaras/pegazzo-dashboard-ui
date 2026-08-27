@@ -9,8 +9,6 @@ import { useRouter } from 'next/navigation';
 import { LoaderCircle } from 'lucide-react';
 import { login } from '@/actions/auth';
 import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
-import { AUTH_ERRORS } from '@/errors/auth';
-import { ToastService } from '@/services/toast';
 
 const AuthLogin = () => {
   const router = useRouter();
@@ -38,11 +36,7 @@ const AuthLogin = () => {
     const result = await login(formData);
 
     if ('status' in result && !result.success) {
-      if (result.status === 401) {
-        ToastService.error(AUTH_ERRORS.INVALID_CREDENTIALS.title, AUTH_ERRORS.INVALID_CREDENTIALS.message);
-      } else {
-        handleApiError({ status: result.status || 500, detail: result.detail || 'Something went wrong' }, ['auth']);
-      }
+      handleApiError({ status: result.status || 500, detail: result.detail || 'Unknown error' }, ['auth']);
     } else {
       router.push('/');
     }
