@@ -38,11 +38,10 @@ const AuthLogin = () => {
       const errorResult = result as { status: number; detail: string };
       const { title, message } = findErrorMessage({ status: errorResult.status, detail: errorResult.detail }, ['auth']);
       ToastService.error(title, message);
+      setIsSubmitting(false);
     } else {
       router.push('/');
     }
-
-    setIsSubmitting(false);
   };
 
   return (
