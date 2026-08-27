@@ -7,6 +7,5 @@ export default async function createUserAction(formData: FormData) {
     actionType: 'create',
     action: async (userService, data) => userService.createUser(data),
     successMessage: '¡Usuario creado exitosamente!',
-    errorMessage: 'Error al crear el usuario. Inténtalo de nuevo.',
   });
 }

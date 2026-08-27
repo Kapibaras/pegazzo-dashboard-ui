@@ -44,12 +44,12 @@ export default async function login(formData: FormData) {
   } catch (err: unknown) {
     if (err !== null && typeof err === 'object' && 'status_code' in err && 'detail' in err) {
       const apiErr = err as { status_code: number; detail: string };
-      return { status: apiErr.status_code, detail: apiErr.detail || 'Something went wrong' };
+      return { success: false as const, status: apiErr.status_code, detail: apiErr.detail };
     }
     if (err !== null && typeof err === 'object' && 'response' in err) {
       const axiosErr = err as { response: { status: number; data?: { detail?: string } } };
-      return { status: axiosErr.response.status, detail: axiosErr.response.data?.detail || 'Something went wrong' };
+      return { success: false as const, status: axiosErr.response.status, detail: axiosErr.response.data?.detail ?? 'Unknown error' };
     }
-    return { status: 500, detail: 'Something went wrong' };
+    return { success: false as const, status: 500, detail: 'Unknown error' };
   }
 }
