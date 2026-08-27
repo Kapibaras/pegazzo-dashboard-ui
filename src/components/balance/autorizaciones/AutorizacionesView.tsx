@@ -19,7 +19,7 @@ import RejectFollowupDialog from './RejectFollowupDialog';
 
 type ViewState =
   | { status: 'loading' }
-  | { status: 'error'; message: string }
+  | { status: 'error'; title: string; message: string }
   | { status: 'success'; transactions: Transaction[] };
 
 type RejectFollowupState = {
@@ -57,10 +57,10 @@ const AutorizacionesView = () => {
       setState({ status: 'success', transactions: response.transactions });
     } catch (err) {
       if (isAPIErrorType(err)) {
-        const { message } = findErrorMessage({ status: err.status_code, detail: err.detail }, ['balance', 'common']);
-        setState({ status: 'error', message });
+        const { title, message } = findErrorMessage({ status: err.status_code, detail: err.detail }, ['balance', 'common']);
+        setState({ status: 'error', title, message });
       } else {
-        setState({ status: 'error', message: 'Ocurrió un error desconocido. Inténtalo de nuevo más tarde.' });
+        setState({ status: 'error', title: 'Error inesperado', message: 'Ocurrió un error desconocido. Inténtalo de nuevo más tarde.' });
       }
     }
   }, [service]);
@@ -206,7 +206,7 @@ const AutorizacionesView = () => {
 
       <div className="min-w-0 space-y-4">
         {state.status === 'loading' && <AutorizacionesTableSkeleton />}
-        {state.status === 'error' && <ErrorCard message={state.message} onRetry={fetchPending} />}
+        {state.status === 'error' && <ErrorCard title={state.title} message={state.message} onRetry={fetchPending} />}
         {state.status === 'success' &&
           (pendingCount === 0 ? (
             <AutorizacionesEmptyState />
