@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { ScopedAPIClient } from '@/api';
 import { UserService } from '@/services';
 import { getCookiesServer } from '@/utils/cookies/server';
-import { APIError, APIRequestFailed } from '@/api/errors';
+import isAPIErrorType from '@/api/errors';
 
 export default async function deleteUserAction(username: string) {
   if (!username) {
@@ -23,20 +23,10 @@ export default async function deleteUserAction(username: string) {
     return { success: true };
   } catch (error: unknown) {
     console.error('Error deleting user:', error);
-
-    if (error instanceof APIError || error instanceof APIRequestFailed) {
-      return {
-        success: false,
-        status: error.status_code,
-        detail: error.detail || 'Error al eliminar el usuario.',
-      };
-    }
-
-    const message = error instanceof Error ? error.message : 'Error al eliminar el usuario.';
     return {
       success: false,
-      status: 500,
-      detail: message,
+      status: isAPIErrorType(error) ? error.status_code : 500,
+      detail: isAPIErrorType(error) ? error.detail : 'Unknown error',
     };
   }
 }

@@ -10,6 +10,5 @@ export default async function updateUserPasswordAction(formData: FormData) {
         password: data.password,
       }),
     successMessage: '¡Contraseña actualizada exitosamente!',
-    errorMessage: 'Error al actualizar la contraseña. Inténtalo de nuevo.',
   });
 }
