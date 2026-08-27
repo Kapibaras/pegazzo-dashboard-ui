@@ -6,6 +6,8 @@ import SingletonAPIClient from '@/api/clients/singleton';
 import { ErrorCard } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
+import isAPIErrorType from '@/api/errors';
+import findErrorMessage from '@/errors/findErrorMessage';
 import BalanceService from '@/services/balance';
 import { ToastService } from '@/services/toast';
 import { Transaction } from '@/types/transaction';
@@ -54,11 +56,12 @@ const AutorizacionesView = () => {
       });
       setState({ status: 'success', transactions: response.transactions });
     } catch (err) {
-      const apiErr = err as { status_code?: number; detail?: string };
-      setState({
-        status: 'error',
-        message: apiErr?.detail ?? 'No se pudieron cargar las transacciones pendientes.',
-      });
+      if (isAPIErrorType(err)) {
+        const { message } = findErrorMessage({ status: err.status_code, detail: err.detail }, ['balance', 'common']);
+        setState({ status: 'error', message });
+      } else {
+        setState({ status: 'error', message: 'Ocurrió un error desconocido. Inténtalo de nuevo más tarde.' });
+      }
     }
   }, [service]);
 
@@ -93,11 +96,11 @@ const AutorizacionesView = () => {
       removeRow(reference);
       ToastService.success('Transacción aprobada', `La transacción ${reference} fue aprobada.`);
     } catch (err) {
-      const apiErr = err as { status_code?: number; detail?: string };
-      handleApiError(
-        { status: apiErr?.status_code ?? 500, detail: apiErr?.detail ?? `No se pudo aprobar ${reference}.` },
-        ['balance', 'common'],
-      );
+      if (isAPIErrorType(err)) {
+        handleApiError({ status: err.status_code, detail: err.detail }, ['balance', 'common']);
+      } else {
+        handleApiError({ status: 500, detail: 'Unknown error' }, ['balance', 'common']);
+      }
     } finally {
       markBusy(reference, false);
     }
@@ -110,11 +113,11 @@ const AutorizacionesView = () => {
       removeRow(reference);
       setRejectFollowup({ reference });
     } catch (err) {
-      const apiErr = err as { status_code?: number; detail?: string };
-      handleApiError(
-        { status: apiErr?.status_code ?? 500, detail: apiErr?.detail ?? `No se pudo rechazar ${reference}.` },
-        ['balance', 'common'],
-      );
+      if (isAPIErrorType(err)) {
+        handleApiError({ status: err.status_code, detail: err.detail }, ['balance', 'common']);
+      } else {
+        handleApiError({ status: 500, detail: 'Unknown error' }, ['balance', 'common']);
+      }
     } finally {
       markBusy(reference, false);
     }
@@ -132,11 +135,11 @@ const AutorizacionesView = () => {
       await service.deleteTransaction(reference);
       ToastService.success('Transacción eliminada', `La transacción ${reference} fue eliminada.`);
     } catch (err) {
-      const apiErr = err as { status_code?: number; detail?: string };
-      handleApiError(
-        { status: apiErr?.status_code ?? 500, detail: apiErr?.detail ?? `No se pudo eliminar ${reference}.` },
-        ['balance', 'common'],
-      );
+      if (isAPIErrorType(err)) {
+        handleApiError({ status: err.status_code, detail: err.detail }, ['balance', 'common']);
+      } else {
+        handleApiError({ status: 500, detail: 'Unknown error' }, ['balance', 'common']);
+      }
     } finally {
       setIsDeleting(false);
       setRejectFollowup(null);

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Clock } from 'lucide-react';
 import { ErrorCard } from '@/components/common';
 import { getBalanceMetrics, getTransactionsCountAction } from '@/actions/balance';
+import findErrorMessage from '@/errors/findErrorMessage';
 import { useUser } from '@/contexts/UserProvider';
 import { BalanceMetricsSimple } from '@/types/balance';
 import AuthorizationCountCard from './AuthorizationCountCard';
@@ -29,7 +30,7 @@ const MONTH_NAMES = [
 
 type State =
   | { status: 'loading' }
-  | { status: 'error'; message: string }
+  | { status: 'error'; title: string; message: string }
   | { status: 'success'; data: BalanceMetricsSimple };
 
 const HomeDashboard = () => {
@@ -53,7 +54,11 @@ const HomeDashboard = () => {
     if (metricsResult.success) {
       setState({ status: 'success', data: metricsResult.data });
     } else {
-      setState({ status: 'error', message: metricsResult.message });
+      const resolved = findErrorMessage(
+        { status: metricsResult.status || 500, detail: metricsResult.detail || 'Unknown error' },
+        ['balance', 'common'],
+      );
+      setState({ status: 'error', title: resolved.title, message: resolved.message });
     }
 
     if (pendingResult.success) {
@@ -75,7 +80,7 @@ const HomeDashboard = () => {
         <div>
           <h1 className="typo-title">Bienvenido, {user.name}</h1>
         </div>
-        <ErrorCard title="No pudimos cargar tu resumen" message={state.message} onRetry={fetchMetrics} />
+        <ErrorCard title={state.title} message={state.message} onRetry={fetchMetrics} />
       </div>
     );
   }

@@ -98,7 +98,7 @@ export function UserForm({ mode, onSuccess, userId, name, surnames }: UserFormPr
       handleApiError(
         {
           status: result.status || 500,
-          detail: result.message || 'Error en la acción del usuario.',
+          detail: result.detail || 'Unknown error',
         },
         ['users', 'common'],
       );
