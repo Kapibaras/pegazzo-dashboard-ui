@@ -16,12 +16,11 @@ interface HandleUserActionProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action: (service: UserService, ...args: any[]) => Promise<unknown>;
   successMessage: string;
-  errorMessage: string;
 }
 
 interface HandleUserActionResult {
   success: boolean;
-  message?: string;
+  detail?: string;
   data?: unknown;
   errors?: Record<string, string[]>;
   status?: number;
@@ -38,7 +37,6 @@ export default async function handleUserAction({
   actionType,
   action,
   successMessage,
-  errorMessage,
 }: HandleUserActionProps): Promise<HandleUserActionResult> {
   const data = Object.fromEntries(formData) as Record<string, string>;
   const schema = schemaMap[actionType];
@@ -65,14 +63,14 @@ export default async function handleUserAction({
 
       revalidatePath('/dashboard/users');
 
-      return { success: true, message: successMessage, data: result };
+      return { success: true, detail: successMessage, data: result };
     },
     (error) => {
       console.error('Error en acción de usuario:', error);
       return {
         success: false,
         status: isAPIErrorType(error) ? error.status_code : 500,
-        message: isAPIErrorType(error) ? error.detail || errorMessage : errorMessage,
+        detail: isAPIErrorType(error) ? error.detail : 'Unknown error',
       };
     },
   );

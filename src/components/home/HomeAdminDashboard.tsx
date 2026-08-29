@@ -4,12 +4,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { Clock, XCircle } from 'lucide-react';
 import { getTransactionsCountAction } from '@/actions/balance';
 import { ErrorCard } from '@/components/common';
+import findErrorMessage from '@/errors/findErrorMessage';
 import { useUser } from '@/contexts/UserProvider';
 import AuthorizationCountCard from './AuthorizationCountCard';
 
 type CountsState =
   | { status: 'loading' }
-  | { status: 'error'; message: string }
+  | { status: 'error'; title: string; message: string }
   | { status: 'success'; pending: number; rejected: number };
 
 const MONTH_NAMES = [
@@ -43,11 +44,19 @@ const HomeAdminDashboard = () => {
     ]);
 
     if (!pendingRes.success) {
-      setState({ status: 'error', message: pendingRes.message });
+      const resolved = findErrorMessage(
+        { status: pendingRes.status || 500, detail: pendingRes.detail || 'Unknown error' },
+        ['balance', 'common'],
+      );
+      setState({ status: 'error', title: resolved.title, message: resolved.message });
       return;
     }
     if (!rejectedRes.success) {
-      setState({ status: 'error', message: rejectedRes.message });
+      const resolved = findErrorMessage(
+        { status: rejectedRes.status || 500, detail: rejectedRes.detail || 'Unknown error' },
+        ['balance', 'common'],
+      );
+      setState({ status: 'error', title: resolved.title, message: resolved.message });
       return;
     }
 
@@ -75,7 +84,7 @@ const HomeAdminDashboard = () => {
       </div>
 
       {state.status === 'error' ? (
-        <ErrorCard title="No pudimos cargar tu resumen" message={state.message} onRetry={fetchCounts} />
+        <ErrorCard title={state.title} message={state.message} onRetry={fetchCounts} />
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <AuthorizationCountCard

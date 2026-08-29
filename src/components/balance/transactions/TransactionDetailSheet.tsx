@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { Role } from '@/lib/schemas/userSchema';
 import { ToastService } from '@/services/toast';
 import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
+import isAPIErrorType from '@/api/errors';
 import SingletonAPIClient from '@/api/clients/singleton';
 import BalanceService from '@/services/balance';
 import TransactionForm from './TransactionForm';
@@ -94,11 +95,11 @@ const TransactionDetailSheet = ({
       onOpenChange(false);
       onRefetch();
     } catch (err) {
-      const apiErr = err as { status_code?: number; detail?: string };
-      handleApiError({ status: apiErr?.status_code ?? 500, detail: apiErr?.detail ?? 'Error al eliminar.' }, [
-        'balance',
-        'common',
-      ]);
+      if (isAPIErrorType(err)) {
+        handleApiError({ status: err.status_code, detail: err.detail }, ['balance', 'common']);
+      } else {
+        handleApiError({ status: 500, detail: 'Unknown error' }, ['balance', 'common']);
+      }
     } finally {
       setIsDeleting(false);
     }

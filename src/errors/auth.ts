@@ -35,4 +35,10 @@ export const AUTH_ERRORS = {
     backendDetail: 'No active session found to log out',
     message: 'No se encontró una sesión activa para cerrar.',
   },
+  USER_NOT_FOUND: {
+    status: 404,
+    backendDetail: 'User not found',
+    title: 'Credenciales inválidas',
+    message: 'El usuario o la contraseña son incorrectos.',
+  },
 };

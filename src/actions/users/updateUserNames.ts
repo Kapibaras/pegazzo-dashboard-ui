@@ -11,6 +11,5 @@ export default async function updateUserNamesAction(formData: FormData) {
         surnames: data.surnames,
       }),
     successMessage: '¡Usuario actualizado exitosamente!',
-    errorMessage: 'Error al actualizar el usuario. Inténtalo de nuevo.',
   });
 }

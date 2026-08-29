@@ -17,7 +17,7 @@ export default async function createTransactionAction(data: TransactionCreate) {
     (error) => ({
       success: false as const,
       status: isAPIErrorType(error) ? error.status_code : 500,
-      message: isAPIErrorType(error) ? error.detail : 'Error al crear la transacción.',
+      detail: isAPIErrorType(error) ? error.detail : 'Unknown error',
     }),
   );
 }

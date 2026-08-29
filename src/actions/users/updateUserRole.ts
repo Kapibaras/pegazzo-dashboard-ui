@@ -5,7 +5,7 @@ import { ScopedAPIClient } from '@/api';
 import { UserService } from '@/services';
 import { getCookiesServer } from '@/utils/cookies/server';
 import { Role } from '@/lib/schemas/userSchema';
-import { APIError, APIRequestFailed } from '@/api/errors';
+import isAPIErrorType from '@/api/errors';
 
 export default async function updateUserRoleAction(formData: FormData) {
   const username = formData.get('username') as string;
@@ -27,19 +27,10 @@ export default async function updateUserRoleAction(formData: FormData) {
     return { success: true };
   } catch (error: unknown) {
     console.error('Error updating user role:', error);
-
-    if (error instanceof APIError || error instanceof APIRequestFailed) {
-      return {
-        success: false,
-        status: error.status_code,
-        detail: error.detail || 'Error actualizando el rol.',
-      };
-    }
-
     return {
       success: false,
-      status: 500,
-      detail: error instanceof Error ? error.message : 'Error inesperado al actualizar el rol.',
+      status: isAPIErrorType(error) ? error.status_code : 500,
+      detail: isAPIErrorType(error) ? error.detail : 'Unknown error',
     };
   }
 }
