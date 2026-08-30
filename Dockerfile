@@ -6,6 +6,10 @@ RUN apk upgrade --no-cache
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
+
+ARG MONOLITH_API_BASE_URL
+ENV MONOLITH_API_BASE_URL=$MONOLITH_API_BASE_URL
+
 RUN npm run build
 
 FROM node:20-alpine AS runner
