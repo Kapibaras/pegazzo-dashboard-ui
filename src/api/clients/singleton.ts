@@ -1,6 +1,5 @@
 import axios from 'axios';
 import APIClientBase from './base';
-import CONFIG from '@/config';
 import { APIError, APIRequestFailed } from '../index';
 import { getCookie, getCookiesClient } from '@/utils/cookies';
 
@@ -9,7 +8,7 @@ export default class SingletonAPIClient extends APIClientBase {
 
   private constructor() {
     const axiosInstance = axios.create({
-      baseURL: CONFIG.BASE_URL,
+      baseURL: '/api/backend',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
