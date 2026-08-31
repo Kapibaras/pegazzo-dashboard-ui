@@ -2,9 +2,6 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   output: 'standalone',
-  env: {
-    MONOLITH_API_BASE_URL: process.env.MONOLITH_API_BASE_URL,
-  },
   async rewrites() {
     const apiUrl = process.env.MONOLITH_API_BASE_URL || 'http://localhost:8000';
     return [
