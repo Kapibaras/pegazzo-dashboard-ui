@@ -11,35 +11,28 @@ concurrency:
 jobs:
   build-and-push:
     name: Build & Push Image
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
-      - name: Build and push image on KVM
-        uses: appleboy/ssh-action@v1.2.0
+      - name: Build and push image
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           IMAGE: registry.pegazzoauto.com/pegazzo-dashboard
           WEBHOOK_URL: ${{ secrets.DOKPLOY_DASHBOARD_STAGING_WEBHOOK }}
-        with:
-          host: 2.24.115.10
-          username: pegazzo
-          key: ${{ secrets.KVM_SSH_KEY }}
-          command_timeout: 30m
-          envs: GH_TOKEN,IMAGE,WEBHOOK_URL
-          script: |
-            docker pull $IMAGE:main && \
-              docker tag $IMAGE:main $IMAGE:previous && \
-              docker push $IMAGE:previous || true
+        run: |
+          docker pull $IMAGE:main && \
+            docker tag $IMAGE:main $IMAGE:previous && \
+            docker push $IMAGE:previous || true
 
-            trap 'rm -rf /tmp/dashboard-build' EXIT
-            rm -rf /tmp/dashboard-build
-            git clone https://x-access-token:$GH_TOKEN@github.com/Kapibaras/pegazzo-dashboard-ui.git /tmp/dashboard-build
-            docker build -t $IMAGE:main /tmp/dashboard-build
-            docker push $IMAGE:main
-            rm -rf /tmp/dashboard-build
+          trap 'rm -rf /tmp/dashboard-build' EXIT
+          rm -rf /tmp/dashboard-build
+          git clone https://x-access-token:$GH_TOKEN@github.com/Kapibaras/pegazzo-dashboard-ui.git /tmp/dashboard-build
+          docker build -t $IMAGE:main /tmp/dashboard-build
+          docker push $IMAGE:main
+          rm -rf /tmp/dashboard-build
 
-            LOCAL_URL=$(echo "$WEBHOOK_URL" | sed 's|https://dokploy\.pegazzoauto\.com|http://localhost:3000|')
-            curl -fsSL -X POST "$LOCAL_URL"
+          LOCAL_URL=$(echo "$WEBHOOK_URL" | sed 's|https://dokploy\.pegazzoauto\.com|http://localhost:3000|')
+          curl -fsSL -X POST "$LOCAL_URL"
 
   deploy-staging:
     name: Deploy to Staging
@@ -54,5 +47,5 @@ jobs:
     steps:
       - name: Print deployed URL
         run: |
-          echo "✅ SUCCESS — Dashboard deployed to staging"
+          echo "SUCCESS — Dashboard deployed to staging"
           echo "   URL: https://staging.dashboard.pegazzoauto.com"

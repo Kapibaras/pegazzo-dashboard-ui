@@ -11,26 +11,19 @@ concurrency:
 jobs:
   retag:
     name: Retag Image
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
-      - name: Retag :main → :<tag> + :latest on KVM
-        uses: appleboy/ssh-action@v1.2.0
+      - name: Retag :main to :tag + :latest
         env:
           IMAGE: registry.pegazzoauto.com/pegazzo-dashboard
           TAG: ${{ github.event.release.tag_name }}
-        with:
-          host: 2.24.115.10
-          username: pegazzo
-          key: ${{ secrets.KVM_SSH_KEY }}
-          command_timeout: 10m
-          envs: IMAGE,TAG
-          script: |
-            docker pull $IMAGE:main
-            docker tag $IMAGE:main $IMAGE:$TAG
-            docker tag $IMAGE:main $IMAGE:latest
-            docker push $IMAGE:$TAG
-            docker push $IMAGE:latest
+        run: |
+          docker pull $IMAGE:main
+          docker tag $IMAGE:main $IMAGE:$TAG
+          docker tag $IMAGE:main $IMAGE:latest
+          docker push $IMAGE:$TAG
+          docker push $IMAGE:latest
 
   deploy-production:
     name: Deploy to Production
@@ -50,5 +43,5 @@ jobs:
 
       - name: Print deployed URL
         run: |
-          echo "✅ SUCCESS — Dashboard released to production"
+          echo "SUCCESS — Dashboard released to production"
           echo "   URL: https://dashboard.pegazzo.com"
