@@ -44,6 +44,17 @@ jobs:
           APP_NAME="dashboard-preview-pr-${PR_NUMBER}"
           DOMAIN="pr-${PR_NUMBER}.preview.pegazzoauto.com"
 
+          # Delete existing preview app for this PR if it exists (avoids accumulation on each push)
+          EXISTING=$(curl -s "$DOKPLOY_URL/api/project.all" -H "x-api-key: $DOKPLOY_TOKEN")
+          EXISTING_ID=$(echo $EXISTING | node -e "process.stdin.resume();let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const apps=JSON.parse(d)[0].environments[0].applications.filter(a=>a.name==='$APP_NAME');console.log(apps.map(a=>a.applicationId).join('\n'));}catch(e){}})")
+          for ID in $EXISTING_ID; do
+            curl -s -X POST "$DOKPLOY_URL/api/application.delete" \
+              -H "x-api-key: $DOKPLOY_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"applicationId\": \"$ID\"}"
+            echo "Cleaned up old preview app: $ID"
+          done
+
           # Create application
           APP_RESPONSE=$(curl -s -X POST "$DOKPLOY_URL/api/application.create" \
             -H "x-api-key: $DOKPLOY_TOKEN" \
