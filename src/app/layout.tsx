@@ -18,7 +18,7 @@ const sourceCodePro = Source_Code_Pro({
 });
 
 export const metadata: Metadata = {
-  title: 'Pegazzo | Preview',
+  title: 'Pegazzo',
   description: 'The management dashboard for Pegazzo',
   icons: {
     icon: [
