@@ -41,8 +41,6 @@ jobs:
           REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
           REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
         run: |
-          which jq || apk add --no-cache jq
-
           PR_NUMBER=${{ github.event.number }}
           TAG="pr-${PR_NUMBER}"
           APP_NAME="dashboard-preview-pr-${PR_NUMBER}"
@@ -50,7 +48,8 @@ jobs:
 
           # Delete existing preview app for this PR if it exists (avoids accumulation on each push)
           EXISTING_IDS=$(curl -s "$DOKPLOY_URL/api/project.all" -H "x-api-key: $DOKPLOY_TOKEN" | \
-            jq -r ".[0].environments[0].applications[] | select(.name == \"$APP_NAME\") | .applicationId")
+            sed 's/},{/}\n{/g' | grep "\"name\":\"$APP_NAME\"" | \
+            grep -o '"applicationId":"[^"]*"' | cut -d'"' -f4)
           for ID in $EXISTING_IDS; do
             curl -s -X POST "$DOKPLOY_URL/api/application.delete" \
               -H "x-api-key: $DOKPLOY_TOKEN" \
@@ -127,14 +126,13 @@ jobs:
         env:
           DOKPLOY_TOKEN: ${{ secrets.DOKPLOY_TOKEN }}
         run: |
-          which jq || apk add --no-cache jq
-
           PR_NUMBER=${{ github.event.number }}
           APP_NAME="dashboard-preview-pr-${PR_NUMBER}"
 
           # Find app ID by name in the project
           APP_ID=$(curl -s "$DOKPLOY_URL/api/project.all" -H "x-api-key: $DOKPLOY_TOKEN" | \
-            jq -r ".[0].environments[0].applications[] | select(.name == \"$APP_NAME\") | .applicationId")
+            sed 's/},{/}\n{/g' | grep "\"name\":\"$APP_NAME\"" | \
+            grep -o '"applicationId":"[^"]*"' | cut -d'"' -f4)
 
           if [ -n "$APP_ID" ] && [ "$APP_ID" != "null" ]; then
             curl -s -X POST "$DOKPLOY_URL/api/application.delete" \
