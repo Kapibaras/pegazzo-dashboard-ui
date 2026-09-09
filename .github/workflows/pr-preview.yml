@@ -52,32 +52,37 @@ jobs:
           echo "Created app: $APP_ID"
 
           # Configure Docker provider using stored registry credentials
-          curl -sf -X POST "$DOKPLOY_URL/api/application.saveDockerProvider" \
+          echo "--- saveDockerProvider ---"
+          curl -s -X POST "$DOKPLOY_URL/api/application.saveDockerProvider" \
             -H "x-api-key: $DOKPLOY_TOKEN" \
             -H "Content-Type: application/json" \
             -d "{
               \"applicationId\": \"$APP_ID\",
               \"dockerImage\": \"$IMAGE:$TAG\",
               \"registryId\": \"$REGISTRY_ID\"
-            }"
+            }" | tee /tmp/res1.json; echo ""
+          cat /tmp/res1.json | jq -e '.applicationId' > /dev/null || { echo "saveDockerProvider failed"; exit 1; }
 
           # Set environment variables
-          curl -sf -X POST "$DOKPLOY_URL/api/application.update" \
+          echo "--- application.update (env) ---"
+          curl -s -X POST "$DOKPLOY_URL/api/application.update" \
             -H "x-api-key: $DOKPLOY_TOKEN" \
             -H "Content-Type: application/json" \
             -d "{
               \"applicationId\": \"$APP_ID\",
               \"env\": \"MONOLITH_API_BASE_URL=https://staging.api.pegazzoauto.com\nNEXT_SESSION_SECRET=${NEXT_SESSION_SECRET}\nENVIRONMENT=staging\"
-            }"
+            }" | tee /tmp/res2.json; echo ""
 
           # Deploy
-          curl -sf -X POST "$DOKPLOY_URL/api/application.deploy" \
+          echo "--- application.deploy ---"
+          curl -s -X POST "$DOKPLOY_URL/api/application.deploy" \
             -H "x-api-key: $DOKPLOY_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"applicationId\": \"$APP_ID\"}"
+            -d "{\"applicationId\": \"$APP_ID\"}" | tee /tmp/res3.json; echo ""
 
           # Create domain
-          curl -sf -X POST "$DOKPLOY_URL/api/domain.create" \
+          echo "--- domain.create ---"
+          curl -s -X POST "$DOKPLOY_URL/api/domain.create" \
             -H "x-api-key: $DOKPLOY_TOKEN" \
             -H "Content-Type: application/json" \
             -d "{
@@ -87,7 +92,7 @@ jobs:
               \"certificateType\": \"letsencrypt\",
               \"port\": 3000,
               \"path\": \"/\"
-            }"
+            }" | tee /tmp/res4.json; echo ""
 
           # Comment on PR
           gh pr comment $PR_NUMBER \
