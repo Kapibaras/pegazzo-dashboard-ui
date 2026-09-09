@@ -14,7 +14,7 @@ env:
 jobs:
   deploy-preview:
     name: Deploy Preview
-    if: github.event.action != 'closed'
+    if: ${{ github.event.action != 'closed' }}
     runs-on: self-hosted
 
     steps:
@@ -100,7 +100,7 @@ jobs:
 
   cleanup-preview:
     name: Cleanup Preview
-    if: github.event.action == 'closed'
+    if: ${{ github.event.action == 'closed' }}
     runs-on: self-hosted
 
     steps:
