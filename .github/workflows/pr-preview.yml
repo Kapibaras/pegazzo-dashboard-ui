@@ -9,7 +9,6 @@ env:
   IMAGE: registry.pegazzoauto.com/pegazzo-dashboard
   DOKPLOY_URL: https://dokploy.pegazzoauto.com
   ENVIRONMENT_ID: crDU2qwVwHyWxt7MA6pAH
-  REGISTRY_ID: jZWcFpEWGMSFYD2A-3eb2
 
 jobs:
   deploy-preview:
@@ -46,16 +45,14 @@ jobs:
           DOMAIN="pr-${PR_NUMBER}.preview.pegazzoauto.com"
 
           # Create application
-          APP_RESPONSE=$(curl -sf -X POST "$DOKPLOY_URL/api/application.create" \
+          APP_RESPONSE=$(curl -s -X POST "$DOKPLOY_URL/api/application.create" \
             -H "x-api-key: $DOKPLOY_TOKEN" \
             -H "Content-Type: application/json" \
             -d "{\"name\": \"$APP_NAME\", \"environmentId\": \"$ENVIRONMENT_ID\"}")
-
           APP_ID=$(echo $APP_RESPONSE | jq -r '.applicationId')
           echo "Created app: $APP_ID"
 
-          # Configure Docker provider with explicit registry credentials
-          echo "--- saveDockerProvider ---"
+          # Configure Docker provider
           curl -s -X POST "$DOKPLOY_URL/api/application.saveDockerProvider" \
             -H "x-api-key: $DOKPLOY_TOKEN" \
             -H "Content-Type: application/json" \
@@ -65,28 +62,24 @@ jobs:
               \"username\": \"$REGISTRY_USER\",
               \"password\": \"$REGISTRY_PASSWORD\",
               \"registryUrl\": \"$REGISTRY_URL\"
-            }" | tee /tmp/res1.json; echo ""
-          grep -q "true" /tmp/res1.json || { echo "saveDockerProvider failed"; cat /tmp/res1.json; exit 1; }
+            }"
 
           # Set environment variables
-          echo "--- application.update (env) ---"
           curl -s -X POST "$DOKPLOY_URL/api/application.update" \
             -H "x-api-key: $DOKPLOY_TOKEN" \
             -H "Content-Type: application/json" \
             -d "{
               \"applicationId\": \"$APP_ID\",
               \"env\": \"MONOLITH_API_BASE_URL=https://staging.api.pegazzoauto.com\nNEXT_SESSION_SECRET=${NEXT_SESSION_SECRET}\nENVIRONMENT=staging\"
-            }" | tee /tmp/res2.json; echo ""
+            }"
 
           # Deploy
-          echo "--- application.deploy ---"
           curl -s -X POST "$DOKPLOY_URL/api/application.deploy" \
             -H "x-api-key: $DOKPLOY_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"applicationId\": \"$APP_ID\"}" | tee /tmp/res3.json; echo ""
+            -d "{\"applicationId\": \"$APP_ID\"}"
 
           # Create domain
-          echo "--- domain.create ---"
           curl -s -X POST "$DOKPLOY_URL/api/domain.create" \
             -H "x-api-key: $DOKPLOY_TOKEN" \
             -H "Content-Type: application/json" \
@@ -97,12 +90,17 @@ jobs:
               \"certificateType\": \"letsencrypt\",
               \"port\": 3000,
               \"path\": \"/\"
-            }" | tee /tmp/res4.json; echo ""
+            }"
 
-          # Comment on PR
-          gh pr comment $PR_NUMBER \
-            --repo Kapibaras/pegazzo-dashboard-ui \
-            --body "$(printf '🚀 **Preview deployment ready!**\n\n**URL:** https://%s\n\n> Uses staging as backend. Automatically deleted when this PR is closed.' "${DOMAIN}")"
+          # Comment on PR using GitHub REST API (gh CLI not available on runner)
+          BODY="$(printf '🚀 **Preview deployment ready!**\n\n**URL:** https://%s\n\n> Uses staging as backend. Automatically deleted when this PR is closed.' "${DOMAIN}")"
+          curl -s -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Content-Type: application/json" \
+            "https://api.github.com/repos/Kapibaras/pegazzo-dashboard-ui/issues/${PR_NUMBER}/comments" \
+            -d "{\"body\": $(echo "$BODY" | jq -Rs .)}"
+
+          echo "Preview deployed: https://${DOMAIN}"
 
   cleanup-preview:
     name: Cleanup Preview
@@ -118,14 +116,14 @@ jobs:
           APP_NAME="dashboard-preview-pr-${PR_NUMBER}"
 
           # Find app ID by name in the project
-          APPS=$(curl -sf "$DOKPLOY_URL/api/project.all" \
+          APPS=$(curl -s "$DOKPLOY_URL/api/project.all" \
             -H "x-api-key: $DOKPLOY_TOKEN")
 
           APP_ID=$(echo $APPS | jq -r \
             ".[0].environments[0].applications[] | select(.name == \"$APP_NAME\") | .applicationId")
 
           if [ -n "$APP_ID" ] && [ "$APP_ID" != "null" ]; then
-            curl -sf -X POST "$DOKPLOY_URL/api/application.delete" \
+            curl -s -X POST "$DOKPLOY_URL/api/application.delete" \
               -H "x-api-key: $DOKPLOY_TOKEN" \
               -H "Content-Type: application/json" \
               -d "{\"applicationId\": \"$APP_ID\"}"
