@@ -92,11 +92,7 @@ jobs:
           # Comment on PR
           gh pr comment $PR_NUMBER \
             --repo Kapibaras/pegazzo-dashboard-ui \
-            --body "🚀 **Preview deployment ready!**
-
-**URL:** https://${DOMAIN}
-
-> Uses staging as backend. Automatically deleted when this PR is closed."
+            --body "$(printf '🚀 **Preview deployment ready!**\n\n**URL:** https://%s\n\n> Uses staging as backend. Automatically deleted when this PR is closed.' "${DOMAIN}")"
 
   cleanup-preview:
     name: Cleanup Preview
