@@ -36,6 +36,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOKPLOY_TOKEN: ${{ secrets.DOKPLOY_TOKEN }}
           NEXT_SESSION_SECRET: ${{ secrets.NEXT_SESSION_SECRET }}
+          REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
+          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+          REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
         run: |
           PR_NUMBER=${{ github.event.number }}
           TAG="pr-${PR_NUMBER}"
@@ -51,7 +54,7 @@ jobs:
           APP_ID=$(echo $APP_RESPONSE | jq -r '.applicationId')
           echo "Created app: $APP_ID"
 
-          # Configure Docker provider using stored registry credentials
+          # Configure Docker provider with explicit registry credentials
           echo "--- saveDockerProvider ---"
           curl -s -X POST "$DOKPLOY_URL/api/application.saveDockerProvider" \
             -H "x-api-key: $DOKPLOY_TOKEN" \
@@ -59,7 +62,9 @@ jobs:
             -d "{
               \"applicationId\": \"$APP_ID\",
               \"dockerImage\": \"$IMAGE:$TAG\",
-              \"registryId\": \"$REGISTRY_ID\"
+              \"username\": \"$REGISTRY_USER\",
+              \"password\": \"$REGISTRY_PASSWORD\",
+              \"registryUrl\": \"$REGISTRY_URL\"
             }" | tee /tmp/res1.json; echo ""
           cat /tmp/res1.json | jq -e '.applicationId' > /dev/null || { echo "saveDockerProvider failed"; exit 1; }
 
