@@ -41,15 +41,17 @@ jobs:
           REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
           REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
         run: |
+          which jq || apk add --no-cache jq
+
           PR_NUMBER=${{ github.event.number }}
           TAG="pr-${PR_NUMBER}"
           APP_NAME="dashboard-preview-pr-${PR_NUMBER}"
           DOMAIN="pr-${PR_NUMBER}.preview.pegazzoauto.com"
 
           # Delete existing preview app for this PR if it exists (avoids accumulation on each push)
-          EXISTING=$(curl -s "$DOKPLOY_URL/api/project.all" -H "x-api-key: $DOKPLOY_TOKEN")
-          EXISTING_ID=$(echo $EXISTING | node -e "process.stdin.resume();let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const apps=JSON.parse(d)[0].environments[0].applications.filter(a=>a.name==='$APP_NAME');console.log(apps.map(a=>a.applicationId).join('\n'));}catch(e){}})")
-          for ID in $EXISTING_ID; do
+          EXISTING_IDS=$(curl -s "$DOKPLOY_URL/api/project.all" -H "x-api-key: $DOKPLOY_TOKEN" | \
+            jq -r ".[0].environments[0].applications[] | select(.name == \"$APP_NAME\") | .applicationId")
+          for ID in $EXISTING_IDS; do
             curl -s -X POST "$DOKPLOY_URL/api/application.delete" \
               -H "x-api-key: $DOKPLOY_TOKEN" \
               -H "Content-Type: application/json" \
@@ -125,15 +127,14 @@ jobs:
         env:
           DOKPLOY_TOKEN: ${{ secrets.DOKPLOY_TOKEN }}
         run: |
+          which jq || apk add --no-cache jq
+
           PR_NUMBER=${{ github.event.number }}
           APP_NAME="dashboard-preview-pr-${PR_NUMBER}"
 
           # Find app ID by name in the project
-          APPS=$(curl -s "$DOKPLOY_URL/api/project.all" \
-            -H "x-api-key: $DOKPLOY_TOKEN")
-
-          APP_ID=$(echo $APPS | jq -r \
-            ".[0].environments[0].applications[] | select(.name == \"$APP_NAME\") | .applicationId")
+          APP_ID=$(curl -s "$DOKPLOY_URL/api/project.all" -H "x-api-key: $DOKPLOY_TOKEN" | \
+            jq -r ".[0].environments[0].applications[] | select(.name == \"$APP_NAME\") | .applicationId")
 
           if [ -n "$APP_ID" ] && [ "$APP_ID" != "null" ]; then
             curl -s -X POST "$DOKPLOY_URL/api/application.delete" \
