@@ -1,2 +1,12 @@
 export { default as DocumentUpload } from './DocumentUpload';
 export type { DocumentUploadProps } from './DocumentUpload';
+export { default as ArchiveVehicleDialog } from './ArchiveVehicleDialog';
+export { default as VehicleActionsMenu } from './VehicleActionsMenu';
+export { default as VehicleCard } from './VehicleCard';
+export { default as VehicleEmptyState } from './VehicleEmptyState';
+export { default as VehicleFilters } from './VehicleFilters';
+export { default as VehicleListSkeleton } from './VehicleListSkeleton';
+export { default as VehicleListView } from './VehicleListView';
+export { default as VehiclePagination } from './VehiclePagination';
+export { default as VehicleStatusBadge } from './VehicleStatusBadge';
+export { default as VehicleTable } from './VehicleTable';
