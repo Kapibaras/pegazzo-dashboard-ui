@@ -18,3 +18,6 @@ export { default as VehicleDetailActions } from './VehicleDetailActions';
 export { default as VehicleGallery } from './VehicleGallery';
 export { default as VehicleInfoCard } from './VehicleInfoCard';
 export { default as VehicleStatCard } from './VehicleStatCard';
+export { default as ImageUpload } from './ImageUpload';
+export { default as SearchCombobox } from './SearchCombobox';
+export { default as VehicleWizard } from './wizard/VehicleWizard';
