@@ -4,6 +4,7 @@ import { Control } from 'react-hook-form';
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { fieldClass } from '@/lib/formField';
 import { cn } from '@/lib/utils';
 import { VehicleFormValues } from '@/lib/schemas/vehicleSchema';
 
@@ -61,7 +62,7 @@ export const TextField = ({
               disabled={disabled}
               maxLength={maxLength}
               autoComplete="off"
-              className={cn('bg-surface-400 border-surface-600 h-9', mono && 'font-numbers', suffix && 'pr-14')}
+              className={fieldClass({ mono, className: cn('w-full', suffix && 'pr-16') })}
             />
             {suffix && (
               <span className="text-carbon-200 pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-xs">{suffix}</span>
@@ -94,7 +95,7 @@ export const SelectField = ({ control, name, label, options, placeholder, disabl
         <FormLabel className="text-carbon-400 text-sm font-medium">{label}</FormLabel>
         <Select value={field.value || undefined} onValueChange={field.onChange} disabled={disabled}>
           <FormControl>
-            <SelectTrigger className="bg-surface-400 border-surface-600 w-full cursor-pointer">
+            <SelectTrigger className={fieldClass({ className: 'w-full cursor-pointer' })}>
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>
           </FormControl>

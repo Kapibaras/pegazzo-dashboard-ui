@@ -5,6 +5,7 @@ import { Check, ChevronsUpDown, Plus, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { fieldClass } from '@/lib/formField';
 import { cn } from '@/lib/utils';
 
 export type ComboboxOption = { value: string; label: string; description?: string };
@@ -72,11 +73,13 @@ const SearchCombobox = ({
           aria-invalid={invalid}
           aria-label={ariaLabel}
           disabled={disabled || isLoading}
-          className={cn(
-            'bg-surface-400 border-surface-600 h-9 w-full cursor-pointer justify-between px-3 font-normal',
-            !selected && 'text-muted-foreground',
-            invalid && 'border-error-300',
-          )}
+          className={fieldClass({
+            className: cn(
+              'hover:bg-surface-400 w-full cursor-pointer justify-between font-normal has-[>svg]:px-4.5',
+              !selected && 'text-muted-foreground',
+              invalid && 'border-error-300',
+            ),
+          })}
         >
           <span className="truncate">{isLoading ? 'Cargando…' : (selected?.label ?? placeholder)}</span>
           <ChevronsUpDown className="size-4 shrink-0 opacity-50" aria-hidden />

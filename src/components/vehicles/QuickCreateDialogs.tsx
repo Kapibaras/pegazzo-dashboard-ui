@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { normalizeApiError } from '@/helpers/apiError';
+import { fieldClass } from '@/lib/formField';
 import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
 import VehicleService from '@/services/vehicle';
 import { ToastService } from '@/services/toast';
@@ -107,6 +108,7 @@ const QuickCreateDialog = <T,>({
                   maxLength={field.maxLength}
                   placeholder={field.placeholder}
                   aria-invalid={!!errors[field.name]}
+                  className={fieldClass()}
                   onChange={(event) => setValues((prev) => ({ ...prev, [field.name]: event.target.value }))}
                 />
                 {errors[field.name] && (

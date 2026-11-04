@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
+import { TEXTAREA_CLASS } from '@/lib/formField';
 import { VehicleFormValues } from '@/lib/schemas/vehicleSchema';
 import useVehicleCatalogs from '@/hooks/vehicles/useVehicleCatalogs';
 import { CreateAssociateDialog } from '../QuickCreateDialogs';
@@ -60,7 +61,7 @@ const AssociateStep = ({ form, catalogs }: AssociateStepProps) => {
                 Notas adicionales <span className="text-carbon-200 font-normal">(opcional)</span>
               </FormLabel>
               <FormControl>
-                <Textarea {...field} rows={4} maxLength={1000} className="bg-surface-400 border-surface-600" />
+                <Textarea {...field} rows={4} maxLength={1000} className={TEXTAREA_CLASS} />
               </FormControl>
               <FormDescription className="text-xs">{field.value.length}/1000</FormDescription>
               <FormMessage />
