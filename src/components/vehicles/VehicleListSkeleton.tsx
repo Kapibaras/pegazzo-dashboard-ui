@@ -68,6 +68,7 @@ const TableSkeleton = () => (
   </div>
 );
 
-const VehicleListSkeleton = ({ view }: { view: VehicleView }) => (view === 'grid' ? <GridSkeleton /> : <TableSkeleton />);
+const VehicleListSkeleton = ({ view }: { view: VehicleView }) =>
+  view === 'grid' ? <GridSkeleton /> : <TableSkeleton />;
 
 export default VehicleListSkeleton;

@@ -20,7 +20,13 @@ type ArchiveVehicleDialogProps = {
   onConfirm: () => void;
 };
 
-const ArchiveVehicleDialog = ({ open, onOpenChange, vehicleName, isArchiving, onConfirm }: ArchiveVehicleDialogProps) => (
+const ArchiveVehicleDialog = ({
+  open,
+  onOpenChange,
+  vehicleName,
+  isArchiving,
+  onConfirm,
+}: ArchiveVehicleDialogProps) => (
   <AlertDialog open={open} onOpenChange={onOpenChange}>
     <AlertDialogContent>
       <AlertDialogHeader>

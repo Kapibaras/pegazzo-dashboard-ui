@@ -94,7 +94,10 @@ const AdminStep = ({ form, catalogs }: AdminStepProps) => {
                 <FormControl>
                   <SearchCombobox
                     value={field.value}
-                    options={catalogs.insurances.map((insurance) => ({ value: String(insurance.id), label: insurance.name }))}
+                    options={catalogs.insurances.map((insurance) => ({
+                      value: String(insurance.id),
+                      label: insurance.name,
+                    }))}
                     onSelect={(value) => field.onChange(value)}
                     placeholder="Selecciona una aseguradora"
                     searchPlaceholder="Buscar aseguradora…"
@@ -119,7 +122,14 @@ const AdminStep = ({ form, catalogs }: AdminStepProps) => {
       <StepCard title="Registro y facturación">
         <FieldGrid>
           <TextField control={control} name="unitValue" label="Valor de unidad" inputMode="decimal" suffix="MXN" mono />
-          <TextField control={control} name="unitBillingValue" label="Valor de facturación" inputMode="decimal" suffix="MXN" mono />
+          <TextField
+            control={control}
+            name="unitBillingValue"
+            label="Valor de facturación"
+            inputMode="decimal"
+            suffix="MXN"
+            mono
+          />
           <TextField control={control} name="billNumber" label="Número de factura" maxLength={30} mono />
           <TextField control={control} name="publicVehicleRegistry" label="RPV" maxLength={30} mono />
           <TextField control={control} name="altaPublicVehicleRegistry" label="Fecha de alta RPV" type="date" mono />
@@ -139,8 +149,22 @@ const AdminStep = ({ form, catalogs }: AdminStepProps) => {
           <FieldGrid>
             <TextField control={control} name="financingAgency" label="Agencia" maxLength={100} />
             <TextField control={control} name="financingPurchaseDate" label="Fecha de compra" type="date" mono />
-            <TextField control={control} name="financingTermMonths" label="Plazo" inputMode="numeric" suffix="meses" mono />
-            <TextField control={control} name="financingRemainingAmount" label="Monto restante" inputMode="decimal" suffix="MXN" mono />
+            <TextField
+              control={control}
+              name="financingTermMonths"
+              label="Plazo"
+              inputMode="numeric"
+              suffix="meses"
+              mono
+            />
+            <TextField
+              control={control}
+              name="financingRemainingAmount"
+              label="Monto restante"
+              inputMode="decimal"
+              suffix="MXN"
+              mono
+            />
           </FieldGrid>
         )}
       </StepCard>
@@ -156,7 +180,13 @@ const AdminStep = ({ form, catalogs }: AdminStepProps) => {
         />
         <FieldGrid>
           <TextField control={control} name="legalOwnerName" label="Nombre" maxLength={50} disabled={pegazzoOwner} />
-          <TextField control={control} name="legalOwnerSurnames" label="Apellidos" maxLength={100} disabled={pegazzoOwner} />
+          <TextField
+            control={control}
+            name="legalOwnerSurnames"
+            label="Apellidos"
+            maxLength={100}
+            disabled={pegazzoOwner}
+          />
         </FieldGrid>
       </StepCard>
 

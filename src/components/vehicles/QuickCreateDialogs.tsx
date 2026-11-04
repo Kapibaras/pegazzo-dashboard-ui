@@ -4,7 +4,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { SingletonAPIClient } from '@/api';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { normalizeApiError } from '@/helpers/apiError';
@@ -121,10 +128,20 @@ const QuickCreateDialog = <T,>({
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" disabled={isSaving} onClick={() => onOpenChange(false)} className="cursor-pointer">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isSaving}
+              onClick={() => onOpenChange(false)}
+              className="cursor-pointer"
+            >
               Cancelar
             </Button>
-            <Button type="submit" disabled={isSaving} className="bg-terciary-500 text-primary-100 hover:bg-primary-800 cursor-pointer">
+            <Button
+              type="submit"
+              disabled={isSaving}
+              className="bg-terciary-500 text-primary-100 hover:bg-primary-800 cursor-pointer"
+            >
               {isSaving && <Loader2 className="size-4 animate-spin" aria-hidden />}
               {submitLabel}
             </Button>
@@ -171,7 +188,10 @@ export const CreateModelDialog = ({ initialMake, ...props }: CreatedProps<Vehicl
   );
 };
 
-export const CreateInsuranceDialog = ({ initialName, ...props }: CreatedProps<Insurance> & { initialName?: string }) => {
+export const CreateInsuranceDialog = ({
+  initialName,
+  ...props
+}: CreatedProps<Insurance> & { initialName?: string }) => {
   const service = useService();
   const initialValues = useMemo(() => ({ name: initialName ?? '' }), [initialName]);
 
@@ -201,7 +221,10 @@ export const CreateInsuranceDialog = ({ initialName, ...props }: CreatedProps<In
  * The design also asked for an optional email, but the backend `AssociateSchema` has no email field, so it is
  * left out until the API supports it.
  */
-export const CreateAssociateDialog = ({ initialName, ...props }: CreatedProps<Associate> & { initialName?: string }) => {
+export const CreateAssociateDialog = ({
+  initialName,
+  ...props
+}: CreatedProps<Associate> & { initialName?: string }) => {
   const service = useService();
   const initialValues = useMemo(() => ({ name: initialName ?? '' }), [initialName]);
 

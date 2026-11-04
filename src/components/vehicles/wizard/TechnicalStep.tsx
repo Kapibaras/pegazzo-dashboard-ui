@@ -17,7 +17,10 @@ const TechnicalStep = ({ form, photos, onPhotosChange }: TechnicalStepProps) => 
 
   return (
     <div className="flex flex-col gap-5">
-      <StepCard title="Datos técnicos" description="Estos datos se contrastarán con los documentos del coche: captúralos con cuidado.">
+      <StepCard
+        title="Datos técnicos"
+        description="Estos datos se contrastarán con los documentos del coche: captúralos con cuidado."
+      >
         <FieldGrid>
           <TextField control={control} name="vin" label="VIN" placeholder="17 caracteres" maxLength={17} mono />
           <TextField control={control} name="plate" label="Placa" placeholder="ABC-123-D" maxLength={10} mono />
@@ -25,7 +28,14 @@ const TechnicalStep = ({ form, photos, onPhotosChange }: TechnicalStepProps) => 
           <TextField control={control} name="odometer" label="Odómetro" inputMode="numeric" suffix="km" mono />
           <TextField control={control} name="doorsNumber" label="Puertas" inputMode="numeric" mono />
           <TextField control={control} name="passengersNumber" label="Pasajeros" inputMode="numeric" mono />
-          <TextField control={control} name="tireSpecification" label="Llantas" placeholder="185/65 R15" maxLength={20} mono />
+          <TextField
+            control={control}
+            name="tireSpecification"
+            label="Llantas"
+            placeholder="185/65 R15"
+            maxLength={20}
+            mono
+          />
         </FieldGrid>
       </StepCard>
 
@@ -37,7 +47,10 @@ const TechnicalStep = ({ form, photos, onPhotosChange }: TechnicalStepProps) => 
         </FieldGrid>
       </StepCard>
 
-      <StepCard title="Fotos del vehículo" description={`Hasta ${MAX_VEHICLE_PHOTOS} fotos. Se suben al crear el coche.`}>
+      <StepCard
+        title="Fotos del vehículo"
+        description={`Hasta ${MAX_VEHICLE_PHOTOS} fotos. Se suben al crear el coche.`}
+      >
         <ImageUpload
           label="Fotos"
           items={photos}

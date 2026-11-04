@@ -87,7 +87,10 @@ const SearchCombobox = ({
       </PopoverTrigger>
       <PopoverContent align="start" className="w-[var(--radix-popover-trigger-width)] min-w-64 p-2">
         <div className="relative mb-2">
-          <Search className="text-carbon-200 pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2" aria-hidden />
+          <Search
+            className="text-carbon-200 pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2"
+            aria-hidden
+          />
           <Input
             autoFocus
             value={query}
@@ -110,10 +113,17 @@ const SearchCombobox = ({
                 }}
                 className="hover:bg-primary-50 focus-visible:bg-primary-50 flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none"
               >
-                <Check className={cn('text-success-500 size-4 shrink-0', option.value === value ? 'opacity-100' : 'opacity-0')} />
+                <Check
+                  className={cn(
+                    'text-success-500 size-4 shrink-0',
+                    option.value === value ? 'opacity-100' : 'opacity-0',
+                  )}
+                />
                 <span className="min-w-0 flex-1">
                   <span className="text-carbon-500 block truncate">{option.label}</span>
-                  {option.description && <span className="text-carbon-200 block truncate text-xs">{option.description}</span>}
+                  {option.description && (
+                    <span className="text-carbon-200 block truncate text-xs">{option.description}</span>
+                  )}
                 </span>
               </button>
             </li>

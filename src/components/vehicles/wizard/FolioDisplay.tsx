@@ -3,10 +3,20 @@ import { cn } from '@/lib/utils';
 const FOLIO_PATTERN = /^([A-Z]+)-([A-Z]+)-(.+?)\(([^)]+)\)-(\d+)$/;
 
 const SEGMENTS = [
-  { key: 'owner', label: 'Propietario', hint: 'S socio · US nosotros (Pedro/Gaby) · PG Pegazzo', className: 'bg-primary-100 text-primary-900' },
+  {
+    key: 'owner',
+    label: 'Propietario',
+    hint: 'S socio · US nosotros (Pedro/Gaby) · PG Pegazzo',
+    className: 'bg-primary-100 text-primary-900',
+  },
   { key: 'associate', label: 'Socio', hint: 'Iniciales del socio', className: 'bg-success-50 text-success-700' },
   { key: 'car', label: 'Coche', hint: 'Abreviatura del modelo', className: 'bg-warning-100 text-warning-700' },
-  { key: 'transmission', label: 'Transmisión', hint: 'TM manual · TA automática', className: 'bg-secondary-50 text-carbon-400' },
+  {
+    key: 'transmission',
+    label: 'Transmisión',
+    hint: 'TM manual · TA automática',
+    className: 'bg-secondary-50 text-carbon-400',
+  },
   { key: 'consecutive', label: 'Consecutivo', hint: 'Coches de ese socio', className: 'bg-error-50 text-error-700' },
 ] as const;
 
@@ -23,7 +33,10 @@ const FolioDisplay = ({ folio, className }: { folio: string; className?: string 
 
   return (
     <div className={cn('flex flex-col gap-4', className)}>
-      <p className="font-numbers flex flex-wrap items-center gap-1 text-2xl font-semibold" aria-label={`Folio ${folio}`}>
+      <p
+        className="font-numbers flex flex-wrap items-center gap-1 text-2xl font-semibold"
+        aria-label={`Folio ${folio}`}
+      >
         {parts.map((part, index) => (
           <span key={SEGMENTS[index].key} className="flex items-center gap-1">
             {index > 0 && <span className="text-carbon-200">{index === 4 ? '-' : index === 3 ? '' : '-'}</span>}

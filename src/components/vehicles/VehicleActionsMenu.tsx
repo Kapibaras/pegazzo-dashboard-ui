@@ -5,7 +5,12 @@ import Link from 'next/link';
 import { Archive, ArchiveRestore, MoreVertical, Pencil } from 'lucide-react';
 import { archiveVehicleAction, unarchiveVehicleAction } from '@/actions/vehicles';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useUser } from '@/contexts/UserProvider';
 import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
 import { Role } from '@/lib/schemas/userSchema';

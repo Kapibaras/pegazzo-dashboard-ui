@@ -22,7 +22,12 @@ const VehicleInfoCard = ({ icon: Icon, title, rows, badge, chipClassName, classN
   >
     <header className="flex items-center justify-between gap-3">
       <div className="flex items-center gap-3">
-        <span className={cn('bg-primary-50 text-primary-800 flex size-9 items-center justify-center rounded-lg', chipClassName)}>
+        <span
+          className={cn(
+            'bg-primary-50 text-primary-800 flex size-9 items-center justify-center rounded-lg',
+            chipClassName,
+          )}
+        >
           <Icon className="size-[18px]" aria-hidden />
         </span>
         <h2 className="text-carbon-500 text-base font-bold">{title}</h2>

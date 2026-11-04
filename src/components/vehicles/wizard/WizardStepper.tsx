@@ -64,7 +64,7 @@ const WizardStepper = ({
               <button
                 type="button"
                 onClick={() => onStepClick?.(index)}
-                className="flex cursor-pointer items-center gap-2.5 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-primary-700"
+                className="focus-visible:ring-primary-700 flex cursor-pointer items-center gap-2.5 rounded-md outline-none focus-visible:ring-2"
               >
                 {content}
               </button>
@@ -74,7 +74,10 @@ const WizardStepper = ({
               </div>
             )}
             {index < steps.length - 1 && (
-              <span aria-hidden className={cn('mx-3 h-0.5 flex-1 rounded', isDone ? 'bg-success-500' : 'bg-surface-600')} />
+              <span
+                aria-hidden
+                className={cn('mx-3 h-0.5 flex-1 rounded', isDone ? 'bg-success-500' : 'bg-surface-600')}
+              />
             )}
           </li>
         );

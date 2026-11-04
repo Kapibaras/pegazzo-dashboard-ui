@@ -21,7 +21,10 @@ const AssociateStep = ({ form, catalogs }: AssociateStepProps) => {
 
   return (
     <div className="flex flex-col gap-5">
-      <StepCard title="Socio" description="El socio que aporta el coche. Es obligatorio porque el folio interno depende de él.">
+      <StepCard
+        title="Socio"
+        description="El socio que aporta el coche. Es obligatorio porque el folio interno depende de él."
+      >
         <FormField
           control={form.control}
           name="associateId"

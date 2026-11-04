@@ -24,7 +24,10 @@ const VehicleGallery = ({ agencyImage, photos, title, className }: VehicleGaller
 
   return (
     <div
-      className={cn('from-terciary-500 to-secondary-500 relative h-[250px] w-full max-w-[400px] overflow-hidden rounded-xl bg-gradient-to-br', className)}
+      className={cn(
+        'from-terciary-500 to-secondary-500 relative h-[250px] w-full max-w-[400px] overflow-hidden rounded-xl bg-gradient-to-br',
+        className,
+      )}
       role="group"
       aria-roledescription="carrusel"
       aria-label={`Imágenes de ${title}`}

@@ -21,16 +21,25 @@ type SummaryStepProps = {
   photoCount: number;
 };
 
-const SummaryStep = ({ values, folioState, onRetryFolio, insurance, associate, agencyImageCount, photoCount }: SummaryStepProps) => (
+const SummaryStep = ({
+  values,
+  folioState,
+  onRetryFolio,
+  insurance,
+  associate,
+  agencyImageCount,
+  photoCount,
+}: SummaryStepProps) => (
   <div className="flex flex-col gap-5">
     <div className="bg-primary-50 text-primary-900 flex items-start gap-3 rounded-lg px-4 py-3 text-sm" role="note">
       <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
-      <p>
-        Revisa los datos antes de crear el coche. Estos datos se contrastarán con los documentos que subas después.
-      </p>
+      <p>Revisa los datos antes de crear el coche. Estos datos se contrastarán con los documentos que subas después.</p>
     </div>
 
-    <StepCard title={`${values.make} ${values.model} · ${values.year}`} description={`${values.color} · ${values.bodyType} · ${engineTypeToApi(values.engineType)}`}>
+    <StepCard
+      title={`${values.make} ${values.model} · ${values.year}`}
+      description={`${values.color} · ${values.bodyType} · ${engineTypeToApi(values.engineType)}`}
+    >
       <div className="grid gap-5 lg:grid-cols-2">
         <VehicleInfoCard
           icon={Wrench}
@@ -80,7 +89,10 @@ const SummaryStep = ({ values, folioState, onRetryFolio, insurance, associate, a
       </div>
     </StepCard>
 
-    <StepCard title="Folio interno (generado automáticamente)" description="Es de solo lectura: se arma con el socio, el modelo y la transmisión.">
+    <StepCard
+      title="Folio interno (generado automáticamente)"
+      description="Es de solo lectura: se arma con el socio, el modelo y la transmisión."
+    >
       {folioState.status === 'loading' && (
         <p className="text-carbon-300 flex items-center gap-2 text-sm" role="status">
           <Loader2 className="size-4 animate-spin" aria-hidden /> Calculando folio…

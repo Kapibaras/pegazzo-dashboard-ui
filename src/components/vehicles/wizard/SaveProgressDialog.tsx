@@ -2,7 +2,14 @@
 
 import { CheckCircle2, Circle, Loader2, RefreshCw, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 export type SaveTaskStatus = 'pending' | 'running' | 'done' | 'error';
 export type SaveTaskView = { key: string; label: string; status: SaveTaskStatus; error?: string };
@@ -34,7 +41,16 @@ const STATUS_TEXT: Record<SaveTaskStatus, string> = {
 };
 
 /** Overlay with the checklist of the save chain ("✓ Coche creado · ✗ Foto 2 falló — Reintentar"). Cannot be dismissed while running. */
-const SaveProgressDialog = ({ open, title, tasks, isRunning, continueLabel, canContinue, onRetry, onContinue }: SaveProgressDialogProps) => {
+const SaveProgressDialog = ({
+  open,
+  title,
+  tasks,
+  isRunning,
+  continueLabel,
+  canContinue,
+  onRetry,
+  onContinue,
+}: SaveProgressDialogProps) => {
   const hasErrors = tasks.some((task) => task.status === 'error');
 
   return (
@@ -72,10 +88,20 @@ const SaveProgressDialog = ({ open, title, tasks, isRunning, continueLabel, canC
 
         {!isRunning && hasErrors && (
           <DialogFooter>
-            <Button type="button" onClick={onRetry} className="bg-terciary-500 text-primary-100 hover:bg-primary-800 cursor-pointer gap-2">
+            <Button
+              type="button"
+              onClick={onRetry}
+              className="bg-terciary-500 text-primary-100 hover:bg-primary-800 cursor-pointer gap-2"
+            >
               <RefreshCw className="size-4" /> Reintentar pendientes
             </Button>
-            <Button type="button" variant="outline" disabled={!canContinue} onClick={onContinue} className="cursor-pointer">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={!canContinue}
+              onClick={onContinue}
+              className="cursor-pointer"
+            >
               {continueLabel}
             </Button>
           </DialogFooter>

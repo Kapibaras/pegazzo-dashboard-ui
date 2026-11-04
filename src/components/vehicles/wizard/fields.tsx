@@ -65,7 +65,9 @@ export const TextField = ({
               className={fieldClass({ mono, className: cn('w-full', suffix && 'pr-16') })}
             />
             {suffix && (
-              <span className="text-carbon-200 pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-xs">{suffix}</span>
+              <span className="text-carbon-200 pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-xs">
+                {suffix}
+              </span>
             )}
           </div>
         </FormControl>
@@ -125,7 +127,12 @@ export const StepCard = ({
   children: React.ReactNode;
   className?: string;
 }) => (
-  <section className={cn('border-surface-600/70 flex flex-col gap-5 rounded-xl border bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)]', className)}>
+  <section
+    className={cn(
+      'border-surface-600/70 flex flex-col gap-5 rounded-xl border bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)]',
+      className,
+    )}
+  >
     <header className="space-y-1">
       <h2 className="text-carbon-500 text-lg font-bold">{title}</h2>
       {description && <p className="text-carbon-300 text-sm">{description}</p>}
@@ -139,5 +146,7 @@ export const StepCard = ({
  * shows a validation message stretches its row and the neighbouring fields push their input down (misaligned inputs).
  */
 export const FieldGrid = ({ children, columns = 2 }: { children: React.ReactNode; columns?: 2 | 3 }) => (
-  <div className={cn('grid items-start gap-4', columns === 3 ? 'sm:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-2')}>{children}</div>
+  <div className={cn('grid items-start gap-4', columns === 3 ? 'sm:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-2')}>
+    {children}
+  </div>
 );

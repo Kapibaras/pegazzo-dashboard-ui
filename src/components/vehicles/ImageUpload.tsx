@@ -134,7 +134,10 @@ const ImageUpload = ({
 
       <div className="flex flex-wrap gap-3">
         {items.map((item, index) => (
-          <div key={item.id} className="border-surface-600/70 group relative h-[100px] w-[140px] overflow-hidden rounded-lg border">
+          <div
+            key={item.id}
+            className="border-surface-600/70 group relative h-[100px] w-[140px] overflow-hidden rounded-lg border"
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={item.previewUrl} alt={`${label} ${index + 1}`} className="size-full object-cover" />
             {item.file && (
@@ -147,7 +150,7 @@ const ImageUpload = ({
                 type="button"
                 aria-label={`Quitar ${label} ${index + 1}`}
                 onClick={() => remove(item)}
-                className="absolute top-1 right-1 flex size-6 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white opacity-90 hover:bg-black/80"
+                className="absolute top-1 right-1 flex size-6 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white opacity-90 transition-colors hover:bg-black/80 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
               >
                 <X className="size-3.5" />
               </button>
@@ -181,7 +184,9 @@ const ImageUpload = ({
             className={cn(
               'border-surface-700/60 bg-surface-400 text-carbon-300 flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed px-3 text-center text-xs transition-colors',
               items.length === 0 ? 'min-h-[100px] w-full max-w-xl py-5' : 'h-[100px] w-[140px]',
-              disabled ? 'cursor-not-allowed opacity-60' : 'hover:border-primary-700 hover:bg-primary-50 cursor-pointer',
+              disabled
+                ? 'cursor-not-allowed opacity-60'
+                : 'hover:border-primary-700 hover:bg-primary-50 cursor-pointer',
               isDragging && 'border-primary-700 bg-primary-50',
             )}
           >
@@ -190,7 +195,13 @@ const ImageUpload = ({
               <>
                 <span className="text-sm">{emptyText}</span>
                 <span className="text-carbon-200">JPG, PNG o WEBP · máx. {MAX_IMAGE_SIZE_MB} MB</span>
-                <Button type="button" variant="outline" size="sm" tabIndex={-1} className="pointer-events-none mt-1 h-7">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  tabIndex={-1}
+                  className="pointer-events-none mt-1 h-7"
+                >
                   Subir {max > 1 ? 'fotos' : 'imagen'}
                 </Button>
               </>

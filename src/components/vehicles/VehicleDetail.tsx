@@ -279,19 +279,27 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
         </div>
         <div className="flex flex-wrap gap-3">
           {photos.map((src, index) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <a
               key={src}
-              src={src}
-              alt={`Foto ${index + 1} de ${title}`}
-              className="border-surface-600/70 h-[100px] w-[140px] rounded-lg border object-cover"
-              loading="lazy"
-            />
+              href={src}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Abrir foto ${index + 1} de ${title} en una pestaña nueva`}
+              className="focus-visible:ring-primary-700 block cursor-zoom-in overflow-hidden rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={src}
+                alt={`Foto ${index + 1} de ${title}`}
+                className="border-surface-600/70 h-[100px] w-[140px] rounded-lg border object-cover transition-transform duration-300 hover:scale-105 motion-reduce:transition-none"
+                loading="lazy"
+              />
+            </a>
           ))}
           <CanManage>
             <Link
               href={`/coches/${encodeURIComponent(vehicle.id)}/editar`}
-              className="border-surface-700/60 text-carbon-300 hover:border-primary-700 hover:text-primary-800 flex h-[100px] w-[140px] flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed text-sm transition-colors"
+              className="border-surface-700/60 text-carbon-300 hover:border-primary-700 hover:text-primary-800 hover:bg-primary-50 flex h-[100px] w-[140px] cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed text-sm transition-colors"
             >
               {photos.length === 0 ? (
                 <Camera className="size-5" aria-hidden />
@@ -315,7 +323,10 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
         ) : (
           <ul className="border-surface-600/70 divide-surface-600/60 divide-y rounded-xl border bg-white">
             {documents.map((doc) => (
-              <li key={doc.id} className="flex items-center gap-4 px-4 py-3">
+              <li
+                key={doc.id}
+                className="hover:bg-surface-400/60 flex items-center gap-4 px-4 py-3 transition-colors first:rounded-t-xl last:rounded-b-xl"
+              >
                 <span className="bg-primary-50 text-primary-800 flex size-9 shrink-0 items-center justify-center rounded-lg">
                   <FileText className="size-[18px]" aria-hidden />
                 </span>
@@ -328,7 +339,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
                   href={doc.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary-800 hover:text-primary-900 flex items-center gap-1 text-sm font-medium hover:underline"
+                  className="text-primary-800 hover:text-primary-900 focus-visible:ring-primary-700 flex cursor-pointer items-center gap-1 rounded text-sm font-medium outline-none hover:underline focus-visible:ring-2"
                 >
                   Ver <ExternalLink className="size-3.5" aria-hidden />
                   <span className="sr-only">{getDocumentTypeLabel(doc.type)} (abre en una pestaña nueva)</span>

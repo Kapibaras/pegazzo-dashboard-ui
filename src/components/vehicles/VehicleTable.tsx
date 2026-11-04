@@ -50,7 +50,7 @@ const VehicleTable = ({ vehicles, archived = false, isLoading = false, onChanged
                 key={vehicle.id}
                 tabIndex={0}
                 aria-label={`Ver detalle de ${title}`}
-                className="hover:bg-primary-50/60 cursor-pointer"
+                className="hover:bg-primary-50/60 focus-visible:bg-primary-50/60 focus-visible:ring-primary-700 cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset"
                 onClick={() => router.push(detailUrl)}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter') router.push(detailUrl);
@@ -86,7 +86,12 @@ const VehicleTable = ({ vehicles, archived = false, isLoading = false, onChanged
                   onClick={(event) => event.stopPropagation()}
                   onKeyDown={(event) => event.stopPropagation()}
                 >
-                  <VehicleActionsMenu vehicleId={vehicle.id} vehicleName={title} archived={archived} onChanged={onChanged} />
+                  <VehicleActionsMenu
+                    vehicleId={vehicle.id}
+                    vehicleName={title}
+                    archived={archived}
+                    onChanged={onChanged}
+                  />
                 </TableCell>
               </TableRow>
             );
