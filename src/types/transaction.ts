@@ -15,7 +15,7 @@ export type Transaction = {
   paymentMethod: PaymentMethod;
   status: TransactionStatus;
   category?: string | null;
-  carId?: number | null;
+  carId?: string | null;
 };
 
 export type PaginationMeta = {
