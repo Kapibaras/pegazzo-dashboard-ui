@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { searchFieldClass } from '@/lib/formField';
 import { VEHICLE_SORT_OPTIONS, VEHICLE_STATUSES, VEHICLE_STATUS_LABELS, getSortOptionValue } from '@/lib/vehicle';
 import { cn } from '@/lib/utils';
 import { SortOrder } from '@/types/transaction';
@@ -66,7 +67,7 @@ const VehicleFilters = ({
     <div className="flex flex-wrap items-center gap-3" role="search">
       <div className="relative min-w-[240px] flex-1 sm:max-w-md">
         <Search
-          className="text-carbon-200 pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
+          className="text-carbon-200 pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2"
           aria-hidden
         />
         <Input
@@ -74,7 +75,7 @@ const VehicleFilters = ({
           onChange={(event) => setDraft(event.target.value)}
           placeholder="Buscar por marca, modelo o id…"
           aria-label="Buscar coches"
-          className="bg-surface-400 border-surface-600 h-9 pr-9 pl-9"
+          className={searchFieldClass({ className: 'pr-10' })}
         />
         {draft && (
           <button
@@ -84,7 +85,7 @@ const VehicleFilters = ({
               setDraft('');
               onSearchChange('');
             }}
-            className="text-carbon-200 hover:text-carbon-500 absolute top-1/2 right-2.5 -translate-y-1/2 cursor-pointer"
+            className="text-carbon-200 hover:text-carbon-500 absolute top-1/2 right-3.5 -translate-y-1/2 cursor-pointer"
           >
             <X className="size-4" />
           </button>

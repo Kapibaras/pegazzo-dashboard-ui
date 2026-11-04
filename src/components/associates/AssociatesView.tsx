@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { CreateAssociateDialog } from '@/components/vehicles/QuickCreateDialogs';
 import { BUTTON_ICON_CLASS, primaryButton } from '@/lib/buttonStyles';
-import { fieldClass } from '@/lib/formField';
+import { searchFieldClass } from '@/lib/formField';
 import { cn } from '@/lib/utils';
 import { Associate } from '@/types/vehicle';
 import AssociateSheet from './AssociateSheet';
@@ -63,7 +63,7 @@ const AssociatesView = ({ associates }: { associates: Associate[] }) => {
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Buscar socio..."
           aria-label="Buscar socio"
-          className={fieldClass({ className: 'pl-10' })}
+          className={searchFieldClass()}
         />
       </div>
 

@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { CreateModelDialog } from '@/components/vehicles/QuickCreateDialogs';
 import VehicleStatCard from '@/components/vehicles/VehicleStatCard';
 import { BUTTON_ICON_CLASS, outlineButton, primaryButton } from '@/lib/buttonStyles';
-import { fieldClass } from '@/lib/formField';
+import { searchFieldClass } from '@/lib/formField';
 import { VehicleModelGroup } from '@/types/vehicle';
 import DeleteModelDialog, { ModelToDelete } from './DeleteModelDialog';
 
@@ -106,7 +106,7 @@ const ModelCatalogView = ({ groups }: { groups: VehicleModelGroup[] }) => {
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Buscar marca o modelo..."
           aria-label="Buscar marca o modelo"
-          className={fieldClass({ className: 'pl-10' })}
+          className={searchFieldClass()}
         />
       </div>
 
