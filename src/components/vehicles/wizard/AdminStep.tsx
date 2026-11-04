@@ -104,7 +104,7 @@ const AdminStep = ({ form, catalogs }: AdminStepProps) => {
                     emptyText="No hay aseguradoras con ese nombre."
                     isLoading={catalogs.isLoading}
                     invalid={!!form.formState.errors.insuranceProviderId}
-                    createLabel={() => '+ Agregar nueva aseguradora…'}
+                    createLabel={() => 'Agregar nueva aseguradora…'}
                     onCreate={(query) => setInsuranceDialog({ open: true, name: query })}
                     ariaLabel="Aseguradora"
                   />
