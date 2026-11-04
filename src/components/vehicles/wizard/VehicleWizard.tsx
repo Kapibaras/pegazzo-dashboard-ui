@@ -267,9 +267,8 @@ const VehicleWizard = (props: VehicleWizardProps) => {
     }
 
     const payload: VehicleUpdate = toUpdatePayload(form.getValues(), initialValues);
-    const initialAgencyUrl = vehicle?.agencyImage ?? null;
-    const agencyRemoved = !!initialAgencyUrl && agencyImages.length === 0;
-    if (agencyRemoved) payload.agencyImage = null;
+    // Removing the agency image without a replacement has its own endpoint; PATCH /cars no longer accepts images.
+    const agencyRemoved = !!vehicle?.agencyImage && agencyImages.length === 0;
 
     const keptPhotoIds = new Set(photos.filter((item) => !item.file).map((item) => item.id));
     const removedPhotos = (vehicle?.photos ?? []).filter((url) => !keptPhotoIds.has(url));
@@ -283,6 +282,14 @@ const VehicleWizard = (props: VehicleWizardProps) => {
         run: async () => {
           await vehicleService.updateVehicle(vehicle!.id, payload);
         },
+      });
+    }
+    if (agencyRemoved) {
+      tasks.push({
+        key: 'remove-agency',
+        label: 'Quitar imagen de agencia',
+        status: 'pending',
+        run: async () => imageService.removeCarAgencyImage(vehicle!.id),
       });
     }
     tasks.push(

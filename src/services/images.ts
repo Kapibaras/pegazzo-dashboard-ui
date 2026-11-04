@@ -45,6 +45,10 @@ export default class ImageService extends AbstractAPIService {
     await this.client.patch(`${IMAGES}/cars/${encodeURIComponent(carId)}/agency-image`, { url });
   }
 
+  async removeCarAgencyImage(carId: string): Promise<void> {
+    await this.client.delete(`${IMAGES}/cars/${encodeURIComponent(carId)}/agency-image`);
+  }
+
   async addCarPhoto(carId: string, url: string): Promise<void> {
     await this.client.post(`${IMAGES}/cars/${encodeURIComponent(carId)}/photos`, { url });
   }

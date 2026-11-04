@@ -151,11 +151,11 @@ export type VehicleCreate = {
   associateId?: number | null;
 };
 
-/** Payload for PATCH /management/cars/{id}. Every field optional; status has its own endpoint. */
-export type VehicleUpdate = Partial<Omit<VehicleCreate, 'id' | 'status'>> & {
-  agencyImage?: string | null;
-  photos?: string[] | null;
-};
+/**
+ * Payload for PATCH /management/cars/{id}. Every field optional; status has its own endpoint and images are managed
+ * through /management/images (the PATCH rejects `agencyImage` and `photos`).
+ */
+export type VehicleUpdate = Partial<Omit<VehicleCreate, 'id' | 'status'>>;
 
 export type VehicleFolioRequest = {
   associateId: number;
