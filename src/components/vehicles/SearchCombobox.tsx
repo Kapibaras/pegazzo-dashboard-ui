@@ -97,7 +97,7 @@ const SearchCombobox = ({
             onChange={(event) => setQuery(event.target.value)}
             placeholder={searchPlaceholder}
             aria-label={searchPlaceholder}
-            className="h-8 pl-8"
+            className="typo-sm-text h-8 pl-8"
           />
         </div>
 

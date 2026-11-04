@@ -200,7 +200,7 @@ const ImageUpload = ({
                   variant="outline"
                   size="sm"
                   tabIndex={-1}
-                  className="pointer-events-none mt-1 h-7"
+                  className="typo-label! pointer-events-none mt-1 h-7"
                 >
                   Subir {max > 1 ? 'fotos' : 'imagen'}
                 </Button>

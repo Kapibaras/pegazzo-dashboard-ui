@@ -9,8 +9,8 @@ const FIELD_BASE =
   'border-surface-700 bg-surface-400 flex items-center self-stretch rounded-md border px-4.5 py-5.5 shadow-sm placeholder:text-left focus:border-blue-600 focus:outline-none';
 
 /**
- * Classes for a single-line control. `mono` swaps the typography for `typo-numbers` (Source Code Pro): `typo-*` classes
- * are unlayered CSS, so they win over Tailwind's `font-numbers` utility and the font has to come from the same family.
+ * Classes for a single-line control. `mono` swaps the typography for `typo-numbers` (Source Code Pro): the font
+ * has to come from the same token family (`typo-numbers` is defined after `typo-text`, so it wins).
  */
 export const fieldClass = (options: { mono?: boolean; className?: string } = {}) =>
   cn(FIELD_BASE, options.mono ? 'typo-numbers' : 'typo-text', options.className);

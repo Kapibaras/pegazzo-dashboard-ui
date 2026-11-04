@@ -113,7 +113,7 @@ Rules:
 
 - **Forbidden** in feature components: `text-xs…text-9xl` (except decorative display text such as the 404), `text-[..px|rem]`, stacking a `typo-*` with a size/weight class, `font-bold`/`font-semibold`/`font-medium` as a substitute for a token (inline `font-semibold` emphasis on a `<span>` inside a sentence is the only exception), `font-mono` (use `font-numbers`).
 - Colors: `text-carbon-500` primary, `text-carbon-300` secondary/muted (AA contrast). `text-carbon-200` only for placeholders, disabled state and decorative icons — **never** for informational text. `--muted-foreground` is mapped to `carbon-300`.
-- Form controls (`Input`, `Textarea`, `SelectTrigger`) are 18px on mobile and 16px from `md` (prevents iOS zoom). Labels use `typo-label text-carbon-500`.
+- Form controls (`Input`, `Textarea`, `SelectTrigger`) use `typo-text` at every breakpoint (no `md:` size override, which would clash with `fieldClass`); every form field must go through `fieldClass`/`TEXTAREA_CLASS`/`searchFieldClass` in `src/lib/formField.ts`. Labels use `typo-label text-carbon-500`.
 - `src/components/ui/*` primitives already follow this scale; when adding a new shadcn component, align its text classes to it before using it.
 - Missing a role? Add a new `@utility typo-*` in `globals.css` and document it in this table — don't use one-off classes.
 
