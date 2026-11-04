@@ -19,7 +19,7 @@ const Part = ({ label, children, className }: { label: string; children: React.R
 );
 
 const Separator = ({ children }: { children: React.ReactNode }) => (
-  <span aria-hidden className="text-carbon-200 font-numbers self-end pb-3 text-xl">
+  <span aria-hidden className="text-carbon-200 font-numbers flex h-[46px] items-center self-end text-xl">
     {children}
   </span>
 );
@@ -121,7 +121,7 @@ const TireInputs = ({ value, onChange, onBlur }: TireInputsProps) => {
             <div
               role="radiogroup"
               aria-label="Construcción"
-              className="border-surface-700 bg-surface-400 flex h-[58px] overflow-hidden rounded-md border shadow-sm"
+              className="border-surface-700 bg-surface-400 flex h-[46px] overflow-hidden rounded-md border shadow-sm"
             >
               {(['R', 'D'] as const).map((option) => (
                 <button
@@ -158,7 +158,7 @@ const TireInputs = ({ value, onChange, onBlur }: TireInputsProps) => {
               className={fieldClass({ mono: true, className: PART_INPUT })}
             />
           </Part>
-          <span aria-hidden className="bg-surface-700/50 mx-1 hidden h-10 w-px self-end sm:block" />
+          <span aria-hidden className="bg-surface-700/50 mx-1 hidden h-[46px] w-px self-end sm:block" />
           <Part label="Carga (opc.)" className="w-24">
             <Input
               ref={setRef(3)}
