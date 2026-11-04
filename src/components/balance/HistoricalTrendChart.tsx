@@ -30,8 +30,8 @@ const HistoricalTrendChart = ({ data, period }: HistoricalTrendChartProps) => {
     <Card className="flex h-full flex-col">
       <CardHeader>
         <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-lg bg-primary-100">
-            <TrendingUp className="size-5 text-primary-600" />
+          <div className="bg-primary-100 flex size-10 items-center justify-center rounded-lg">
+            <TrendingUp className="text-primary-600 size-5" />
           </div>
           <CardTitle className="typo-subtitle">Tendencia histórica</CardTitle>
         </div>
@@ -47,14 +47,11 @@ const HistoricalTrendChart = ({ data, period }: HistoricalTrendChartProps) => {
                 content={({ active, payload, label }) => {
                   if (!active || !payload?.length) return null;
                   return (
-                    <div className="border-border/50 bg-background rounded-lg border px-3 py-2 text-xs shadow-xl">
+                    <div className="typo-caption border-border/50 bg-background rounded-lg border px-3 py-2 shadow-xl">
                       <p className="mb-1.5 font-medium">{label}</p>
                       {payload.map((entry) => (
                         <div key={entry.dataKey} className="flex items-center gap-2">
-                          <div
-                            className="size-2.5 shrink-0 rounded-[2px]"
-                            style={{ backgroundColor: entry.color }}
-                          />
+                          <div className="size-2.5 shrink-0 rounded-[2px]" style={{ backgroundColor: entry.color }} />
                           <span className="text-muted-foreground">{entry.name}</span>
                           <span className="font-numbers ml-auto font-medium">
                             {formatCurrency(entry.value as number)}
@@ -87,7 +84,7 @@ const HistoricalTrendChart = ({ data, period }: HistoricalTrendChartProps) => {
             </LineChart>
           </ChartContainer>
         ) : (
-          <div className="flex min-h-[280px] flex-1 flex-col items-center justify-center gap-2 text-muted-foreground">
+          <div className="text-muted-foreground flex min-h-[280px] flex-1 flex-col items-center justify-center gap-2">
             <TrendingUp className="size-10 opacity-30" />
             <p className="typo-text">Sin datos históricos</p>
           </div>

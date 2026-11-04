@@ -36,20 +36,20 @@ const VehicleCard = ({ vehicle, archived = false, onChanged }: VehicleCardProps)
             className="size-full object-cover transition-transform duration-300 ease-out group-hover:scale-105 motion-reduce:transition-none"
             loading="lazy"
           />
-          <span className="font-numbers absolute top-2.5 left-2.5 rounded-md bg-black/60 px-2 py-0.5 text-xs font-semibold text-white">
+          <span className="typo-caption font-numbers absolute top-2.5 left-2.5 rounded-md bg-black/60 px-2 py-0.5 text-white">
             {vehicle.year}
           </span>
         </div>
 
         <div className="flex flex-col gap-1.5 p-3.5">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="text-carbon-500 group-hover:text-primary-800 truncate text-[15px] font-bold transition-colors">
+            <h3 className="typo-bold-text text-carbon-500 group-hover:text-primary-800 truncate transition-colors">
               {title}
             </h3>
             <VehicleStatusBadge status={vehicle.status} className="shrink-0" />
           </div>
-          <p className="font-numbers text-carbon-200 truncate text-xs">{vehicle.id}</p>
-          <p className="text-carbon-300 flex items-center gap-2 text-sm">
+          <p className="typo-caption font-numbers text-carbon-300 truncate">{vehicle.id}</p>
+          <p className="typo-sm-text text-carbon-300 flex items-center gap-2">
             <span
               aria-hidden
               className="border-surface-700/60 size-3 rounded-full border"

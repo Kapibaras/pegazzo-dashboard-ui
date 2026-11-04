@@ -47,11 +47,11 @@ const InfoRow = ({
   <div className={cn('flex gap-4 px-5 py-4', multiline ? 'items-start' : 'items-center')}>
     <Icon className={cn('text-carbon-300 h-7 w-7 shrink-0', multiline && 'mt-0.5')} strokeWidth={1.75} />
     <div className="min-w-0 flex-1">
-      <p className="typo-text text-carbon-200 mb-0.5 text-xs tracking-wider uppercase">{label}</p>
+      <p className="typo-overline text-carbon-300 mb-0.5">{label}</p>
       <div
         className={cn(
           'typo-text text-carbon-500 break-words',
-          mono && 'font-mono text-sm',
+          mono && 'typo-sm-text font-numbers',
           scrollable && 'max-h-24 overflow-y-auto pr-1',
         )}
       >
@@ -138,7 +138,7 @@ const TransactionDetailSheet = ({
                     <div className="flex flex-wrap items-center gap-2">
                       <Badge
                         className={cn(
-                          'rounded-md px-2.5 py-0.5 text-xs font-semibold tracking-wide',
+                          'typo-caption rounded-md px-2.5 py-0.5 tracking-wide',
                           isCredit
                             ? 'bg-success-100 text-success-700 hover:bg-success-100'
                             : 'bg-error-100 text-error-700 hover:bg-error-100',
@@ -158,17 +158,12 @@ const TransactionDetailSheet = ({
                     </div>
                   </div>
 
-                  <p
-                    className={cn(
-                      'font-numbers text-3xl leading-none font-bold tracking-tight',
-                      isCredit ? 'text-success-700' : 'text-error-700',
-                    )}
-                  >
+                  <p className={cn('typo-kpi', isCredit ? 'text-success-700' : 'text-error-700')}>
                     {isCredit ? '+' : '-'}
                     {formatCurrency(transaction.amount)}
                   </p>
 
-                  <p className="typo-text text-carbon-300 mt-2 text-xs">
+                  <p className="typo-caption text-carbon-300 mt-2">
                     <Calendar className="mr-1 inline h-3 w-3" />
                     {formatLongDatetime(transaction.date)}
                   </p>
@@ -198,14 +193,14 @@ const TransactionDetailSheet = ({
                     <div className="flex gap-3">
                       <Button
                         variant="outline"
-                        className="typo-bold-text border-error-200 text-error-600 hover:border-error-300 hover:bg-error-50 hover:text-error-700 flex-1 cursor-pointer"
+                        className="typo-button border-error-200 text-error-600 hover:border-error-300 hover:bg-error-50 hover:text-error-700 flex-1 cursor-pointer"
                         onClick={() => setDeleteDialogOpen(true)}
                       >
                         <Trash2 className="h-4 w-4" />
                         Eliminar
                       </Button>
                       <Button
-                        className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex-1 cursor-pointer"
+                        className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-button flex-1 cursor-pointer"
                         onClick={() => setSheetMode('edit')}
                       >
                         <Pencil className="h-4 w-4" />
@@ -228,13 +223,13 @@ const TransactionDetailSheet = ({
                     <AmountIcon className={cn('h-4 w-4', isCredit ? 'text-success-700' : 'text-error-700')} />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-primary-600 font-mono text-sm font-semibold">{transaction.reference}</p>
-                    <p className="typo-text text-carbon-300 text-xs">{formatLongDatetime(transaction.date)}</p>
+                    <p className="typo-label text-primary-600 font-numbers">{transaction.reference}</p>
+                    <p className="typo-caption text-carbon-300">{formatLongDatetime(transaction.date)}</p>
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-1.5">
                     <Badge
                       className={cn(
-                        'text-xs font-semibold',
+                        'typo-caption',
                         isCredit
                           ? 'bg-success-100 text-success-700 hover:bg-success-100'
                           : 'bg-error-100 text-error-700 hover:bg-error-100',
@@ -275,7 +270,7 @@ const TransactionDetailSheet = ({
                 <div className="border-surface-700/20 border-t px-4 pt-3 pb-6">
                   <Button
                     variant="outline"
-                    className="typo-bold-text w-full cursor-pointer"
+                    className="typo-button w-full cursor-pointer"
                     onClick={() => setSheetMode('view')}
                   >
                     Cancelar

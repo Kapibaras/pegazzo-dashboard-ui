@@ -52,9 +52,9 @@ export const TextField = ({
     name={name}
     render={({ field }) => (
       <FormItem className={className}>
-        <FormLabel className="text-carbon-400 text-sm font-medium">
+        <FormLabel className="typo-label text-carbon-500">
           {label}
-          {optional && <span className="text-carbon-200 font-normal"> (opcional)</span>}
+          {optional && <span className="text-carbon-300 font-normal"> (opcional)</span>}
         </FormLabel>
         <FormControl>
           <div className="relative">
@@ -83,13 +83,13 @@ export const TextField = ({
               className={fieldClass({ mono, className: cn('w-full', suffix && 'pr-16') })}
             />
             {suffix && (
-              <span className="text-carbon-200 pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-xs">
+              <span className="typo-caption text-carbon-300 pointer-events-none absolute top-1/2 right-3 -translate-y-1/2">
                 {suffix}
               </span>
             )}
           </div>
         </FormControl>
-        {hint && <FormDescription className="text-xs">{hint}</FormDescription>}
+        {hint && <FormDescription className="typo-caption">{hint}</FormDescription>}
         <FormMessage />
       </FormItem>
     )}
@@ -112,7 +112,7 @@ export const SelectField = ({ control, name, label, options, placeholder, disabl
     name={name}
     render={({ field }) => (
       <FormItem className={className}>
-        <FormLabel className="text-carbon-400 text-sm font-medium">{label}</FormLabel>
+        <FormLabel className="typo-label text-carbon-500">{label}</FormLabel>
         <Select value={field.value || undefined} onValueChange={field.onChange} disabled={disabled}>
           <FormControl>
             <SelectTrigger className={fieldClass({ className: 'w-full cursor-pointer' })}>
@@ -152,8 +152,8 @@ export const StepCard = ({
     )}
   >
     <header className="space-y-1">
-      <h2 className="text-carbon-500 text-lg font-bold">{title}</h2>
-      {description && <p className="text-carbon-300 text-sm">{description}</p>}
+      <h2 className="typo-subtitle text-carbon-500">{title}</h2>
+      {description && <p className="typo-sm-text text-carbon-300">{description}</p>}
     </header>
     {children}
   </section>

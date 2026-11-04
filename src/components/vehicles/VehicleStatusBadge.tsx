@@ -19,7 +19,7 @@ const VehicleStatusBadge = ({ status, size = 'sm', className }: VehicleStatusBad
   <Badge
     className={cn(
       'font-medium',
-      size === 'sm' ? 'text-xs' : 'px-3 py-1 text-sm',
+      size === 'sm' ? 'typo-caption' : 'typo-sm-text px-3 py-1',
       VEHICLE_STATUS_CLASSES[status] ?? VEHICLE_STATUS_CLASSES.INACTIVE,
       className,
     )}

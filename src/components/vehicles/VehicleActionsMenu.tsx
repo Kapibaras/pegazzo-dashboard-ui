@@ -99,7 +99,7 @@ const VehicleActionsMenu = ({
             >
               <Archive className="text-error-700" /> Archivar
               {status !== 'INACTIVE' && (
-                <span className="text-carbon-200 ml-auto pl-3 text-[11px] font-normal">Solo inactivos</span>
+                <span className="typo-caption text-carbon-300 ml-auto pl-3">Solo inactivos</span>
               )}
             </DropdownMenuItem>
           )}

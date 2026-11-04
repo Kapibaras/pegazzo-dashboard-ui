@@ -57,10 +57,17 @@ const AutorizacionesView = () => {
       setState({ status: 'success', transactions: response.transactions });
     } catch (err) {
       if (isAPIErrorType(err)) {
-        const { title, message } = findErrorMessage({ status: err.status_code, detail: err.detail }, ['balance', 'common']);
+        const { title, message } = findErrorMessage({ status: err.status_code, detail: err.detail }, [
+          'balance',
+          'common',
+        ]);
         setState({ status: 'error', title, message });
       } else {
-        setState({ status: 'error', title: 'Error inesperado', message: 'Ocurrió un error desconocido. Inténtalo de nuevo más tarde.' });
+        setState({
+          status: 'error',
+          title: 'Error inesperado',
+          message: 'Ocurrió un error desconocido. Inténtalo de nuevo más tarde.',
+        });
       }
     }
   }, [service]);
@@ -196,7 +203,7 @@ const AutorizacionesView = () => {
           <Button
             onClick={() => setBulkDialogOpen(true)}
             disabled={bulkProgress !== null}
-            className="bg-success-500 hover:bg-success-600 typo-bold-text cursor-pointer text-white"
+            className="bg-success-500 hover:bg-success-600 typo-button cursor-pointer text-white"
           >
             <CheckCheck className="h-4 w-4" />
             {bulkProgress ? `Aprobando ${bulkProgress.done} de ${bulkProgress.total}...` : 'Aprobar Todas'}

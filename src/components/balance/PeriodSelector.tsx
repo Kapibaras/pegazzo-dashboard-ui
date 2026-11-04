@@ -33,13 +33,13 @@ const PeriodSelector = () => {
 
   return (
     <Tabs value={currentPeriod} onValueChange={handlePeriodChange}>
-      <TabsList aria-label="Seleccionar período" className="h-10 gap-1 rounded-xl bg-primary-100/60 p-1">
+      <TabsList aria-label="Seleccionar período" className="bg-primary-100/60 h-10 gap-1 rounded-xl p-1">
         {BALANCE_PERIODS.map((period) => (
           <TabsTrigger
             key={period}
             value={period}
             disabled={isPending}
-            className="cursor-pointer rounded-lg px-4 py-1.5 text-sm font-medium text-primary-800 transition-all data-[state=active]:bg-primary-700 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-primary-100 disabled:opacity-40"
+            className="typo-label text-primary-800 data-[state=active]:bg-primary-700 hover:bg-primary-100 cursor-pointer rounded-lg px-4 py-1.5 transition-all disabled:opacity-40 data-[state=active]:text-white data-[state=active]:shadow-md"
           >
             {PERIOD_LABELS[period]}
           </TabsTrigger>

@@ -7,7 +7,7 @@ const NavRoute = ({ title, icon: Icon, url }: { title: string; icon: React.Compo
       <SidebarMenuButton
         asChild
         tooltip={title}
-        className="typo-subtitle h-fit px-4 py-4 group-data-[state=collapsed]:my-2 group-data-[state=collapsed]:h-[2.75rem]! group-data-[state=collapsed]:w-[2.75rem]! group-data-[state=expanded]:hover:rounded-none group-data-[state=collapsed]:[&>span:last-child]:hidden [&>svg]:size-7"
+        className="typo-nav h-fit px-4 py-4 group-data-[state=collapsed]:my-2 group-data-[state=collapsed]:h-[2.75rem]! group-data-[state=collapsed]:w-[2.75rem]! group-data-[state=expanded]:hover:rounded-none group-data-[state=collapsed]:[&>span:last-child]:hidden [&>svg]:size-7"
       >
         <Link href={url}>
           <Icon />

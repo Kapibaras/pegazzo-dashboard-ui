@@ -102,7 +102,7 @@ const SearchCombobox = ({
         </div>
 
         <ul role="listbox" className="max-h-56 overflow-y-auto">
-          {filtered.length === 0 && <li className="text-carbon-300 px-2 py-3 text-center text-sm">{emptyText}</li>}
+          {filtered.length === 0 && <li className="typo-sm-text text-carbon-300 px-2 py-3 text-center">{emptyText}</li>}
           {filtered.map((option) => (
             <li key={option.value} role="option" aria-selected={option.value === value}>
               <button
@@ -111,7 +111,7 @@ const SearchCombobox = ({
                   onSelect(option.value);
                   handleOpenChange(false);
                 }}
-                className="hover:bg-primary-50 focus-visible:bg-primary-50 flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none"
+                className="typo-sm-text hover:bg-primary-50 focus-visible:bg-primary-50 flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-left outline-none"
               >
                 <Check
                   className={cn(
@@ -122,7 +122,7 @@ const SearchCombobox = ({
                 <span className="min-w-0 flex-1">
                   <span className="text-carbon-500 block truncate">{option.label}</span>
                   {option.description && (
-                    <span className="text-carbon-200 block truncate text-xs">{option.description}</span>
+                    <span className="typo-caption text-carbon-300 block truncate">{option.description}</span>
                   )}
                 </span>
               </button>
@@ -138,7 +138,7 @@ const SearchCombobox = ({
               handleOpenChange(false);
               onCreate(text);
             }}
-            className="text-primary-800 hover:bg-primary-50 border-surface-600/60 mt-2 flex w-full cursor-pointer items-center gap-2 rounded-md border-t px-2 pt-2.5 pb-1.5 text-left text-sm font-medium"
+            className="typo-label text-primary-800 hover:bg-primary-50 border-surface-600/60 mt-2 flex w-full cursor-pointer items-center gap-2 rounded-md border-t px-2 pt-2.5 pb-1.5 text-left"
           >
             <Plus className="size-4 shrink-0" aria-hidden />
             <span className="truncate">{createLabel(query.trim())}</span>

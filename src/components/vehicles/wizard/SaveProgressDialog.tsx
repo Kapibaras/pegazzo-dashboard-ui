@@ -77,8 +77,8 @@ const SaveProgressDialog = ({
             <li key={task.key} className="flex items-start gap-3">
               <span className="mt-0.5 shrink-0">{ICONS[task.status]}</span>
               <div className="min-w-0 flex-1">
-                <p className="text-carbon-500 text-sm font-medium">{task.label}</p>
-                <p className={task.status === 'error' ? 'text-error-700 text-xs' : 'text-carbon-200 text-xs'}>
+                <p className="typo-label text-carbon-500">{task.label}</p>
+                <p className={task.status === 'error' ? 'typo-caption text-error-700' : 'typo-caption text-carbon-300'}>
                   {task.status === 'error' && task.error ? task.error : STATUS_TEXT[task.status]}
                 </p>
               </div>

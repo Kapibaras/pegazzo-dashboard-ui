@@ -149,7 +149,7 @@ const ModelCatalogView = ({ groups }: { groups: VehicleModelGroup[] }) => {
                   <Button
                     type="button"
                     onClick={() => openCreate(group.make)}
-                    className="typo-bold-text text-primary-100 min-h-9 cursor-pointer gap-1.5 bg-white/10 px-3 py-2 text-sm hover:bg-white/20"
+                    className="typo-button text-primary-100 min-h-9 cursor-pointer gap-1.5 bg-white/10 px-3 py-2 hover:bg-white/20"
                   >
                     <PlusCircle className="size-4" aria-hidden /> Modelo
                   </Button>
@@ -165,7 +165,7 @@ const ModelCatalogView = ({ groups }: { groups: VehicleModelGroup[] }) => {
                       <span className="flex items-center gap-2">
                         <span
                           title="Abreviatura para el folio"
-                          className="bg-primary-50 text-primary-800 border-primary-100 font-numbers rounded-md border px-2.5 py-0.5 text-sm font-semibold"
+                          className="typo-label bg-primary-50 text-primary-800 border-primary-100 font-numbers rounded-md border px-2.5 py-0.5"
                         >
                           {item.abbreviation}
                         </span>

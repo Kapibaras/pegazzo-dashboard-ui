@@ -30,7 +30,7 @@ const AssociateStep = ({ form, catalogs }: AssociateStepProps) => {
           name="associateId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-carbon-400 text-sm font-medium">Socio</FormLabel>
+              <FormLabel className="typo-label text-carbon-500">Socio</FormLabel>
               <FormControl>
                 <SearchCombobox
                   value={field.value}
@@ -60,13 +60,13 @@ const AssociateStep = ({ form, catalogs }: AssociateStepProps) => {
           name="notes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-carbon-400 text-sm font-medium">
-                Notas adicionales <span className="text-carbon-200 font-normal">(opcional)</span>
+              <FormLabel className="typo-label text-carbon-500">
+                Notas adicionales <span className="text-carbon-300 font-normal">(opcional)</span>
               </FormLabel>
               <FormControl>
                 <Textarea {...field} rows={4} maxLength={1000} className={TEXTAREA_CLASS} />
               </FormControl>
-              <FormDescription className="text-xs">{field.value.length}/1000</FormDescription>
+              <FormDescription className="typo-caption">{field.value.length}/1000</FormDescription>
               <FormMessage />
             </FormItem>
           )}

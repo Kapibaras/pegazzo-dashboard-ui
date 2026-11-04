@@ -65,7 +65,7 @@ const AuthorizationCountCard = ({
             {loading || count === null ? (
               <Skeleton className="h-10 w-16" />
             ) : (
-              <span className={cn('font-numbers text-4xl font-semibold tracking-tight', tones.countText)}>{count}</span>
+              <span className={cn('typo-kpi', tones.countText)}>{count}</span>
             )}
             {description && <span className="typo-sm-text text-carbon-300">{description}</span>}
           </div>

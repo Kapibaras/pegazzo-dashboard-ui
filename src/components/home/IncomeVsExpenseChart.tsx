@@ -36,7 +36,7 @@ const CategoryLabel = (props: any) => {
   };
   if (!width || width < 60) return null;
   return (
-    <text x={x + 12} y={y + height / 2} dy={4} fill="white" className="font-sans text-base font-semibold capitalize">
+    <text x={x + 12} y={y + height / 2} dy={4} fill="white" className="typo-bold-text font-sans capitalize">
       {value}
     </text>
   );
@@ -57,7 +57,7 @@ const AmountLabel = (props: any) => {
       y={y + height / 2}
       dy={4}
       fill="var(--color-secondary-500)"
-      className="font-numbers text-base"
+      className="typo-text font-numbers"
     >
       {formatCurrency(value)}
     </text>

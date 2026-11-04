@@ -73,7 +73,7 @@ const DonutSection = ({ title, icon: Icon, iconBg, iconColor, breakdown, absValu
                   if (!active || !payload?.length) return null;
                   const entry = payload[0].payload;
                   return (
-                    <div className="border-border/50 bg-background rounded-lg border px-3 py-2 text-xs shadow-xl">
+                    <div className="typo-caption border-border/50 bg-background rounded-lg border px-3 py-2 shadow-xl">
                       <div className="flex items-center gap-2">
                         <div className="size-2.5 shrink-0 rounded-[2px]" style={{ backgroundColor: entry.fill }} />
                         <span className="font-medium">{entry.name}</span>
@@ -95,7 +95,7 @@ const DonutSection = ({ title, icon: Icon, iconBg, iconColor, breakdown, absValu
           </ChartContainer>
           <div className="flex flex-wrap justify-center gap-3">
             {data.map((entry) => (
-              <div key={entry.method} className="flex items-center gap-1.5 text-xs">
+              <div key={entry.method} className="typo-caption flex items-center gap-1.5">
                 <div className="size-2 shrink-0 rounded-[2px]" style={{ backgroundColor: entry.fill }} />
                 <span className="text-muted-foreground">{entry.name}</span>
                 <span className="font-numbers font-medium">{entry.percentage.toFixed(1)}%</span>
@@ -113,17 +113,36 @@ const PaymentMethodDonutChart = ({ credit, debit, balance }: PaymentMethodDonutC
     <Card>
       <CardHeader>
         <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-lg bg-primary-100">
-            <PieChartIcon className="size-5 text-primary-600" />
+          <div className="bg-primary-100 flex size-10 items-center justify-center rounded-lg">
+            <PieChartIcon className="text-primary-600 size-5" />
           </div>
           <CardTitle className="typo-subtitle">Distribución por método de pago</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
         <div className="grid gap-6 sm:grid-cols-3">
-          <DonutSection title="Ingresos" icon={TrendingUp} iconBg="bg-success-50" iconColor="text-success-400" breakdown={credit} />
-          <DonutSection title="Gastos" icon={TrendingDown} iconBg="bg-error-50" iconColor="text-error-400" breakdown={debit} />
-          <DonutSection title="Balance" icon={Wallet} iconBg="bg-chart-4/15" iconColor="text-chart-4" breakdown={balance} absValues />
+          <DonutSection
+            title="Ingresos"
+            icon={TrendingUp}
+            iconBg="bg-success-50"
+            iconColor="text-success-400"
+            breakdown={credit}
+          />
+          <DonutSection
+            title="Gastos"
+            icon={TrendingDown}
+            iconBg="bg-error-50"
+            iconColor="text-error-400"
+            breakdown={debit}
+          />
+          <DonutSection
+            title="Balance"
+            icon={Wallet}
+            iconBg="bg-chart-4/15"
+            iconColor="text-chart-4"
+            breakdown={balance}
+            absValues
+          />
         </div>
       </CardContent>
     </Card>

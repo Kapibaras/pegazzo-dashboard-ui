@@ -53,7 +53,7 @@ const DatePickerField = ({ onChange, error }: DatePickerFieldProps) => {
 
   const isDisabled = (date: Date) => isAfter(date, today) || isBefore(date, twoMonthsAgo);
 
-  const pillBase = 'flex-1 px-3 py-1.5 text-sm font-medium transition-all cursor-pointer rounded-lg';
+  const pillBase = 'typo-label flex-1 px-3 py-1.5 transition-all cursor-pointer rounded-lg';
   const pillActive = 'bg-primary-700 text-white shadow-md';
   const pillInactive = 'text-primary-800 hover:bg-primary-100';
 
@@ -77,7 +77,7 @@ const DatePickerField = ({ onChange, error }: DatePickerFieldProps) => {
       </div>
 
       {mode === 'current' && (
-        <div className="text-carbon-300 text-md mt-3 flex items-start gap-2 px-1">
+        <div className="text-carbon-300 mt-3 flex items-start gap-2 px-1">
           <CalendarDays className="mt-0.5 size-5 shrink-0" />
           <span>Hoy, {formatLongDatetime(today.toISOString())}</span>
         </div>
@@ -95,7 +95,7 @@ const DatePickerField = ({ onChange, error }: DatePickerFieldProps) => {
                 )}
               >
                 <CalendarDays className="text-carbon-300 size-4 shrink-0" />
-                <span className={cn('font-numbers text-base', selectedDate ? 'text-carbon-500' : 'text-carbon-300')}>
+                <span className={cn('typo-text font-numbers', selectedDate ? 'text-carbon-500' : 'text-carbon-300')}>
                   {selectedDate ? format(selectedDate, 'dd/MM/yyyy', { locale: es }) : 'dd/MM/yyyy'}
                 </span>
               </button>

@@ -22,22 +22,19 @@ const MethodBar = ({ method, amount, maxAmount, colorizeAmount }: MethodBarProps
   const color = PAYMENT_METHOD_COLORS[method] ?? 'var(--color-muted-foreground)';
   const label = PAYMENT_METHOD_LABELS[method] ?? method;
 
-  const amountColorClass = colorizeAmount
-    ? amount > 0
-      ? 'text-success-700'
-      : amount < 0
-        ? 'text-error-700'
-        : ''
-    : '';
+  const amountColorClass = colorizeAmount ? (amount > 0 ? 'text-success-700' : amount < 0 ? 'text-error-700' : '') : '';
 
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
         <span className="typo-sm-text text-muted-foreground">{label}</span>
-        <span className={cn('font-numbers text-sm font-medium', amountColorClass)}>{formatCurrency(amount)}</span>
+        <span className={cn('typo-label font-numbers', amountColorClass)}>{formatCurrency(amount)}</span>
       </div>
       <div className="bg-muted h-2 overflow-hidden rounded-full">
-        <div className="h-full rounded-full transition-all" style={{ width: `${percentage}%`, backgroundColor: color }} />
+        <div
+          className="h-full rounded-full transition-all"
+          style={{ width: `${percentage}%`, backgroundColor: color }}
+        />
       </div>
     </div>
   );
@@ -54,8 +51,8 @@ const PaymentMethodBreakdown = ({ breakdown }: PaymentMethodBreakdownProps) => {
     <Card>
       <CardHeader>
         <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-lg bg-primary-100">
-            <CreditCard className="size-5 text-primary-600" />
+          <div className="bg-primary-100 flex size-10 items-center justify-center rounded-lg">
+            <CreditCard className="text-primary-600 size-5" />
           </div>
           <CardTitle className="typo-subtitle">Desglose por método de pago</CardTitle>
         </div>
@@ -64,8 +61,8 @@ const PaymentMethodBreakdown = ({ breakdown }: PaymentMethodBreakdownProps) => {
         <div className="grid gap-6 sm:grid-cols-3">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <div className="flex size-7 items-center justify-center rounded-md bg-success-50">
-                <TrendingUp className="size-4 text-success-400" />
+              <div className="bg-success-50 flex size-7 items-center justify-center rounded-md">
+                <TrendingUp className="text-success-400 size-4" />
               </div>
               <h4 className="typo-bold-text">Ingresos</h4>
             </div>
@@ -82,8 +79,8 @@ const PaymentMethodBreakdown = ({ breakdown }: PaymentMethodBreakdownProps) => {
           </div>
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <div className="flex size-7 items-center justify-center rounded-md bg-error-50">
-                <TrendingDown className="size-4 text-error-400" />
+              <div className="bg-error-50 flex size-7 items-center justify-center rounded-md">
+                <TrendingDown className="text-error-400 size-4" />
               </div>
               <h4 className="typo-bold-text">Gastos</h4>
             </div>
@@ -100,8 +97,8 @@ const PaymentMethodBreakdown = ({ breakdown }: PaymentMethodBreakdownProps) => {
           </div>
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <div className="flex size-7 items-center justify-center rounded-md bg-chart-4/15">
-                <Wallet className="size-4 text-chart-4" />
+              <div className="bg-chart-4/15 flex size-7 items-center justify-center rounded-md">
+                <Wallet className="text-chart-4 size-4" />
               </div>
               <h4 className="typo-bold-text">Balance</h4>
             </div>

@@ -38,7 +38,7 @@ const NavCollapsibleRoutes = ({
           <SidebarMenuButton
             tooltip={title}
             onClick={handleClick}
-            className="typo-subtitle h-fit cursor-pointer px-4 py-4 group-data-[state=collapsed]:my-2 group-data-[state=collapsed]:h-[2.75rem]! group-data-[state=collapsed]:w-[2.75rem]! group-data-[state=expanded]:hover:rounded-none group-data-[state=collapsed]:[&>span:last-child]:hidden [&>svg]:size-7"
+            className="typo-nav h-fit cursor-pointer px-4 py-4 group-data-[state=collapsed]:my-2 group-data-[state=collapsed]:h-[2.75rem]! group-data-[state=collapsed]:w-[2.75rem]! group-data-[state=expanded]:hover:rounded-none group-data-[state=collapsed]:[&>span:last-child]:hidden [&>svg]:size-7"
           >
             <Icon />
             <span>{title}</span>
@@ -51,7 +51,7 @@ const NavCollapsibleRoutes = ({
               <SidebarMenuSubItem key={route.title}>
                 <SidebarMenuSubButton
                   asChild
-                  className="typo-text h-fit px-4 py-4 group-data-[state=expanded]:hover:rounded-sm"
+                  className="typo-nav-sub h-fit px-4 py-4 group-data-[state=expanded]:hover:rounded-sm"
                 >
                   <Link href={route.url}>
                     <span>{route.title}</span>

@@ -32,13 +32,13 @@ const ToggleRow = ({
   id: string;
 }) => (
   <div className="bg-surface-400 flex items-center justify-between gap-4 rounded-lg px-4 py-3">
-    <label htmlFor={id} className="text-carbon-500 cursor-pointer text-sm font-medium">
+    <label htmlFor={id} className="typo-label text-carbon-500 cursor-pointer">
       {label}
     </label>
     <div className="flex items-center gap-3">
       <span
         className={cn(
-          'rounded-full px-2.5 py-0.5 text-xs font-semibold',
+          'typo-caption rounded-full px-2.5 py-0.5',
           checked ? 'bg-success-50 text-success-700' : 'bg-warning-100 text-warning-700',
         )}
       >
@@ -90,7 +90,7 @@ const AdminStep = ({ form, catalogs }: AdminStepProps) => {
             name="insuranceProviderId"
             render={({ field }) => (
               <FormItem className="sm:col-span-2">
-                <FormLabel className="text-carbon-400 text-sm font-medium">Aseguradora</FormLabel>
+                <FormLabel className="typo-label text-carbon-500">Aseguradora</FormLabel>
                 <FormControl>
                   <SearchCombobox
                     value={field.value}

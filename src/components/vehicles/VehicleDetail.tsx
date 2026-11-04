@@ -42,7 +42,7 @@ import VehicleStatCard from './VehicleStatCard';
 import VehicleStatusSelector from './VehicleStatusSelector';
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="text-carbon-500 text-lg font-bold">{children}</h2>
+  <h2 className="typo-subtitle text-carbon-500">{children}</h2>
 );
 
 const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
@@ -61,7 +61,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
   return (
     <article className="flex flex-col gap-6">
       <header className="flex flex-col gap-4">
-        <nav aria-label="Ruta de navegación" className="text-carbon-300 flex items-center gap-1.5 text-sm">
+        <nav aria-label="Ruta de navegación" className="typo-sm-text text-carbon-300 flex items-center gap-1.5">
           <Link href="/coches" className="hover:text-primary-800 hover:underline">
             Coches
           </Link>
@@ -83,12 +83,12 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
                 missingDocuments={missingDocuments}
               />
               {archived && (
-                <Badge className="bg-secondary-50 text-carbon-400 hover:bg-secondary-50 px-3 py-1 text-sm">
+                <Badge className="typo-sm-text bg-secondary-50 text-carbon-400 hover:bg-secondary-50 px-3 py-1">
                   Archivado
                 </Badge>
               )}
             </div>
-            <p className="font-numbers text-carbon-300 text-sm">
+            <p className="typo-sm-text font-numbers text-carbon-300">
               <span className="sr-only">Folio interno: </span>
               {vehicle.id}
             </p>
@@ -105,7 +105,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
         {missingDocuments.length > 0 && (
           <div
             role="status"
-            className="border-warning-600/30 bg-warning-100/60 text-warning-800 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border px-4 py-3 text-sm"
+            className="typo-sm-text border-warning-600/30 bg-warning-100/60 text-warning-800 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border px-4 py-3"
           >
             <FileWarning className="text-warning-700 size-5 shrink-0" aria-hidden />
             <p className="min-w-0 flex-1">
@@ -218,9 +218,9 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
           title="Financiamiento"
           badge={
             vehicle.isFinancedLiquidated ? (
-              <Badge className="bg-success-50 text-success-700 hover:bg-success-50 text-xs">Liquidado</Badge>
+              <Badge className="typo-caption bg-success-50 text-success-700 hover:bg-success-50">Liquidado</Badge>
             ) : (
-              <Badge className="bg-warning-100 text-warning-700 hover:bg-warning-100 text-xs">No liquidado</Badge>
+              <Badge className="typo-caption bg-warning-100 text-warning-700 hover:bg-warning-100">No liquidado</Badge>
             )
           }
           rows={
@@ -245,8 +245,8 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
             <Badge
               className={
                 pegazzoOwned
-                  ? 'bg-primary-50 text-primary-800 hover:bg-primary-50 text-xs'
-                  : 'bg-secondary-50 text-carbon-400 hover:bg-secondary-50 text-xs'
+                  ? 'typo-caption bg-primary-50 text-primary-800 hover:bg-primary-50'
+                  : 'typo-caption bg-secondary-50 text-carbon-400 hover:bg-secondary-50'
               }
             >
               {pegazzoOwned ? 'Pegazzo' : 'Propietario particular'}
@@ -274,7 +274,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
           <SectionTitle>
             <span id="photos-title">Fotos del vehículo</span>
           </SectionTitle>
-          <span className="text-carbon-300 text-sm">
+          <span className="typo-sm-text text-carbon-300">
             {photos.length === 0
               ? 'Aún no hay fotos'
               : `${photos.length} ${photos.length === 1 ? 'foto subida' : 'fotos subidas'}`}
@@ -301,7 +301,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
           <CanManage>
             <Link
               href={`/coches/${encodeURIComponent(vehicle.id)}/editar`}
-              className="border-surface-700/60 text-carbon-300 hover:border-primary-700 hover:text-primary-800 hover:bg-primary-50 flex h-[100px] w-[140px] cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed text-sm transition-colors"
+              className="typo-sm-text border-surface-700/60 text-carbon-300 hover:border-primary-700 hover:text-primary-800 hover:bg-primary-50 flex h-[100px] w-[140px] cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed transition-colors"
             >
               {photos.length === 0 ? (
                 <Camera className="size-5" aria-hidden />
@@ -319,7 +319,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
           <span id="documents-title">Documentos</span>
         </SectionTitle>
         {documents.length === 0 ? (
-          <p className="text-carbon-300 border-surface-700/60 rounded-lg border-2 border-dashed px-4 py-6 text-center text-sm">
+          <p className="typo-sm-text text-carbon-300 border-surface-700/60 rounded-lg border-2 border-dashed px-4 py-6 text-center">
             Aún no hay documentos cargados.
           </p>
         ) : (
@@ -335,11 +335,13 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
                     <FileText className="size-[18px]" aria-hidden />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="text-carbon-500 truncate text-sm font-semibold">{getDocumentTypeLabel(doc.type)}</p>
-                    {doc.expiryDate && <p className="text-carbon-200 text-xs">Vence el {formatDate(doc.expiryDate)}</p>}
+                    <p className="typo-label text-carbon-500 truncate">{getDocumentTypeLabel(doc.type)}</p>
+                    {doc.expiryDate && (
+                      <p className="typo-caption text-carbon-300">Vence el {formatDate(doc.expiryDate)}</p>
+                    )}
                   </div>
                   <ExpiryBadge status={doc.expiryStatus} />
-                  <span className="text-primary-800 group-hover/doc:text-primary-900 flex items-center gap-1 text-sm font-medium group-hover/doc:underline">
+                  <span className="typo-label text-primary-800 group-hover/doc:text-primary-900 flex items-center gap-1 group-hover/doc:underline">
                     Ver <Eye className="size-3.5" aria-hidden />
                   </span>
                 </ViewFileTile>

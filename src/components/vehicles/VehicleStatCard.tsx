@@ -15,11 +15,11 @@ const VehicleStatCard = ({ icon: Icon, label, value, hint, chipClassName }: Vehi
       <span className={cn('flex size-8 items-center justify-center rounded-lg', chipClassName)}>
         <Icon className="size-4" aria-hidden />
       </span>
-      <span className="text-carbon-300 text-xs font-medium">{label}</span>
+      <span className="typo-caption text-carbon-300">{label}</span>
     </div>
     <div className="min-w-0">
-      <p className="font-numbers text-carbon-500 truncate text-xl font-semibold">{value}</p>
-      {hint && <p className="text-carbon-200 mt-0.5 truncate text-xs">{hint}</p>}
+      <p className="typo-kpi-sm text-carbon-500 truncate">{value}</p>
+      {hint && <p className="typo-caption text-carbon-300 mt-0.5 truncate">{hint}</p>}
     </div>
   </div>
 );

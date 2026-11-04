@@ -10,14 +10,14 @@ const TransactionCounter = ({ count }: TransactionCounterProps) => {
     <Card>
       <CardHeader>
         <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-lg bg-primary-100">
-            <ArrowRightLeft className="size-5 text-primary-600" />
+          <div className="bg-primary-100 flex size-10 items-center justify-center rounded-lg">
+            <ArrowRightLeft className="text-primary-600 size-5" />
           </div>
           <CardTitle className="typo-subtitle">Transacciones del Mes</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
-        <span className="font-numbers text-4xl font-semibold tracking-tight">{count}</span>
+        <span className="typo-kpi">{count}</span>
       </CardContent>
     </Card>
   );

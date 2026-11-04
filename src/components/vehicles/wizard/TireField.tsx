@@ -13,13 +13,13 @@ const PART_INPUT = 'w-full px-2 text-center';
 
 const Part = ({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) => (
   <div className={cn('flex flex-col gap-1', className)}>
-    <span className="text-carbon-200 text-center text-[11px] font-medium">{label}</span>
+    <span className="typo-caption text-carbon-300 text-center">{label}</span>
     {children}
   </div>
 );
 
 const Separator = ({ children }: { children: React.ReactNode }) => (
-  <span aria-hidden className="text-carbon-200 font-numbers flex h-[46px] items-center self-end text-xl">
+  <span aria-hidden className="typo-kpi-sm text-carbon-300 flex h-[46px] items-center self-end">
     {children}
   </span>
 );
@@ -49,7 +49,7 @@ const TireInputs = ({ value, onChange, onBlur }: TireInputsProps) => {
   if (!parts) {
     return (
       <FormItem className="sm:col-span-2">
-        <FormLabel className="text-carbon-400 text-sm font-medium">Llantas</FormLabel>
+        <FormLabel className="typo-label text-carbon-500">Llantas</FormLabel>
         <div className="flex flex-wrap items-center gap-3">
           <Input
             value={value}
@@ -58,7 +58,7 @@ const TireInputs = ({ value, onChange, onBlur }: TireInputsProps) => {
           />
           <button
             type="button"
-            className="text-primary-800 cursor-pointer text-sm font-medium hover:underline"
+            className="typo-label text-primary-800 cursor-pointer hover:underline"
             onClick={() => {
               setParts({ ...EMPTY_TIRE });
               onChange('');
@@ -67,7 +67,7 @@ const TireInputs = ({ value, onChange, onBlur }: TireInputsProps) => {
             Reescribir con el formato estándar
           </button>
         </div>
-        <FormDescription className="text-xs">Este valor se guardó con otro formato.</FormDescription>
+        <FormDescription className="typo-caption">Este valor se guardó con otro formato.</FormDescription>
       </FormItem>
     );
   }
@@ -76,7 +76,7 @@ const TireInputs = ({ value, onChange, onBlur }: TireInputsProps) => {
 
   return (
     <FormItem className="sm:col-span-2">
-      <FormLabel className="text-carbon-400 text-sm font-medium">Llantas</FormLabel>
+      <FormLabel className="typo-label text-carbon-500">Llantas</FormLabel>
       <FormControl>
         <div
           role="group"
@@ -132,7 +132,7 @@ const TireInputs = ({ value, onChange, onBlur }: TireInputsProps) => {
                   title={option === 'R' ? 'Radial' : 'Diagonal'}
                   onClick={() => update({ construction: option })}
                   className={cn(
-                    'font-numbers focus-visible:ring-primary-700 flex-1 cursor-pointer text-lg font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset',
+                    'typo-subtitle font-numbers focus-visible:ring-primary-700 flex-1 cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset',
                     parts.construction === option ? 'bg-primary-700 text-white' : 'text-carbon-300 hover:bg-primary-50',
                   )}
                 >
@@ -198,7 +198,7 @@ const TireInputs = ({ value, onChange, onBlur }: TireInputsProps) => {
           </Part>
         </div>
       </FormControl>
-      <FormDescription className="text-xs">
+      <FormDescription className="typo-caption">
         {composed ? (
           <>
             Código: <span className="font-numbers text-carbon-400 font-semibold">{composed}</span>

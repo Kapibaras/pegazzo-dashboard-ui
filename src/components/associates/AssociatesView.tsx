@@ -141,7 +141,7 @@ const AssociatesView = ({ associates }: { associates: Associate[] }) => {
                       <div className="flex items-center gap-3.5">
                         <span
                           aria-hidden
-                          className="bg-terciary-500 text-primary-100 typo-bold-text flex size-11 shrink-0 items-center justify-center rounded-full"
+                          className="bg-terciary-500 text-primary-100 typo-button flex size-11 shrink-0 items-center justify-center rounded-full"
                         >
                           {getInitials(associate.name, associate.surnames)}
                         </span>
@@ -153,14 +153,14 @@ const AssociatesView = ({ associates }: { associates: Associate[] }) => {
 
                     <TableCell className="hidden px-5 py-4 md:table-cell">
                       {phones.length === 0 ? (
-                        <span className="text-carbon-200">—</span>
+                        <span className="text-carbon-300">—</span>
                       ) : (
                         <div className="flex flex-wrap items-center gap-1.5">
-                          <span className="bg-surface-600/60 text-carbon-500 rounded-full px-3 py-1 font-mono text-sm">
+                          <span className="typo-sm-text bg-surface-600/60 text-carbon-500 font-numbers rounded-full px-3 py-1">
                             {phones[0]}
                           </span>
                           {phones.length > 1 && (
-                            <span className="text-carbon-300 typo-sm-text font-medium">+{phones.length - 1}</span>
+                            <span className="text-carbon-300 typo-label">+{phones.length - 1}</span>
                           )}
                         </div>
                       )}
@@ -169,7 +169,7 @@ const AssociatesView = ({ associates }: { associates: Associate[] }) => {
                     <TableCell className="px-5 py-4 text-right">
                       <span
                         className={cn(
-                          'typo-bold-text inline-flex min-w-14 items-center justify-center gap-1.5 rounded-full px-3 py-1 text-sm',
+                          'typo-label inline-flex min-w-14 items-center justify-center gap-1.5 rounded-full px-3 py-1',
                           carCount > 0 ? 'bg-primary-100 text-primary-800' : 'bg-secondary-50 text-carbon-300',
                         )}
                       >

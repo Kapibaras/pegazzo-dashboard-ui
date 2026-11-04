@@ -54,7 +54,7 @@ const AutorizacionesTable = ({
                   )}
                 >
                   <TableCell className="px-5 py-3.5 lg:px-6">
-                    <span className="typo-bold-text text-primary-600 font-mono">{transaction.reference}</span>
+                    <span className="typo-bold-text text-primary-600 font-numbers">{transaction.reference}</span>
                   </TableCell>
                   <TableCell className="px-5 py-3.5 lg:px-6">
                     <span className="font-numbers">{formatLongDatetime(transaction.date)}</span>
@@ -62,7 +62,7 @@ const AutorizacionesTable = ({
                   <TableCell className="px-5 py-3.5 lg:px-6">
                     <Badge
                       className={cn(
-                        'text-xs font-medium',
+                        'typo-caption',
                         isCredit
                           ? 'bg-success-50 text-success-700 hover:bg-success-50'
                           : 'bg-error-50 text-error-700 hover:bg-error-50',

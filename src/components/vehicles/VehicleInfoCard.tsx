@@ -30,7 +30,7 @@ const VehicleInfoCard = ({ icon: Icon, title, rows, badge, chipClassName, classN
         >
           <Icon className="size-[18px]" aria-hidden />
         </span>
-        <h2 className="text-carbon-500 text-base font-bold">{title}</h2>
+        <h2 className="typo-subtitle text-carbon-500">{title}</h2>
       </div>
       {badge}
     </header>
@@ -38,8 +38,10 @@ const VehicleInfoCard = ({ icon: Icon, title, rows, badge, chipClassName, classN
     <dl className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
       {rows.map((row) => (
         <div key={row.label} className="flex min-w-0 flex-col gap-0.5">
-          <dt className="text-carbon-200 text-xs font-medium">{row.label}</dt>
-          <dd className={cn('text-carbon-500 truncate text-sm', row.mono && 'font-numbers')}>{row.value || '—'}</dd>
+          <dt className="typo-caption text-carbon-300">{row.label}</dt>
+          <dd className={cn('typo-sm-text text-carbon-500 truncate', row.mono && 'font-numbers')}>
+            {row.value || '—'}
+          </dd>
         </div>
       ))}
     </dl>

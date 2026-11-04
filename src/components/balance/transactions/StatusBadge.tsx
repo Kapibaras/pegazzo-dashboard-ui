@@ -16,9 +16,7 @@ const STATUS_CLASSES: Record<TransactionStatus, string> = {
 
 const StatusBadge = ({ status, className }: StatusBadgeProps) => {
   return (
-    <Badge className={cn('text-xs font-medium', STATUS_CLASSES[status], className)}>
-      {TRANSACTION_STATUS_LABELS[status]}
-    </Badge>
+    <Badge className={cn('typo-caption', STATUS_CLASSES[status], className)}>{TRANSACTION_STATUS_LABELS[status]}</Badge>
   );
 };
 

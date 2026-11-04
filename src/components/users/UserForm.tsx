@@ -121,7 +121,7 @@ export function UserForm({ mode, onSuccess, userId, name, surnames }: UserFormPr
               name="username"
               render={({ field }) => (
                 <FormItem className="mb-4 gap-1 md:mt-3 md:mb-3">
-                  <FormLabel className="typo-subtitle text-carbon-500">Username</FormLabel>
+                  <FormLabel className="typo-label text-carbon-500">Username</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Nombre de usuario"
@@ -141,7 +141,7 @@ export function UserForm({ mode, onSuccess, userId, name, surnames }: UserFormPr
               name="name"
               render={({ field }) => (
                 <FormItem className="mb-6 gap-2 md:mb-3">
-                  <FormLabel className="typo-subtitle text-carbon-500">Nombre</FormLabel>
+                  <FormLabel className="typo-label text-carbon-500">Nombre</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Nombre"
@@ -161,7 +161,7 @@ export function UserForm({ mode, onSuccess, userId, name, surnames }: UserFormPr
               name="surnames"
               render={({ field }) => (
                 <FormItem className="mb-6 gap-2 md:mb-3">
-                  <FormLabel className="typo-subtitle text-carbon-500">Apellidos</FormLabel>
+                  <FormLabel className="typo-label text-carbon-500">Apellidos</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Apellidos"
@@ -181,7 +181,7 @@ export function UserForm({ mode, onSuccess, userId, name, surnames }: UserFormPr
               name="password"
               render={({ field }) => (
                 <FormItem className="mb-6 gap-2 md:mb-3">
-                  <FormLabel className="typo-subtitle text-carbon-500">Password</FormLabel>
+                  <FormLabel className="typo-label text-carbon-500">Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
@@ -202,7 +202,7 @@ export function UserForm({ mode, onSuccess, userId, name, surnames }: UserFormPr
               name="passwordConfirmation"
               render={({ field }) => (
                 <FormItem className="mb-6 gap-2 md:mb-3">
-                  <FormLabel className="typo-subtitle text-carbon-500">Repetir Contraseña</FormLabel>
+                  <FormLabel className="typo-label text-carbon-500">Repetir Contraseña</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
@@ -223,7 +223,7 @@ export function UserForm({ mode, onSuccess, userId, name, surnames }: UserFormPr
               name="role"
               render={() => (
                 <FormItem className="gap-2">
-                  <FormLabel className="typo-subtitle text-carbon-500">Rol</FormLabel>
+                  <FormLabel className="typo-label text-carbon-500">Rol</FormLabel>
                   <Controller
                     control={form.control}
                     name="role"
@@ -259,7 +259,7 @@ export function UserForm({ mode, onSuccess, userId, name, surnames }: UserFormPr
           <Button
             type="submit"
             disabled={!isValid || isSubmitting}
-            className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text z-10 w-full cursor-pointer items-center justify-center rounded-md py-5.5 text-center hover:shadow-sm"
+            className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-button z-10 w-full cursor-pointer items-center justify-center rounded-md py-5.5 text-center hover:shadow-sm"
           >
             {isSubmitting ? buttonLabels[mode].submitting : buttonLabels[mode].idle}
           </Button>

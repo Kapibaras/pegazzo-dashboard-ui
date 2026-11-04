@@ -78,7 +78,10 @@ const IdentityStep = ({
   return (
     <div className="flex flex-col gap-5">
       {showFolioNotice && (
-        <div className="bg-primary-50 text-primary-900 flex items-start gap-3 rounded-lg px-4 py-3 text-sm" role="note">
+        <div
+          className="typo-sm-text bg-primary-50 text-primary-900 flex items-start gap-3 rounded-lg px-4 py-3"
+          role="note"
+        >
           <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
           <p>
             El folio interno <strong>no se captura aquí</strong>: se genera automáticamente al final, con los datos del
@@ -102,7 +105,7 @@ const IdentityStep = ({
             name="model"
             render={() => (
               <FormItem className="sm:col-span-2">
-                <FormLabel className="text-carbon-400 text-sm font-medium">Marca y modelo</FormLabel>
+                <FormLabel className="typo-label text-carbon-500">Marca y modelo</FormLabel>
                 <SearchCombobox
                   value={selectedValue}
                   options={allOptions}

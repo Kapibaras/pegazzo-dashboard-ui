@@ -107,7 +107,7 @@ const QuickCreateDialog = <T,>({
               <div key={field.name} className="grid gap-1.5">
                 <Label htmlFor={`qc-${field.name}`}>
                   {field.label}
-                  {!field.required && <span className="text-carbon-200 font-normal"> (opcional)</span>}
+                  {!field.required && <span className="text-carbon-300 font-normal"> (opcional)</span>}
                 </Label>
                 {field.type === 'phone' ? (
                   <PhoneInput
@@ -128,7 +128,7 @@ const QuickCreateDialog = <T,>({
                   />
                 )}
                 {errors[field.name] && (
-                  <p role="alert" className="text-error-700 text-xs">
+                  <p role="alert" className="typo-caption text-error-700">
                     {errors[field.name]}
                   </p>
                 )}

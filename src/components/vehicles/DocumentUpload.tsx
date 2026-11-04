@@ -212,11 +212,11 @@ const DocumentUpload = ({
     <div className={cn('flex flex-col gap-2', className)}>
       {label && (
         <div className="flex items-center gap-2">
-          <label htmlFor={inputId} className="typo-sm-text text-carbon-400 font-medium">
+          <label htmlFor={inputId} className="typo-label text-carbon-500">
             {label}
           </label>
           {required && (
-            <Badge className="bg-error-50 text-error-700 hover:bg-error-50 px-1.5 py-0 text-[10px]">Obligatorio</Badge>
+            <Badge className="typo-caption bg-error-50 text-error-700 hover:bg-error-50 px-1.5 py-0">Obligatorio</Badge>
           )}
         </div>
       )}
@@ -269,11 +269,11 @@ const DocumentUpload = ({
           <p className="typo-sm-text text-carbon-400">
             {isReadOnly ? 'Solo lectura' : 'Arrastra el archivo aquí o haz clic para subir'}
           </p>
-          <p className="typo-sm-text text-carbon-300 text-xs">
+          <p className="typo-caption text-carbon-300">
             {acceptLabel} · máx. {maxSizeMB} MB
           </p>
           {acceptsImages && !isReadOnly && (
-            <p className="text-carbon-300 max-w-sm text-xs">
+            <p className="typo-caption text-carbon-300 max-w-sm">
               Tip: fotografía el documento recto, bien iluminado, completo y sin reflejos del flash.
             </p>
           )}
@@ -296,16 +296,16 @@ const DocumentUpload = ({
             </div>
           )}
           <div className="min-w-0 flex-1">
-            <p className="typo-sm-text text-carbon-500 truncate font-medium">{file.name}</p>
-            <p className="text-carbon-300 text-xs">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>
+            <p className="typo-label text-carbon-500 truncate">{file.name}</p>
+            <p className="typo-caption text-carbon-300">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>
             {state === 'uploading' && (
               <div className="mt-2 flex items-center gap-2">
                 <Progress value={progress} aria-label="Progreso de subida" className="flex-1" />
-                <span className="text-carbon-300 w-9 text-right text-xs tabular-nums">{progress}%</span>
+                <span className="typo-caption text-carbon-300 w-9 text-right tabular-nums">{progress}%</span>
               </div>
             )}
             {state === 'error' && message && (
-              <p role="alert" className="text-error-700 mt-1 text-xs">
+              <p role="alert" className="typo-caption text-error-700 mt-1">
                 {message}
               </p>
             )}
@@ -347,12 +347,12 @@ const DocumentUpload = ({
             <FileText className="text-success-700 size-5" aria-hidden />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="typo-sm-text text-carbon-500 truncate font-medium">{file?.name ?? label ?? 'Documento'}</p>
-            <p className="text-success-700 flex items-center gap-1 text-xs">
+            <p className="typo-label text-carbon-500 truncate">{file?.name ?? label ?? 'Documento'}</p>
+            <p className="typo-caption text-success-700 flex items-center gap-1">
               <CheckCircle2 className="size-3.5" aria-hidden /> Documento cargado
             </p>
           </div>
-          <span className="text-primary-800 flex items-center gap-1 text-sm font-medium group-hover/doc:underline">
+          <span className="typo-label text-primary-800 flex items-center gap-1 group-hover/doc:underline">
             Ver <Eye className="size-3.5" aria-hidden />
           </span>
           {!isReadOnly && (
@@ -364,7 +364,7 @@ const DocumentUpload = ({
       )}
 
       {state === 'error' && !file && message && (
-        <p role="alert" className="text-error-700 text-xs">
+        <p role="alert" className="typo-caption text-error-700">
           {message}
         </p>
       )}

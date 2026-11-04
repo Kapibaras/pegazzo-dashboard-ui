@@ -66,7 +66,7 @@ const VehicleTable = ({ vehicles, archived = false, isLoading = false, onChanged
                   />
                 </TableCell>
                 <TableCell className="text-carbon-500 px-5 font-semibold">{title}</TableCell>
-                <TableCell className="font-numbers text-carbon-300 px-5 text-sm">{vehicle.id}</TableCell>
+                <TableCell className="typo-sm-text font-numbers text-carbon-300 px-5">{vehicle.id}</TableCell>
                 <TableCell className="font-numbers text-carbon-400 px-5">{vehicle.year}</TableCell>
                 <TableCell className="text-carbon-400 px-5">
                   <span className="flex items-center gap-2">

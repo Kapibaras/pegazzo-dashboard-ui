@@ -24,7 +24,7 @@ const Calendar = ({ className, classNames, showOutsideDays = true, ...props }: C
         months: 'flex flex-col gap-4',
         month: 'flex flex-col gap-3',
         month_caption: 'relative flex h-9 items-center justify-center',
-        caption_label: 'text-sm font-semibold text-carbon-500 tracking-wide',
+        caption_label: 'typo-label text-carbon-500',
         nav: 'flex items-center',
         button_previous:
           'absolute left-0 flex size-8 cursor-pointer items-center justify-center rounded-lg text-carbon-300 transition-colors hover:bg-primary-100 hover:text-primary-800',
@@ -32,11 +32,11 @@ const Calendar = ({ className, classNames, showOutsideDays = true, ...props }: C
           'absolute right-0 flex size-8 cursor-pointer items-center justify-center rounded-lg text-carbon-300 transition-colors hover:bg-primary-100 hover:text-primary-800',
         month_grid: 'w-full border-collapse',
         weekdays: 'mb-1 flex',
-        weekday: 'w-9 text-center text-[0.68rem] font-semibold uppercase tracking-widest text-carbon-300',
+        weekday: 'w-9 text-center typo-overline text-carbon-300',
         week: 'flex w-full',
         day: 'relative p-0',
         day_button:
-          'flex size-9 cursor-pointer items-center justify-center rounded-full text-sm text-carbon-500 transition-all hover:bg-primary-100 hover:text-primary-800 focus:outline-none',
+          'flex size-9 cursor-pointer items-center justify-center rounded-full typo-sm-text text-carbon-500 transition-all hover:bg-primary-100 hover:text-primary-800 focus:outline-none',
         selected:
           '[&>button]:bg-primary-700 [&>button]:text-white [&>button]:shadow-sm [&>button]:hover:bg-primary-700 [&>button]:hover:text-white',
         today: '[&>button]:font-bold [&>button]:text-primary-700 [&>button]:ring-1 [&>button]:ring-primary-700/40 [&>button]:ring-inset',

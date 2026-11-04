@@ -419,7 +419,7 @@ const VehicleWizard = (props: VehicleWizardProps) => {
   return (
     <div ref={topRef} className="mx-auto flex max-w-[920px] scroll-mt-6 flex-col gap-6">
       <header className="flex flex-col gap-3">
-        <nav aria-label="Ruta de navegación" className="text-carbon-300 flex items-center gap-1.5 text-sm">
+        <nav aria-label="Ruta de navegación" className="typo-sm-text text-carbon-300 flex items-center gap-1.5">
           <Link href="/coches" className="hover:text-primary-800 hover:underline">
             Coches
           </Link>
@@ -444,7 +444,7 @@ const VehicleWizard = (props: VehicleWizardProps) => {
           <h1 className="typo-title text-carbon-500">{title}</h1>
           {isEdit && (
             <span
-              className="bg-secondary-50 text-carbon-400 font-numbers rounded-md px-2.5 py-1 text-sm"
+              className="typo-sm-text bg-secondary-50 text-carbon-400 font-numbers rounded-md px-2.5 py-1"
               title="El folio interno no se puede editar"
             >
               <span className="sr-only">Folio interno (solo lectura): </span>

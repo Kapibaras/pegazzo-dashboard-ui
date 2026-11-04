@@ -57,14 +57,14 @@ const KPICard = ({
       </CardHeader>
       <CardContent>
         <div className="flex flex-col items-center gap-1">
-          <span className="font-numbers text-4xl font-semibold tracking-tight">{value}</span>
+          <span className="typo-kpi">{value}</span>
           {change && (
             <div className={cn('flex items-center gap-1', getChangeColor(change.value))}>
               {(() => {
                 const ChangeIcon = getChangeIcon(change.value);
                 return <ChangeIcon className="size-3.5" />;
               })()}
-              <span className="font-numbers text-sm">{formatChange(change)}</span>
+              <span className="typo-sm-text font-numbers">{formatChange(change)}</span>
             </div>
           )}
         </div>

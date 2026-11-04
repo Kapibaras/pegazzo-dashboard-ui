@@ -31,7 +31,7 @@ const PhoneListField = ({ value, onChange }: PhoneListFieldProps) => {
           {value.map((phone) => (
             <li
               key={phone}
-              className="bg-surface-600/60 text-carbon-500 typo-numbers flex items-center gap-1.5 rounded-full py-1 pr-1.5 pl-3 text-sm"
+              className="typo-sm-text bg-surface-600/60 text-carbon-500 flex items-center gap-1.5 rounded-full py-1 pr-1.5 pl-3"
             >
               {phone}
               <button

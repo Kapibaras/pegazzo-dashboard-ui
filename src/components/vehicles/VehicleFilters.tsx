@@ -85,7 +85,7 @@ const VehicleFilters = ({
               setDraft('');
               onSearchChange('');
             }}
-            className="text-carbon-200 hover:text-carbon-500 absolute top-1/2 right-3.5 -translate-y-1/2 cursor-pointer"
+            className="text-carbon-300 hover:text-carbon-500 absolute top-1/2 right-3.5 -translate-y-1/2 cursor-pointer"
           >
             <X className="size-4" />
           </button>
@@ -143,8 +143,8 @@ const VehicleFilters = ({
         <PopoverContent align="end" className="w-72">
           <label className="flex cursor-pointer items-center justify-between gap-4">
             <span className="flex flex-col">
-              <span className="text-carbon-500 text-sm font-semibold">Ver archivados</span>
-              <span className="text-carbon-300 text-xs">Muestra solo los coches archivados.</span>
+              <span className="typo-label text-carbon-500">Ver archivados</span>
+              <span className="typo-caption text-carbon-300">Muestra solo los coches archivados.</span>
             </span>
             <Switch checked={archived} onCheckedChange={onArchivedChange} aria-label="Ver archivados" />
           </label>

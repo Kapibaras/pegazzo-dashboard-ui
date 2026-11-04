@@ -25,7 +25,7 @@ const FolioDisplay = ({ folio, className }: { folio: string; className?: string 
   const match = FOLIO_PATTERN.exec(folio);
 
   if (!match) {
-    return <p className={cn('font-numbers text-carbon-500 text-2xl font-semibold', className)}>{folio}</p>;
+    return <p className={cn('typo-kpi-sm text-carbon-500', className)}>{folio}</p>;
   }
 
   const [, owner, associate, car, transmission, consecutive] = match;
@@ -33,13 +33,10 @@ const FolioDisplay = ({ folio, className }: { folio: string; className?: string 
 
   return (
     <div className={cn('flex flex-col gap-4', className)}>
-      <p
-        className="font-numbers flex flex-wrap items-center gap-1 text-2xl font-semibold"
-        aria-label={`Folio ${folio}`}
-      >
+      <p className="typo-kpi-sm flex flex-wrap items-center gap-1" aria-label={`Folio ${folio}`}>
         {parts.map((part, index) => (
           <span key={SEGMENTS[index].key} className="flex items-center gap-1">
-            {index > 0 && <span className="text-carbon-200">{index === 4 ? '-' : index === 3 ? '' : '-'}</span>}
+            {index > 0 && <span className="text-carbon-300">{index === 4 ? '-' : index === 3 ? '' : '-'}</span>}
             <span className={cn('rounded-md px-2 py-0.5', SEGMENTS[index].className)}>
               {index === 3 ? `(${part})` : part}
             </span>
@@ -49,12 +46,12 @@ const FolioDisplay = ({ folio, className }: { folio: string; className?: string 
       <dl className="grid gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-5">
         {SEGMENTS.map((segment, index) => (
           <div key={segment.key} className="flex flex-col gap-0.5">
-            <dt className="flex items-center gap-1.5 text-xs font-medium">
+            <dt className="typo-caption flex items-center gap-1.5">
               <span aria-hidden className={cn('size-2.5 rounded-sm', segment.className)} />
               {segment.label}
             </dt>
-            <dd className="font-numbers text-carbon-500 text-sm">{parts[index]}</dd>
-            <dd className="text-carbon-200 text-xs">{segment.hint}</dd>
+            <dd className="typo-sm-text font-numbers text-carbon-500">{parts[index]}</dd>
+            <dd className="typo-caption text-carbon-300">{segment.hint}</dd>
           </div>
         ))}
       </dl>

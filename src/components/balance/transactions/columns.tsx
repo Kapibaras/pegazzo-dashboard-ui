@@ -27,7 +27,7 @@ const SortableHeader = ({ label, columnKey, sortBy, sortOrder, onSort }: Sortabl
   return (
     <Button
       variant="ghost"
-      className="text-primary-100 typo-bold-text hover:bg-primary-100 cursor-pointer"
+      className="text-primary-100 typo-bold-text! hover:bg-primary-100 cursor-pointer"
       onClick={() => onSort(columnKey)}
     >
       {label}
@@ -66,7 +66,7 @@ export const getColumns = ({ sortBy, sortOrder, onSort }: GetColumnsParams): Col
       return (
         <Badge
           className={cn(
-            'text-xs font-medium',
+            'typo-caption',
             isCredit
               ? 'bg-success-50 text-success-700 hover:bg-success-50'
               : 'bg-error-50 text-error-700 hover:bg-error-50',

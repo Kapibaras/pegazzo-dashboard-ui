@@ -222,7 +222,7 @@ const TransactionForm = ({
             name="amount"
             render={({ field }) => (
               <FormItem className="mb-4 gap-1 md:mt-3 md:mb-3">
-                <FormLabel className="typo-subtitle text-carbon-500">Monto</FormLabel>
+                <FormLabel className="typo-label text-carbon-500">Monto</FormLabel>
                 <FormControl>
                   <Input type="number" step="0.01" min="0" placeholder="0.00" {...field} className={inputClass} />
                 </FormControl>
@@ -237,7 +237,7 @@ const TransactionForm = ({
               name="type"
               render={() => (
                 <FormItem className="gap-1 md:mt-3 md:mb-3">
-                  <FormLabel className="typo-subtitle text-carbon-500">Tipo</FormLabel>
+                  <FormLabel className="typo-label text-carbon-500">Tipo</FormLabel>
                   <Controller
                     control={form.control}
                     name="type"
@@ -270,7 +270,7 @@ const TransactionForm = ({
             name="category_group"
             render={() => (
               <FormItem className="gap-1 md:mt-3 md:mb-3">
-                <FormLabel className="typo-subtitle text-carbon-500">Rubro</FormLabel>
+                <FormLabel className="typo-label text-carbon-500">Rubro</FormLabel>
                 <Controller
                   control={form.control}
                   name="category_group"
@@ -307,7 +307,7 @@ const TransactionForm = ({
             name="category_subcategory"
             render={() => (
               <FormItem className="gap-1 md:mt-3 md:mb-3">
-                <FormLabel className="typo-subtitle text-carbon-500">Categoría</FormLabel>
+                <FormLabel className="typo-label text-carbon-500">Categoría</FormLabel>
                 <Controller
                   control={form.control}
                   name="category_subcategory"
@@ -344,7 +344,7 @@ const TransactionForm = ({
             name="description"
             render={({ field }) => (
               <FormItem className="mb-4 gap-1 md:mt-3 md:mb-3">
-                <FormLabel className="typo-subtitle text-carbon-500">Descripción</FormLabel>
+                <FormLabel className="typo-label text-carbon-500">Descripción</FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="Descripción de la transacción"
@@ -364,7 +364,7 @@ const TransactionForm = ({
             name="payment_method"
             render={() => (
               <FormItem className="gap-1 md:mt-3 md:mb-3">
-                <FormLabel className="typo-subtitle text-carbon-500">Método de pago</FormLabel>
+                <FormLabel className="typo-label text-carbon-500">Método de pago</FormLabel>
                 <Controller
                   control={form.control}
                   name="payment_method"
@@ -396,7 +396,7 @@ const TransactionForm = ({
               name="date"
               render={({ field, fieldState }) => (
                 <FormItem className="mb-4 gap-1 md:mt-3 md:mb-3">
-                  <FormLabel className="typo-subtitle text-carbon-500">Fecha</FormLabel>
+                  <FormLabel className="typo-label text-carbon-500">Fecha</FormLabel>
                   <FormControl>
                     <DatePickerField
                       value={field.value as string | undefined}
@@ -413,7 +413,9 @@ const TransactionForm = ({
           <div className="gap-1 space-y-1 md:mt-3 md:mb-3">
             <div className="flex items-center gap-2">
               <span className="typo-subtitle text-carbon-500">Coche</span>
-              <Badge className="self-center text-xs bg-warning-100 text-warning-700 hover:bg-warning-100">🚧 En desarrollo</Badge>
+              <Badge className="typo-caption bg-warning-100 text-warning-700 hover:bg-warning-100 self-center">
+                🚧 En desarrollo
+              </Badge>
             </div>
             <Select disabled>
               <SelectTrigger className={`${inputClass} w-full`} aria-disabled="true">
@@ -427,7 +429,7 @@ const TransactionForm = ({
           <Button
             type="submit"
             disabled={!isValid || isSubmitting || isSavingFromDialog}
-            className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text z-10 w-full cursor-pointer items-center justify-center rounded-md py-5.5 text-center hover:shadow-sm"
+            className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-button z-10 w-full cursor-pointer items-center justify-center rounded-md py-5.5 text-center hover:shadow-sm"
           >
             {isSubmitting || isSavingFromDialog
               ? mode === 'create'

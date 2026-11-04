@@ -42,7 +42,7 @@ const InfoRow = ({
   <div className="flex items-start gap-4 px-5 py-4">
     <Icon className="text-carbon-300 mt-0.5 h-7 w-7 shrink-0" strokeWidth={1.75} />
     <div className="min-w-0 flex-1">
-      <p className="typo-text text-carbon-200 mb-1 text-xs tracking-wider uppercase">{label}</p>
+      <p className="typo-overline text-carbon-300 mb-1">{label}</p>
       <div className="typo-text text-carbon-500 break-words">{children}</div>
     </div>
   </div>
@@ -120,7 +120,7 @@ const AssociateSheet = ({ associateId, onClose }: AssociateSheetProps) => {
                       <p className="typo-subtitle text-carbon-500 break-words">{fullName}</p>
                       <Badge
                         className={cn(
-                          'mt-1.5 rounded-md px-2.5 py-0.5 text-xs font-semibold tracking-wide',
+                          'typo-caption mt-1.5 rounded-md px-2.5 py-0.5 tracking-wide',
                           hasCars
                             ? 'bg-primary-100 text-primary-800 hover:bg-primary-100'
                             : 'bg-secondary-50 text-carbon-400 hover:bg-secondary-50',
@@ -137,11 +137,11 @@ const AssociateSheet = ({ associateId, onClose }: AssociateSheetProps) => {
                 <div className="border-surface-700/20 bg-surface-400/40 mx-4 mb-4 overflow-hidden rounded-xl border">
                   <InfoRow icon={Phone} label="Teléfonos">
                     {phones.length === 0 ? (
-                      <span className="text-carbon-200">Sin teléfonos registrados</span>
+                      <span className="text-carbon-300">Sin teléfonos registrados</span>
                     ) : (
                       <ul className="flex flex-col gap-1">
                         {phones.map((phone) => (
-                          <li key={phone} className="font-mono text-sm">
+                          <li key={phone} className="typo-sm-text font-numbers">
                             {phone}
                           </li>
                         ))}
@@ -152,9 +152,7 @@ const AssociateSheet = ({ associateId, onClose }: AssociateSheetProps) => {
 
                 {/* ── Linked cars ───────────────────────────────────────────────────── */}
                 <div className="mx-4">
-                  <p className="typo-text text-carbon-200 mb-2 px-1 text-xs tracking-wider uppercase">
-                    Coches asociados ({cars.length})
-                  </p>
+                  <p className="typo-overline text-carbon-300 mb-2 px-1">Coches asociados ({cars.length})</p>
                   {hasCars ? (
                     <ul className="border-surface-700/20 divide-surface-700/15 divide-y overflow-hidden rounded-xl border bg-white">
                       {cars.map((car) => (
@@ -175,10 +173,10 @@ const AssociateSheet = ({ associateId, onClose }: AssociateSheetProps) => {
                               <p className="typo-bold-text text-carbon-500 group-hover:text-primary-700 truncate transition-colors">
                                 {getVehicleTitle(car)}
                               </p>
-                              <p className="text-carbon-300 font-mono text-xs break-all">{car.id}</p>
+                              <p className="typo-caption text-carbon-300 font-numbers break-all">{car.id}</p>
                               <div className="mt-1 flex items-center gap-2">
                                 <VehicleStatusBadge status={car.status} />
-                                <span className="text-carbon-300 font-mono text-xs">{car.plate}</span>
+                                <span className="typo-caption text-carbon-300 font-numbers">{car.plate}</span>
                               </div>
                             </div>
                             <ChevronRight

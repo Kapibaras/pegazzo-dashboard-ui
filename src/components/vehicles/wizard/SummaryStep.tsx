@@ -31,7 +31,10 @@ const SummaryStep = ({
   photoCount,
 }: SummaryStepProps) => (
   <div className="flex flex-col gap-5">
-    <div className="bg-primary-50 text-primary-900 flex items-start gap-3 rounded-lg px-4 py-3 text-sm" role="note">
+    <div
+      className="typo-sm-text bg-primary-50 text-primary-900 flex items-start gap-3 rounded-lg px-4 py-3"
+      role="note"
+    >
       <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
       <p>Revisa los datos antes de crear el coche. Estos datos se contrastarán con los documentos que subas después.</p>
     </div>
@@ -94,14 +97,14 @@ const SummaryStep = ({
       description="Es de solo lectura: se arma con el socio, el modelo y la transmisión."
     >
       {folioState.status === 'loading' && (
-        <p className="text-carbon-300 flex items-center gap-2 text-sm" role="status">
+        <p className="typo-sm-text text-carbon-300 flex items-center gap-2" role="status">
           <Loader2 className="size-4 animate-spin" aria-hidden /> Calculando folio…
         </p>
       )}
       {folioState.status === 'ready' && <FolioDisplay folio={folioState.folio} />}
       {folioState.status === 'error' && (
         <div className="flex flex-wrap items-center gap-3" role="alert">
-          <p className="text-error-700 flex items-center gap-2 text-sm">
+          <p className="typo-sm-text text-error-700 flex items-center gap-2">
             <AlertCircle className="size-4" aria-hidden /> {folioState.message ?? 'No se pudo calcular el folio.'}
           </p>
           <Button type="button" variant="outline" size="sm" onClick={onRetryFolio} className="cursor-pointer gap-2">

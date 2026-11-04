@@ -110,58 +110,138 @@
   --font-numbers: var(--font-source-code-pro), ui-monospace, SFMono-Regular, monospace;
 }
 
-.typo-title {
+/*
+ * Typography scale — single source of truth. See "Typography System" in CLAUDE.md.
+ * Defined as @utility so variants work and explicit utilities can still override.
+ */
+@utility typo-title {
   font-family: var(--font-sans);
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 120%;
-  letter-spacing: 0.64px;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  @media (min-width: 768px) {
+    font-size: 1.75rem;
+  }
 }
 
-.typo-subtitle {
-  font-family: var(--font-sans);
-  font-size: 1.25rem;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 120%;
-  letter-spacing: 0.4px;
-}
-
-.typo-text {
+@utility typo-subtitle {
   font-family: var(--font-sans);
   font-size: 1.125rem;
   font-style: normal;
-  font-weight: 400;
-  line-height: 120%;
-  letter-spacing: 0.36px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
 }
 
-.typo-sm-text {
+@utility typo-text {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+
+@utility typo-bold-text {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+
+@utility typo-sm-text {
   font-family: var(--font-sans);
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 120%;
-  letter-spacing: 0.36px;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
 }
 
-.typo-bold-text {
+@utility typo-label {
   font-family: var(--font-sans);
-  font-size: 1.125rem;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 120%;
-  letter-spacing: 0.36px;
-}
-
-.typo-numbers {
-  font-family: var(--font-numbers);
-  font-size: 1.125rem;
+  font-size: 0.875rem;
   font-style: normal;
   font-weight: 500;
-  line-height: 120%;
-  letter-spacing: 0.36px;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+
+@utility typo-button {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+
+@utility typo-nav {
+  font-family: var(--font-sans);
+  font-size: 1.3rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+}
+
+@utility typo-nav-sub {
+  font-family: var(--font-sans);
+  font-size: 1.1125rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+
+@utility typo-caption {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+}
+
+@utility typo-overline {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@utility typo-numbers {
+  font-family: var(--font-numbers);
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+
+@utility typo-kpi {
+  font-family: var(--font-numbers);
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+@utility typo-kpi-sm {
+  font-family: var(--font-numbers);
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
 }
 
 @theme inline {
@@ -215,7 +295,7 @@
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  --muted-foreground: var(--color-carbon-300);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);

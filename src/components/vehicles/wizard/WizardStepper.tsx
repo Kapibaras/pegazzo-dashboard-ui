@@ -34,7 +34,7 @@ const WizardStepper = ({
         const circle = (
           <span
             className={cn(
-              'flex size-8 shrink-0 items-center justify-center rounded-full border-2 text-sm font-semibold transition-colors',
+              'typo-label flex size-8 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
               isActive && 'border-primary-700 bg-primary-700 text-white',
               isDone && !isActive && 'border-success-500 bg-success-500 text-white',
               !isActive && !isDone && 'border-[#a0a6ad] bg-white text-[#a0a6ad]',
@@ -49,7 +49,7 @@ const WizardStepper = ({
             {circle}
             <span
               className={cn(
-                'hidden text-sm font-medium whitespace-nowrap md:block',
+                'typo-label hidden whitespace-nowrap md:block',
                 isActive ? 'text-primary-800' : isDone ? 'text-success-700' : 'text-[#a0a6ad]',
               )}
             >

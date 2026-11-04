@@ -54,7 +54,7 @@ const FileViewer = ({ open, onOpenChange, items, startIndex = 0 }: FileViewerPro
         }}
       >
         <header className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
-          <DialogTitle className="min-w-0 flex-1 truncate text-sm font-semibold text-white">
+          <DialogTitle className="typo-label min-w-0 flex-1 truncate text-white">
             {current.title}
             {many && <span className="ml-2 font-normal text-white/60">{`${index + 1} de ${items.length}`}</span>}
           </DialogTitle>
@@ -63,7 +63,7 @@ const FileViewer = ({ open, onOpenChange, items, startIndex = 0 }: FileViewerPro
             href={current.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+            className="typo-caption flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
           >
             <ExternalLink className="size-3.5" aria-hidden /> Abrir en pestaña nueva
           </a>
@@ -81,14 +81,14 @@ const FileViewer = ({ open, onOpenChange, items, startIndex = 0 }: FileViewerPro
           {failed || kind === 'other' ? (
             <div className="flex flex-col items-center gap-3 text-center text-white/80">
               <FileQuestion className="size-10" aria-hidden />
-              <p className="text-sm">
+              <p className="typo-sm-text">
                 {failed ? 'No se pudo cargar la vista previa.' : 'Este tipo de archivo no tiene vista previa.'}
               </p>
               <a
                 href={current.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="cursor-pointer rounded-md bg-white/10 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-white/20"
+                className="typo-label cursor-pointer rounded-md bg-white/10 px-3 py-1.5 text-white transition-colors hover:bg-white/20"
               >
                 Abrir en pestaña nueva
               </a>

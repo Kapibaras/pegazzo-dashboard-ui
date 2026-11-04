@@ -90,7 +90,7 @@ const VehicleStatusSelector = ({
       disabled={disabled || isBusy}
       aria-label={`Estado: ${VEHICLE_STATUS_LABELS[status]}. ${disabled ? 'Bloqueado.' : 'Cambiar estado.'}`}
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border border-transparent px-3 py-1 text-sm font-medium transition-[filter,box-shadow]',
+        'typo-label inline-flex items-center gap-1.5 rounded-full border border-transparent px-3 py-1 transition-[filter,box-shadow]',
         'focus-visible:ring-primary-700 outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
         VEHICLE_STATUS_CLASSES[status],
         disabled ? 'cursor-not-allowed opacity-90' : 'cursor-pointer hover:brightness-95',
@@ -114,7 +114,7 @@ const VehicleStatusSelector = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-56">
-        <DropdownMenuLabel className="text-carbon-300 text-xs font-medium">Cambiar estado</DropdownMenuLabel>
+        <DropdownMenuLabel className="typo-caption text-carbon-300">Cambiar estado</DropdownMenuLabel>
         <DropdownMenuRadioGroup value={status} onValueChange={(next) => void change(next)}>
           {VEHICLE_STATUSES.map((value) => {
             const blocked = lockedByDocuments && value !== 'INACTIVE';

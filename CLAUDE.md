@@ -42,11 +42,11 @@ Dual session: backend httpOnly cookies (`access_token`, `refresh_token`, CSRF to
 
 Token refresh is handled automatically by `AbstractAPIService` (Axios response interceptor). If refresh fails, it throws `APIRequestFailed('Session expired', 401, 'SESSION_EXPIRED')`. Session expiration is handled in one place per context — **never add per-action 401 checks**:
 
-| Context | Handler | Behavior |
-|---|---|---|
-| Server Actions | `serverAction()` wrapper (`src/helpers/serverAction.ts`) | Detects `SESSION_EXPIRED` → `redirect('/api/auth/signout')` |
-| SSR layout (`(dashboard)/layout.tsx`) | try/catch around `getCachedUser` | Detects `SESSION_EXPIRED` → `redirect('/api/auth/signout')` |
-| CSR (`SingletonAPIClient`) | `useApiErrorHandler` | On 401 → calls `logout()` + `router.push('/login')` |
+| Context                               | Handler                                                  | Behavior                                                    |
+| ------------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------- |
+| Server Actions                        | `serverAction()` wrapper (`src/helpers/serverAction.ts`) | Detects `SESSION_EXPIRED` → `redirect('/api/auth/signout')` |
+| SSR layout (`(dashboard)/layout.tsx`) | try/catch around `getCachedUser`                         | Detects `SESSION_EXPIRED` → `redirect('/api/auth/signout')` |
+| CSR (`SingletonAPIClient`)            | `useApiErrorHandler`                                     | On 401 → calls `logout()` + `router.push('/login')`         |
 
 **Every new server action must use the `serverAction` wrapper:**
 
@@ -89,6 +89,33 @@ NODE_ENV=development
 - Feature components in `src/components/<feature>/`, common layout in `src/components/common/`.
 - Each feature directory re-exports via `index.ts`.
 - Prettier: `printWidth: 120`, `singleQuote: true`, `semi: true`, `prettier-plugin-tailwindcss`.
+
+## Typography System (MANDATORY)
+
+Single source of truth: `@utility typo-*` in `src/app/globals.css`. **Every piece of text in new or modified UI MUST use one of these tokens for size/weight/line-height.** Do not invent ad hoc text styles.
+
+| Token                       | Size / weight           | Role                                                       |
+| --------------------------- | ----------------------- | ---------------------------------------------------------- |
+| `typo-title`                | 24px (28px `md+`) / 700 | Page `h1`                                                  |
+| `typo-subtitle`             | 18px / 600              | Section, card, dialog and sheet titles; main nav           |
+| `typo-text`                 | 16px / 400              | Body text (also the `body` default)                        |
+| `typo-bold-text`            | 16px / 600              | Emphasis, table headers, list/card item names              |
+| `typo-sm-text`              | 14px / 400              | Secondary text, dense table cells, helper text             |
+| `typo-label`                | 14px / 500              | Form labels, detail labels, tabs                           |
+| `typo-button`               | 15px / 700              | Text of buttons (primary actions, dialogs, forms)          |
+| `typo-nav` / `typo-nav-sub` | 24px / 600, 21px / 500  | Sidebar items and sub-items                                |
+| `typo-caption`              | 12px / 400              | Hints, badges, small errors (**minimum allowed size**)     |
+| `typo-overline`             | 12px / 600 uppercase    | Micro-labels (detail-sheet field names, calendar weekdays) |
+| `typo-numbers`              | 16px / 500 mono         | Inline numeric values                                      |
+| `typo-kpi` / `typo-kpi-sm`  | 32px / 24px, 600 mono   | Headline / secondary KPI figures                           |
+
+Rules:
+
+- **Forbidden** in feature components: `text-xs…text-9xl` (except decorative display text such as the 404), `text-[..px|rem]`, stacking a `typo-*` with a size/weight class, `font-bold`/`font-semibold`/`font-medium` as a substitute for a token (inline `font-semibold` emphasis on a `<span>` inside a sentence is the only exception), `font-mono` (use `font-numbers`).
+- Colors: `text-carbon-500` primary, `text-carbon-300` secondary/muted (AA contrast). `text-carbon-200` only for placeholders, disabled state and decorative icons — **never** for informational text. `--muted-foreground` is mapped to `carbon-300`.
+- Form controls (`Input`, `Textarea`, `SelectTrigger`) are 16px on mobile and 14px from `md` (prevents iOS zoom). Labels use `typo-label text-carbon-500`.
+- `src/components/ui/*` primitives already follow this scale; when adding a new shadcn component, align its text classes to it before using it.
+- Missing a role? Add a new `@utility typo-*` in `globals.css` and document it in this table — don't use one-off classes.
 
 ## PR Conventions
 

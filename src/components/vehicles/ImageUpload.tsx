@@ -111,11 +111,11 @@ const ImageUpload = ({
   return (
     <div className={cn('flex flex-col gap-2', className)}>
       <div className="flex items-baseline justify-between gap-3">
-        <label htmlFor={inputId} className="text-carbon-400 text-sm font-medium">
+        <label htmlFor={inputId} className="typo-label text-carbon-500">
           {label}
         </label>
         {max > 1 && (
-          <span className="text-carbon-200 text-xs">
+          <span className="typo-caption text-carbon-300">
             {items.length}/{max}
           </span>
         )}
@@ -141,7 +141,7 @@ const ImageUpload = ({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={item.previewUrl} alt={`${label} ${index + 1}`} className="size-full object-cover" />
             {item.file && (
-              <span className="bg-primary-700 absolute bottom-1 left-1 rounded px-1.5 py-0.5 text-[10px] font-medium text-white">
+              <span className="typo-caption bg-primary-700 absolute bottom-1 left-1 rounded px-1.5 py-0.5 text-white">
                 Nueva
               </span>
             )}
@@ -182,7 +182,7 @@ const ImageUpload = ({
               addFiles(event.dataTransfer.files);
             }}
             className={cn(
-              'border-surface-700/60 bg-surface-400 text-carbon-300 flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed px-3 text-center text-xs transition-colors',
+              'typo-caption border-surface-700/60 bg-surface-400 text-carbon-300 flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed px-3 text-center transition-colors',
               items.length === 0 ? 'min-h-[100px] w-full max-w-xl py-5' : 'h-[100px] w-[140px]',
               disabled
                 ? 'cursor-not-allowed opacity-60'
@@ -193,8 +193,8 @@ const ImageUpload = ({
             <ImagePlus className="text-primary-700 size-6" aria-hidden />
             {items.length === 0 ? (
               <>
-                <span className="text-sm">{emptyText}</span>
-                <span className="text-carbon-200">JPG, PNG o WEBP · máx. {MAX_IMAGE_SIZE_MB} MB</span>
+                <span className="typo-sm-text">{emptyText}</span>
+                <span className="text-carbon-300">JPG, PNG o WEBP · máx. {MAX_IMAGE_SIZE_MB} MB</span>
                 <Button
                   type="button"
                   variant="outline"
@@ -212,9 +212,9 @@ const ImageUpload = ({
         )}
       </div>
 
-      {hint && !error && <p className="text-carbon-200 text-xs">{hint}</p>}
+      {hint && !error && <p className="typo-caption text-carbon-300">{hint}</p>}
       {error && (
-        <p role="alert" className="text-error-700 text-xs">
+        <p role="alert" className="typo-caption text-error-700">
           {error}
         </p>
       )}

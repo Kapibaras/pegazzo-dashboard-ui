@@ -95,7 +95,7 @@ const EditAssociateDialog = ({ open, onOpenChange, associate, onSaved }: EditAss
               onChange={(event) => setName(event.target.value)}
             />
             {errors.name && (
-              <p role="alert" className="text-error-700 text-xs">
+              <p role="alert" className="typo-caption text-error-700">
                 {errors.name}
               </p>
             )}
@@ -112,7 +112,7 @@ const EditAssociateDialog = ({ open, onOpenChange, associate, onSaved }: EditAss
               onChange={(event) => setSurnames(event.target.value)}
             />
             {errors.surnames && (
-              <p role="alert" className="text-error-700 text-xs">
+              <p role="alert" className="typo-caption text-error-700">
                 {errors.surnames}
               </p>
             )}
@@ -120,7 +120,7 @@ const EditAssociateDialog = ({ open, onOpenChange, associate, onSaved }: EditAss
 
           <div className="grid gap-1.5">
             <Label>
-              Teléfonos <span className="text-carbon-200 font-normal">(opcional)</span>
+              Teléfonos <span className="text-carbon-300 font-normal">(opcional)</span>
             </Label>
             <PhoneListField value={phones} onChange={setPhones} />
           </div>

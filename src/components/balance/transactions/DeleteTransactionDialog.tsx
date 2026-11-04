@@ -19,7 +19,13 @@ interface DeleteTransactionDialogProps {
   onConfirm: () => void;
 }
 
-const DeleteTransactionDialog = ({ open, onOpenChange, reference, isDeleting, onConfirm }: DeleteTransactionDialogProps) => {
+const DeleteTransactionDialog = ({
+  open,
+  onOpenChange,
+  reference,
+  isDeleting,
+  onConfirm,
+}: DeleteTransactionDialogProps) => {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
@@ -27,7 +33,7 @@ const DeleteTransactionDialog = ({ open, onOpenChange, reference, isDeleting, on
           <AlertDialogTitle className="typo-subtitle text-carbon-500">¿Eliminar transacción?</AlertDialogTitle>
           <AlertDialogDescription className="typo-text text-carbon-300">
             Esta acción no se puede deshacer. Se eliminará permanentemente la transacción{' '}
-            <span className="font-mono font-semibold">{reference}</span>.
+            <span className="font-numbers font-semibold">{reference}</span>.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-3.5">

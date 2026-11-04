@@ -51,7 +51,7 @@ const VehiclePagination = ({
     >
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
-          <span className="typo-sm-text text-primary-800 font-medium whitespace-nowrap">Por página:</span>
+          <span className="typo-label text-primary-800 whitespace-nowrap">Por página:</span>
           <Select value={String(limit)} onValueChange={(value) => onLimitChange(Number(value))}>
             <SelectTrigger
               size="sm"
@@ -72,7 +72,7 @@ const VehiclePagination = ({
             </SelectContent>
           </Select>
         </div>
-        <p className="typo-sm-text font-numbers text-primary-800 font-medium">
+        <p className="typo-label font-numbers text-primary-800">
           Mostrando {start}-{end} de {total} coches
         </p>
       </div>
@@ -90,7 +90,7 @@ const VehiclePagination = ({
         </Button>
         {pageNumbers.map((num, index) =>
           num === 'ellipsis' ? (
-            <span key={`ellipsis-${index}`} className="font-numbers text-primary-400 px-1 text-sm">
+            <span key={`ellipsis-${index}`} className="typo-sm-text font-numbers text-primary-400 px-1">
               ...
             </span>
           ) : (
@@ -100,7 +100,7 @@ const VehiclePagination = ({
               size="icon"
               aria-current={num === page ? 'page' : undefined}
               className={cn(
-                'font-numbers h-8 w-8 cursor-pointer text-sm font-semibold',
+                'typo-label font-numbers h-8 w-8 cursor-pointer',
                 num === page
                   ? 'bg-primary-700 hover:bg-primary-700 text-white shadow-md hover:text-white'
                   : 'text-primary-700 hover:bg-primary-200/40',

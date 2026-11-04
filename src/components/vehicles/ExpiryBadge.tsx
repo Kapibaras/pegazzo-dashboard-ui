@@ -19,9 +19,7 @@ const ExpiryBadge = ({ status, className }: ExpiryBadgeProps) => {
   if (!status) return null;
 
   return (
-    <Badge className={cn('text-xs font-medium', EXPIRY_CLASSES[status], className)}>
-      {EXPIRY_STATUS_LABELS[status]}
-    </Badge>
+    <Badge className={cn('typo-caption', EXPIRY_CLASSES[status], className)}>{EXPIRY_STATUS_LABELS[status]}</Badge>
   );
 };
 

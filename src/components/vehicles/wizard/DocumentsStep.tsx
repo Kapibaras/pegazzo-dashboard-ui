@@ -36,7 +36,10 @@ const DocumentsStep = ({
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="bg-primary-50 text-primary-900 flex items-start gap-3 rounded-lg px-4 py-3 text-sm" role="note">
+      <div
+        className="typo-sm-text bg-primary-50 text-primary-900 flex items-start gap-3 rounded-lg px-4 py-3"
+        role="note"
+      >
         <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
         <p>
           {isLiquidated
@@ -52,7 +55,7 @@ const DocumentsStep = ({
         description="PDF, JPG, PNG o WEBP. Si es una foto, procura que el documento se vea completo y sin reflejos."
       >
         <p
-          className={missing === 0 ? 'text-success-700 text-sm font-medium' : 'text-carbon-400 text-sm font-medium'}
+          className={missing === 0 ? 'typo-label text-success-700' : 'typo-label text-carbon-400'}
           role="status"
           aria-live="polite"
         >
@@ -94,8 +97,8 @@ const DocumentsStep = ({
                   className="hover:bg-surface-400/60 group/doc -mx-2 flex items-center gap-3 rounded-md px-2 py-2 transition-colors"
                 >
                   <FileText className="text-carbon-300 size-4" aria-hidden />
-                  <span className="text-carbon-500 flex-1 text-sm">{getDocumentTypeLabel(doc.type)}</span>
-                  <span className="text-primary-800 flex items-center gap-1 text-sm font-medium group-hover/doc:underline">
+                  <span className="typo-sm-text text-carbon-500 flex-1">{getDocumentTypeLabel(doc.type)}</span>
+                  <span className="typo-label text-primary-800 flex items-center gap-1 group-hover/doc:underline">
                     Ver <Eye className="size-3.5" aria-hidden />
                   </span>
                 </ViewFileTile>
