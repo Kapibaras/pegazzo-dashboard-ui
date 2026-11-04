@@ -79,7 +79,11 @@ const VehicleWizard = (props: VehicleWizardProps) => {
   const steps = isEdit ? EDIT_STEPS : CREATE_STEPS;
   const initialValues = useMemo(() => (vehicle ? vehicleToFormValues(vehicle) : DEFAULT_VEHICLE_FORM_VALUES), [vehicle]);
   const schema = useMemo(
-    () => buildVehicleSchema({ initialPolicyDate: vehicle ? initialValues.policyExpirationDate : undefined }),
+    () =>
+      buildVehicleSchema({
+        initialPolicyDate: vehicle ? initialValues.policyExpirationDate : undefined,
+        initialEngineType: vehicle ? initialValues.engineType : undefined,
+      }),
     [vehicle, initialValues],
   );
 

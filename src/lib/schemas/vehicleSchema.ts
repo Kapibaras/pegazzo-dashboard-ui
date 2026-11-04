@@ -41,6 +41,34 @@ const date = (label: string) =>
     .min(1, required(label))
     .refine((value) => !Number.isNaN(Date.parse(value)), 'Fecha inválida.');
 
+/**
+ * The engine is typed as a number of litres ("1.5"): the form shows a fixed "L" after it and the API receives "1.5L".
+ * A comma is accepted as the decimal separator.
+ */
+const ENGINE_LITRES = /^\d{1,2}([.,]\d{1,2})?$/;
+const ENGINE_FROM_API = /^(\d{1,2}(?:[.,]\d{1,2})?)\s*L$/i;
+
+export const isEngineLitres = (value: string): boolean =>
+  ENGINE_LITRES.test(value.trim()) && Number(value.trim().replace(',', '.')) > 0;
+
+/** "1.5" -> "1.5L". Anything that is not a plain number (legacy free text) is sent untouched. */
+export const engineTypeToApi = (value: string): string => {
+  const trimmed = value.trim();
+  return isEngineLitres(trimmed) ? `${trimmed.replace(',', '.')}L` : trimmed;
+};
+
+/** "1.5L" -> "1.5". Values saved in another shape (e.g. "Híbrido 1.8L") are kept as they are. */
+export const engineTypeFromApi = (value: string): string => ENGINE_FROM_API.exec(value.trim())?.[1] ?? value;
+
+/** In edit mode a legacy value that is not a plain number can stay as long as it is left untouched. */
+const engineType = (initial?: string) =>
+  z
+    .string()
+    .trim()
+    .min(1, required('El motor'))
+    .max(30, 'Máximo 30 caracteres.')
+    .refine((value) => value === initial || isEngineLitres(value), 'Ingresa solo el número de litros, por ejemplo 1.5.');
+
 const baseSchema = z.object({
   // Step 1 – Identidad
   make: text('La marca', 50),
@@ -52,7 +80,7 @@ const baseSchema = z.object({
     .refine((value) => Number(value) >= 1950 && Number(value) <= new Date().getFullYear() + 1, 'Año fuera de rango.'),
   color: text('El color', 30),
   bodyType: text('La carrocería', 30),
-  engineType: text('El motor', 30),
+  engineType: engineType(),
   transmission: z.enum(['TM', 'TA'], { message: 'Selecciona la transmisión.' }),
 
   // Step 2 – Técnico y batería
@@ -96,11 +124,14 @@ export type VehicleFormValues = z.infer<typeof baseSchema>;
 type SchemaOptions = {
   /** In edit mode an already expired policy can be left untouched; only a *changed* date must be in the future. */
   initialPolicyDate?: string;
+  /** In edit mode an engine saved as free text (not a plain number of litres) can be kept unchanged. */
+  initialEngineType?: string;
 };
 
-export const buildVehicleSchema = ({ initialPolicyDate }: SchemaOptions = {}) =>
+export const buildVehicleSchema = ({ initialPolicyDate, initialEngineType }: SchemaOptions = {}) =>
   baseSchema
     .extend({
+      engineType: engineType(initialEngineType),
       policyExpirationDate: date('La vigencia de la póliza').refine(
         (value) => value === initialPolicyDate || Date.parse(`${value}T23:59:59Z`) > Date.now(),
         'La vigencia de la póliza no puede estar en el pasado.',
@@ -223,7 +254,7 @@ export const vehicleToFormValues = (vehicle: VehicleDetail): VehicleFormValues =
   year: vehicle.year,
   color: vehicle.color,
   bodyType: vehicle.bodyType,
-  engineType: vehicle.engineType,
+  engineType: engineTypeFromApi(vehicle.engineType),
   transmission: vehicle.transmission === 'TM' ? 'TM' : 'TA',
   vin: vehicle.vin,
   plate: vehicle.plate,
@@ -275,6 +306,8 @@ const convertField = (values: VehicleFormValues, field: keyof VehicleFormValues)
     case 'policyExpirationDate':
     case 'altaPublicVehicleRegistry':
       return { [field]: toDateTime(values[field]) };
+    case 'engineType':
+      return { engineType: engineTypeToApi(values.engineType) };
     case 'isFinancedLiquidated':
       return { isFinancedLiquidated: values.isFinancedLiquidated };
     case 'financingAgency':

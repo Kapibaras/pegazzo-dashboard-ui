@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { Info } from 'lucide-react';
 import { UseFormReturn } from 'react-hook-form';
 import { FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { VehicleFormValues } from '@/lib/schemas/vehicleSchema';
+import { isEngineLitres, VehicleFormValues } from '@/lib/schemas/vehicleSchema';
 import useVehicleCatalogs from '@/hooks/vehicles/useVehicleCatalogs';
 import ImageUpload, { ImageItem } from '../ImageUpload';
 import { CreateModelDialog } from '../QuickCreateDialogs';
@@ -20,7 +20,10 @@ type IdentityStepProps = {
   showFolioNotice?: boolean;
 };
 
-export const BODY_TYPE_OPTIONS = ['Sedán', 'Hatchback', 'SUV', 'Pickup', 'Van', 'Coupé'].map((value) => ({ value, label: value }));
+export const BODY_TYPE_OPTIONS = ['Sedán', 'Hatchback', 'SUV', 'Pickup', 'Van', 'Coupé'].map((value) => ({
+  value,
+  label: value,
+}));
 const SEPARATOR = '\u0000';
 
 export const TRANSMISSION_OPTIONS = [
@@ -28,10 +31,18 @@ export const TRANSMISSION_OPTIONS = [
   { value: 'TM', label: 'Manual (TM)' },
 ];
 
-const IdentityStep = ({ form, catalogs, agencyImages, onAgencyImagesChange, showFolioNotice = true }: IdentityStepProps) => {
+const IdentityStep = ({
+  form,
+  catalogs,
+  agencyImages,
+  onAgencyImagesChange,
+  showFolioNotice = true,
+}: IdentityStepProps) => {
   const [createOpen, setCreateOpen] = useState(false);
   const [createMake, setCreateMake] = useState('');
-  const { make, model, bodyType } = form.watch();
+  const { make, model, bodyType, engineType } = form.watch();
+  const isLegacyEngine =
+    !!engineType && !isEngineLitres(engineType) && engineType === form.formState.defaultValues?.engineType;
 
   // A car saved with a body type outside the list (free text before this was a dropdown) keeps showing its value.
   const bodyTypeOptions =
@@ -70,8 +81,8 @@ const IdentityStep = ({ form, catalogs, agencyImages, onAgencyImagesChange, show
         <div className="bg-primary-50 text-primary-900 flex items-start gap-3 rounded-lg px-4 py-3 text-sm" role="note">
           <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
           <p>
-            El folio interno <strong>no se captura aquí</strong>: se genera automáticamente al final, con los datos del socio y del
-            coche.
+            El folio interno <strong>no se captura aquí</strong>: se genera automáticamente al final, con los datos del
+            socio y del coche.
           </p>
         </div>
       )}
@@ -112,7 +123,15 @@ const IdentityStep = ({ form, catalogs, agencyImages, onAgencyImagesChange, show
               </FormItem>
             )}
           />
-          <TextField control={form.control} name="year" label="Año" placeholder="2024" inputMode="numeric" maxLength={4} mono />
+          <TextField
+            control={form.control}
+            name="year"
+            label="Año"
+            placeholder="2024"
+            inputMode="numeric"
+            maxLength={4}
+            mono
+          />
           <TextField control={form.control} name="color" label="Color" placeholder="Blanco" maxLength={30} />
           <SelectField
             control={form.control}
@@ -121,7 +140,16 @@ const IdentityStep = ({ form, catalogs, agencyImages, onAgencyImagesChange, show
             options={bodyTypeOptions}
             placeholder="Selecciona"
           />
-          <TextField control={form.control} name="engineType" label="Motor" placeholder="1.5L" maxLength={30} />
+          <TextField
+            control={form.control}
+            name="engineType"
+            label="Motor"
+            placeholder="1.5"
+            inputMode="decimal"
+            // The "L" is always shown after the number, except for an engine saved as free text (legacy) that is still untouched.
+            suffix={isLegacyEngine ? undefined : 'L'}
+            mono
+          />
           <SelectField
             control={form.control}
             name="transmission"

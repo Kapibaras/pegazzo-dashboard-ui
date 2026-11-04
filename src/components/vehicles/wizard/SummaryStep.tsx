@@ -2,7 +2,7 @@
 
 import { AlertCircle, Info, Landmark, Loader2, RefreshCw, ShieldCheck, UserRound, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { VehicleFormValues } from '@/lib/schemas/vehicleSchema';
+import { engineTypeToApi, VehicleFormValues } from '@/lib/schemas/vehicleSchema';
 import { formatCurrency, formatDate } from '@/lib/vehicle';
 import { Associate, Insurance } from '@/types/vehicle';
 import VehicleInfoCard from '../VehicleInfoCard';
@@ -30,7 +30,7 @@ const SummaryStep = ({ values, folioState, onRetryFolio, insurance, associate, a
       </p>
     </div>
 
-    <StepCard title={`${values.make} ${values.model} · ${values.year}`} description={`${values.color} · ${values.bodyType} · ${values.engineType}`}>
+    <StepCard title={`${values.make} ${values.model} · ${values.year}`} description={`${values.color} · ${values.bodyType} · ${engineTypeToApi(values.engineType)}`}>
       <div className="grid gap-5 lg:grid-cols-2">
         <VehicleInfoCard
           icon={Wrench}
