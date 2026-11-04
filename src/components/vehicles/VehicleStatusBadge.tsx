@@ -3,7 +3,7 @@ import { VEHICLE_STATUS_LABELS } from '@/lib/vehicle';
 import { cn } from '@/lib/utils';
 import { VehicleStatus } from '@/types/vehicle';
 
-const STATUS_CLASSES: Record<VehicleStatus, string> = {
+export const VEHICLE_STATUS_CLASSES: Record<VehicleStatus, string> = {
   ACTIVE: 'bg-success-50 text-success-700 hover:bg-success-50',
   INACTIVE: 'bg-secondary-50 text-carbon-400 hover:bg-secondary-50',
   IN_MAINTENANCE: 'bg-warning-100 text-warning-700 hover:bg-warning-100',
@@ -20,7 +20,7 @@ const VehicleStatusBadge = ({ status, size = 'sm', className }: VehicleStatusBad
     className={cn(
       'font-medium',
       size === 'sm' ? 'text-xs' : 'px-3 py-1 text-sm',
-      STATUS_CLASSES[status] ?? STATUS_CLASSES.INACTIVE,
+      VEHICLE_STATUS_CLASSES[status] ?? VEHICLE_STATUS_CLASSES.INACTIVE,
       className,
     )}
   >

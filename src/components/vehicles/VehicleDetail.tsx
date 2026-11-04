@@ -37,7 +37,7 @@ import VehicleDetailActions from './VehicleDetailActions';
 import VehicleGallery from './VehicleGallery';
 import VehicleInfoCard from './VehicleInfoCard';
 import VehicleStatCard from './VehicleStatCard';
-import VehicleStatusBadge from './VehicleStatusBadge';
+import VehicleStatusSelector from './VehicleStatusSelector';
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <h2 className="text-carbon-500 text-lg font-bold">{children}</h2>
@@ -73,7 +73,13 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
           <div className="flex flex-col gap-2">
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="typo-title text-carbon-500">{title}</h1>
-              <VehicleStatusBadge status={vehicle.status} size="lg" />
+              <VehicleStatusSelector
+                vehicleId={vehicle.id}
+                vehicleName={title}
+                status={vehicle.status}
+                archived={archived}
+                missingDocuments={missingDocuments}
+              />
               {archived && (
                 <Badge className="bg-secondary-50 text-carbon-400 hover:bg-secondary-50 px-3 py-1 text-sm">
                   Archivado
@@ -88,7 +94,6 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
           <VehicleDetailActions
             vehicleId={vehicle.id}
             vehicleName={title}
-            status={vehicle.status}
             archived={archived}
             missingDocuments={missingDocuments}
           />

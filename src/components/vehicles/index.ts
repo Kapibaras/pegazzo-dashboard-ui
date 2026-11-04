@@ -9,6 +9,7 @@ export { default as VehicleListSkeleton } from './VehicleListSkeleton';
 export { default as VehicleListView } from './VehicleListView';
 export { default as VehiclePagination } from './VehiclePagination';
 export { default as VehicleStatusBadge } from './VehicleStatusBadge';
+export { default as VehicleStatusSelector } from './VehicleStatusSelector';
 export { default as VehicleTable } from './VehicleTable';
 export { default as CanManage } from './CanManage';
 export { default as DeleteVehicleDialog } from './DeleteVehicleDialog';

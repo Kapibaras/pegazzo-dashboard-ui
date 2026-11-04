@@ -3,44 +3,38 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Archive, ArchiveRestore, FileWarning, MoreVertical, Pencil, RefreshCw, Trash2 } from 'lucide-react';
-import { archiveVehicleAction, unarchiveVehicleAction, updateVehicleStatusAction } from '@/actions/vehicles';
+import { Archive, ArchiveRestore, FileWarning, MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { archiveVehicleAction, unarchiveVehicleAction } from '@/actions/vehicles';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useUser } from '@/contexts/UserProvider';
 import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
 import { Role } from '@/lib/schemas/userSchema';
-import { VEHICLE_STATUSES, VEHICLE_STATUS_LABELS } from '@/lib/vehicle';
 import { ToastService } from '@/services/toast';
-import { VehicleStatus } from '@/types/vehicle';
 import ArchiveVehicleDialog from './ArchiveVehicleDialog';
 import DeleteVehicleDialog from './DeleteVehicleDialog';
 
 type VehicleDetailActionsProps = {
   vehicleId: string;
   vehicleName: string;
-  status: VehicleStatus;
   archived: boolean;
-  /** Required documents that are still not uploaded. While any is missing the status cannot be changed. */
+  /** Required documents that are still not uploaded (offers a shortcut to upload them). */
   missingDocuments?: string[];
 };
 
-/** Detail page actions behind a single 3-dot menu. Edit / archive / delete are OWNER/ADMIN only (EMPLOYEE: none). */
+/**
+ * Detail page actions behind a single 3-dot menu. Edit / archive / delete are OWNER/ADMIN only (EMPLOYEE: none).
+ * The status is changed from `VehicleStatusSelector`, next to the car's name.
+ */
 const VehicleDetailActions = ({
   vehicleId,
   vehicleName,
-  status,
   archived,
   missingDocuments = [],
 }: VehicleDetailActionsProps) => {
@@ -74,15 +68,6 @@ const VehicleDetailActions = ({
 
   const statusLocked = missingDocuments.length > 0;
 
-  const handleStatusChange = (next: string) => {
-    if (next === status || statusLocked) return;
-    void runAction(
-      () => updateVehicleStatusAction(vehicleId, next as VehicleStatus),
-      'Estado actualizado',
-      `${vehicleName} ahora está ${VEHICLE_STATUS_LABELS[next as VehicleStatus].toLowerCase()}.`,
-    );
-  };
-
   return (
     <>
       <DropdownMenu>
@@ -104,25 +89,6 @@ const VehicleDetailActions = ({
               <Pencil /> Editar
             </Link>
           </DropdownMenuItem>
-
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger
-              disabled={archived || statusLocked}
-              title={statusLocked ? 'Carga los documentos obligatorios para poder cambiar el estado' : undefined}
-              className="cursor-pointer"
-            >
-              <RefreshCw /> Cambiar estado
-            </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent>
-              <DropdownMenuRadioGroup value={status} onValueChange={handleStatusChange}>
-                {VEHICLE_STATUSES.map((value) => (
-                  <DropdownMenuRadioItem key={value} value={value} className="cursor-pointer">
-                    {VEHICLE_STATUS_LABELS[value]}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
 
           {statusLocked && !archived && (
             <DropdownMenuItem asChild className="text-warning-700 focus:text-warning-700 cursor-pointer">
