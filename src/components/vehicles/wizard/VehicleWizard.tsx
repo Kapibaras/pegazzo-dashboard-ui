@@ -30,7 +30,7 @@ import ImageService from '@/services/images';
 import { ToastService } from '@/services/toast';
 import VehicleService from '@/services/vehicle';
 import { VehicleDetail, VehicleUpdate } from '@/types/vehicle';
-import { createExistingImage, ImageItem } from '../ImageUpload';
+import { createExistingImage, ImageItem, revokeStagedImages } from '../ImageUpload';
 import AdminStep from './AdminStep';
 import AssociateStep from './AssociateStep';
 import DocumentsStep from './DocumentsStep';
@@ -122,6 +122,12 @@ const VehicleWizard = (props: VehicleWizardProps) => {
   useEffect(() => {
     topRef.current?.scrollIntoView({ block: 'start' });
   }, [stepIndex]);
+
+  // The staged previews live here (they must survive going back and forth between steps), so they are freed here
+  // when the wizard goes away.
+  const stagedImagesRef = useRef<ImageItem[]>([]);
+  stagedImagesRef.current = [...agencyImages, ...photos];
+  useEffect(() => () => revokeStagedImages(stagedImagesRef.current), []);
 
   const publishTasks = () =>
     setTaskViews(tasksRef.current.map(({ key, label, status, error }) => ({ key, label, status, error })));

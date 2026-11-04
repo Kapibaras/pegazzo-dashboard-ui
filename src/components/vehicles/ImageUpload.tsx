@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { useCallback, useId, useRef, useState } from 'react';
 import { ImagePlus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { IMAGE_ACCEPT, MAX_IMAGE_SIZE_MB } from '@/lib/vehicle';
@@ -22,6 +22,11 @@ export const createStagedImage = (file: File): ImageItem => ({
 });
 
 export const createExistingImage = (url: string): ImageItem => ({ id: url, previewUrl: url });
+
+/** Frees the object URLs of the images that were only staged locally (existing images use public URLs). */
+export const revokeStagedImages = (items: ImageItem[]): void => {
+  items.filter((item) => item.file).forEach((item) => URL.revokeObjectURL(item.previewUrl));
+};
 
 type ImageUploadProps = {
   items: ImageItem[];
@@ -55,18 +60,12 @@ const ImageUpload = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const itemsRef = useRef(items);
-  itemsRef.current = items;
 
   const isFull = items.length >= max;
 
-  // Object URLs of staged files are revoked when the component unmounts.
-  useEffect(
-    () => () => {
-      itemsRef.current.filter((item) => item.file).forEach((item) => URL.revokeObjectURL(item.previewUrl));
-    },
-    [],
-  );
+  // The preview URLs of staged files are NOT revoked on unmount: the owner of `items` (the wizard) keeps them across
+  // steps, so revoking here would leave a broken image when the user navigates back. They are revoked when an image is
+  // removed (below) and by the owner when it goes away (`revokeStagedImages`).
 
   const reportError = useCallback(
     (message: string | null) => {
