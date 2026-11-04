@@ -59,6 +59,7 @@ const EDIT_STEPS: WizardStepId[] = ['identity', 'technical', 'admin', 'associate
 /** Spanish message for the checklist: the mapped error text when we know it, otherwise the backend detail. */
 const describeError = (error: unknown): string => {
   const normalized = normalizeApiError(error, 'No se pudo completar la acción.');
+  if (normalized.status >= 500) return 'El servidor no pudo completar la acción. Inténtalo de nuevo en unos minutos.';
   const mapped = findErrorMessage(normalized, ['common', 'vehicles']);
   return mapped.title === 'Error inesperado' ? normalized.detail : mapped.message;
 };
