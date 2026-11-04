@@ -79,7 +79,9 @@ export const formatCurrency = (value: number | string | null | undefined): strin
   if (value === null || value === undefined || value === '') return '—';
   const amount = typeof value === 'string' ? Number(value) : value;
   if (Number.isNaN(amount)) return '—';
-  return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 }).format(amount);
+  return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 }).format(
+    amount,
+  );
 };
 
 export const formatOdometer = (value: number | null | undefined): string =>
@@ -89,7 +91,9 @@ export const formatDate = (value: string | null | undefined): string => {
   if (!value) return '—';
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return '—';
-  return new Intl.DateTimeFormat('es-MX', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(date);
+  return new Intl.DateTimeFormat('es-MX', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(
+    date,
+  );
 };
 
 export const DOCUMENT_TYPE_LABELS: Record<string, string> = {

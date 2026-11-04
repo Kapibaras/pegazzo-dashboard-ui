@@ -121,12 +121,21 @@ const AdminStep = ({ form, catalogs }: AdminStepProps) => {
 
       <StepCard title="Registro y facturación">
         <FieldGrid>
-          <TextField control={control} name="unitValue" label="Valor de unidad" inputMode="decimal" suffix="MXN" mono />
+          <TextField
+            control={control}
+            name="unitValue"
+            label="Valor de unidad"
+            inputMode="decimal"
+            format="decimal"
+            suffix="MXN"
+            mono
+          />
           <TextField
             control={control}
             name="unitBillingValue"
             label="Valor de facturación"
             inputMode="decimal"
+            format="decimal"
             suffix="MXN"
             mono
           />
@@ -162,6 +171,7 @@ const AdminStep = ({ form, catalogs }: AdminStepProps) => {
               name="financingRemainingAmount"
               label="Monto restante"
               inputMode="decimal"
+              format="decimal"
               suffix="MXN"
               mono
             />

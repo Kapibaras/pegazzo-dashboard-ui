@@ -5,6 +5,7 @@ import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessa
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { fieldClass } from '@/lib/formField';
+import { caretForCount, countSignificant, formatNumberDisplay, NumberFormat, sanitizeNumber } from '@/lib/inputFormat';
 import { cn } from '@/lib/utils';
 import { VehicleFormValues } from '@/lib/schemas/vehicleSchema';
 
@@ -25,6 +26,8 @@ type TextFieldProps = {
   hint?: string;
   optional?: boolean;
   suffix?: string;
+  /** Shows the number with thousands separators while typing; the form value stays raw ("1234567.5"). */
+  format?: NumberFormat;
   className?: string;
 };
 
@@ -41,6 +44,7 @@ export const TextField = ({
   hint,
   optional,
   suffix,
+  format,
   className,
 }: TextFieldProps) => (
   <FormField
@@ -56,6 +60,20 @@ export const TextField = ({
           <div className="relative">
             <Input
               {...field}
+              value={format ? formatNumberDisplay(field.value) : field.value}
+              onChange={
+                format
+                  ? (event) => {
+                      const input = event.target;
+                      const count = countSignificant(input.value, input.selectionStart ?? input.value.length);
+                      const raw = sanitizeNumber(input.value, format);
+                      field.onChange(raw);
+                      // Keep the caret next to the same digit after the commas are re-inserted.
+                      const caret = caretForCount(formatNumberDisplay(raw), Math.min(count, raw.length));
+                      requestAnimationFrame(() => input.setSelectionRange(caret, caret));
+                    }
+                  : field.onChange
+              }
               type={type}
               inputMode={inputMode}
               placeholder={placeholder}

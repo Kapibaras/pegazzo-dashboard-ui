@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import PhoneInput from './PhoneInput';
 import { Label } from '@/components/ui/label';
 import { normalizeApiError } from '@/helpers/apiError';
 import { fieldClass } from '@/lib/formField';
@@ -108,16 +109,24 @@ const QuickCreateDialog = <T,>({
                   {field.label}
                   {!field.required && <span className="text-carbon-200 font-normal"> (opcional)</span>}
                 </Label>
-                <Input
-                  id={`qc-${field.name}`}
-                  type={field.type ?? 'text'}
-                  value={values[field.name] ?? ''}
-                  maxLength={field.maxLength}
-                  placeholder={field.placeholder}
-                  aria-invalid={!!errors[field.name]}
-                  className={fieldClass()}
-                  onChange={(event) => setValues((prev) => ({ ...prev, [field.name]: event.target.value }))}
-                />
+                {field.type === 'phone' ? (
+                  <PhoneInput
+                    id={`qc-${field.name}`}
+                    invalid={!!errors[field.name]}
+                    onChange={(value) => setValues((prev) => ({ ...prev, [field.name]: value }))}
+                  />
+                ) : (
+                  <Input
+                    id={`qc-${field.name}`}
+                    type={field.type ?? 'text'}
+                    value={values[field.name] ?? ''}
+                    maxLength={field.maxLength}
+                    placeholder={field.placeholder}
+                    aria-invalid={!!errors[field.name]}
+                    className={fieldClass()}
+                    onChange={(event) => setValues((prev) => ({ ...prev, [field.name]: event.target.value }))}
+                  />
+                )}
                 {errors[field.name] && (
                   <p role="alert" className="text-error-700 text-xs">
                     {errors[field.name]}
@@ -202,7 +211,7 @@ export const CreateInsuranceDialog = ({
       description="Quedará disponible para este y los siguientes coches."
       fields={[
         { name: 'name', label: 'Nombre', required: true, maxLength: 50, placeholder: 'Qualitas' },
-        { name: 'phone', label: 'Teléfono', maxLength: 30, type: 'tel', placeholder: '+52 55 0000 0000' },
+        { name: 'phone', label: 'Teléfono', type: 'phone' },
       ]}
       initialValues={initialValues}
       submitLabel="Crear aseguradora"
@@ -237,7 +246,7 @@ export const CreateAssociateDialog = ({
         { name: 'name', label: 'Nombre', required: true, maxLength: 50 },
         { name: 'paternal', label: 'Apellido paterno', required: true, maxLength: 50 },
         { name: 'maternal', label: 'Apellido materno', maxLength: 50 },
-        { name: 'phone', label: 'Teléfono', maxLength: 30, type: 'tel', placeholder: '+52 55 0000 0000' },
+        { name: 'phone', label: 'Teléfono', type: 'phone' },
       ]}
       initialValues={initialValues}
       submitLabel="Crear socio"

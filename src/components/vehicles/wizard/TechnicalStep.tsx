@@ -26,7 +26,15 @@ const TechnicalStep = ({ form, photos, onPhotosChange }: TechnicalStepProps) => 
           <TextField control={control} name="vin" label="VIN" placeholder="17 caracteres" maxLength={17} mono />
           <TextField control={control} name="plate" label="Placa" placeholder="ABC-123-D" maxLength={10} mono />
           <TextField control={control} name="engineSerialNumber" label="Serie de motor" maxLength={30} mono />
-          <TextField control={control} name="odometer" label="Odómetro" inputMode="numeric" suffix="km" mono />
+          <TextField
+            control={control}
+            name="odometer"
+            label="Odómetro"
+            inputMode="numeric"
+            format="integer"
+            suffix="km"
+            mono
+          />
           <TextField control={control} name="doorsNumber" label="Puertas" inputMode="numeric" mono />
           <TextField control={control} name="passengersNumber" label="Pasajeros" inputMode="numeric" mono />
           <TireField control={control} />
