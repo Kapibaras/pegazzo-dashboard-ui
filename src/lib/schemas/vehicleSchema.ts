@@ -6,31 +6,39 @@ import { VehicleCreate, VehicleDetail, VehicleUpdate } from '@/types/vehicle';
  * `toCreatePayload` / `toUpdatePayload`. Limits mirror the backend `CarSchema`.
  */
 
+/** "El motor es obligatorio." / "La placa es obligatoria." / "Los apellidos son obligatorios." (agrees with the article). */
+const required = (label: string): string => {
+  if (label.startsWith('La ')) return `${label} es obligatoria.`;
+  if (label.startsWith('Los ')) return `${label} son obligatorios.`;
+  if (label.startsWith('Las ')) return `${label} son obligatorias.`;
+  return `${label} es obligatorio.`;
+};
+
 const text = (label: string, max: number) =>
   z
     .string()
     .trim()
-    .min(1, `${label} es obligatorio.`)
+    .min(1, required(label))
     .max(max, `Máximo ${max} caracteres.`);
 
 const integer = (label: string, min: number) =>
   z
     .string()
     .trim()
-    .min(1, `${label} es obligatorio.`)
+    .min(1, required(label))
     .refine((value) => /^\d+$/.test(value) && Number(value) >= min, `Ingresa un número entero mayor o igual a ${min}.`);
 
 const money = (label: string) =>
   z
     .string()
     .trim()
-    .min(1, `${label} es obligatorio.`)
+    .min(1, required(label))
     .refine((value) => /^\d+(\.\d{1,2})?$/.test(value), 'Ingresa un monto válido (máximo 2 decimales).');
 
 const date = (label: string) =>
   z
     .string()
-    .min(1, `${label} es obligatoria.`)
+    .min(1, required(label))
     .refine((value) => !Number.isNaN(Date.parse(value)), 'Fecha inválida.');
 
 const baseSchema = z.object({

@@ -134,6 +134,10 @@ export const StepCard = ({
   </section>
 );
 
+/**
+ * Grid of fields. `items-start` keeps every field pinned to the top of its row: without it, a field that grows because it
+ * shows a validation message stretches its row and the neighbouring fields push their input down (misaligned inputs).
+ */
 export const FieldGrid = ({ children, columns = 2 }: { children: React.ReactNode; columns?: 2 | 3 }) => (
-  <div className={cn('grid gap-4', columns === 3 ? 'sm:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-2')}>{children}</div>
+  <div className={cn('grid items-start gap-4', columns === 3 ? 'sm:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-2')}>{children}</div>
 );
