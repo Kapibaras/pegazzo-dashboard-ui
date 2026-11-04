@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { LayoutGrid, List, Plus, Tags } from 'lucide-react';
+import { LayoutGrid, List, PlusCircle, Tags } from 'lucide-react';
 import { ErrorCard } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/contexts/UserProvider';
 import { useVehicles, VehicleListState } from '@/hooks/vehicles';
+import { BUTTON_ICON_CLASS, outlineButton, primaryButton } from '@/lib/buttonStyles';
 import { Role } from '@/lib/schemas/userSchema';
 import { DEFAULT_VEHICLE_VIEW, VEHICLE_VIEW_STORAGE_KEY, VehicleView } from '@/lib/vehicle';
 import { cn } from '@/lib/utils';
@@ -118,17 +119,17 @@ const VehicleListView = ({ initialState }: VehicleListViewProps) => {
           </div>
 
           {user.role === Role.OWNER && (
-            <Button asChild variant="outline" className="cursor-pointer gap-2">
+            <Button asChild variant="outline" className={outlineButton()}>
               <Link href="/coches/catalogo">
-                <Tags className="size-4" /> Catálogo
+                <Tags className={BUTTON_ICON_CLASS} aria-hidden /> Catálogo
               </Link>
             </Button>
           )}
 
           {canCreate && (
-            <Button asChild className="bg-terciary-500 text-primary-100 hover:bg-primary-800 cursor-pointer gap-2">
+            <Button asChild className={primaryButton()}>
               <Link href="/coches/nuevo">
-                <Plus className="size-4" /> Agregar coche
+                <PlusCircle className={BUTTON_ICON_CLASS} aria-hidden /> Agregar coche
               </Link>
             </Button>
           )}

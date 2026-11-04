@@ -2,13 +2,14 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Search, UsersRound } from 'lucide-react';
+import { PlusCircle, Search, UsersRound } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { CreateAssociateDialog } from '@/components/vehicles/QuickCreateDialogs';
+import { BUTTON_ICON_CLASS, primaryButton } from '@/lib/buttonStyles';
 import { fieldClass } from '@/lib/formField';
 import { cn } from '@/lib/utils';
 import { Associate } from '@/types/vehicle';
@@ -48,23 +49,21 @@ const AssociatesView = ({ associates }: { associates: Associate[] }) => {
             {total} {total === 1 ? 'socio registrado' : 'socios registrados'}
           </p>
         </div>
-        <Button
-          onClick={() => setCreateOpen(true)}
-          className="bg-terciary-500 text-primary-100 hover:bg-primary-800 cursor-pointer gap-2"
-        >
-          <Plus className="size-4" /> Agregar socio
+        <Button onClick={() => setCreateOpen(true)} className={primaryButton()}>
+          <PlusCircle className={BUTTON_ICON_CLASS} aria-hidden />
+          Agregar socio
         </Button>
       </div>
 
       <div className="relative w-full max-w-md">
-        <Search className="text-carbon-200 absolute top-1/2 left-3 size-4 -translate-y-1/2" aria-hidden />
+        <Search className="text-carbon-200 absolute top-1/2 left-4 size-4 -translate-y-1/2" aria-hidden />
         <Input
           type="search"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Buscar por nombre"
+          placeholder="Buscar socio..."
           aria-label="Buscar socio"
-          className={fieldClass({ className: 'pl-9' })}
+          className={fieldClass({ className: 'pl-10' })}
         />
       </div>
 
