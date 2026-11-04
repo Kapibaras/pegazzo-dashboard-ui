@@ -35,6 +35,7 @@ import CanManage from './CanManage';
 import ExpiryBadge from './ExpiryBadge';
 import VehicleDetailActions from './VehicleDetailActions';
 import ViewFileButton from './ViewFileButton';
+import ViewFileTile from './ViewFileTile';
 import VehicleGallery from './VehicleGallery';
 import VehicleInfoCard from './VehicleInfoCard';
 import VehicleStatCard from './VehicleStatCard';
@@ -322,27 +323,26 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
             Aún no hay documentos cargados.
           </p>
         ) : (
-          <ul className="border-surface-600/70 divide-surface-600/60 divide-y rounded-xl border bg-white">
+          <ul className="border-surface-600/70 divide-surface-600/60 divide-y overflow-hidden rounded-xl border bg-white">
             {documents.map((doc) => (
-              <li
-                key={doc.id}
-                className="hover:bg-surface-400/60 flex items-center gap-4 px-4 py-3 transition-colors first:rounded-t-xl last:rounded-b-xl"
-              >
-                <span className="bg-primary-50 text-primary-800 flex size-9 shrink-0 items-center justify-center rounded-lg">
-                  <FileText className="size-[18px]" aria-hidden />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-carbon-500 truncate text-sm font-semibold">{getDocumentTypeLabel(doc.type)}</p>
-                  {doc.expiryDate && <p className="text-carbon-200 text-xs">Vence el {formatDate(doc.expiryDate)}</p>}
-                </div>
-                <ExpiryBadge status={doc.expiryStatus} />
-                <ViewFileButton
+              <li key={doc.id}>
+                <ViewFileTile
                   items={[{ url: doc.url, title: getDocumentTypeLabel(doc.type) }]}
                   aria-label={`Ver ${getDocumentTypeLabel(doc.type)}`}
-                  className="text-primary-800 hover:text-primary-900 focus-visible:ring-primary-700 flex cursor-pointer items-center gap-1 rounded text-sm font-medium outline-none hover:underline focus-visible:ring-2"
+                  className="hover:bg-surface-400/60 group/doc flex items-center gap-4 px-4 py-3 transition-colors"
                 >
-                  Ver <Eye className="size-3.5" aria-hidden />
-                </ViewFileButton>
+                  <span className="bg-primary-50 text-primary-800 flex size-9 shrink-0 items-center justify-center rounded-lg">
+                    <FileText className="size-[18px]" aria-hidden />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-carbon-500 truncate text-sm font-semibold">{getDocumentTypeLabel(doc.type)}</p>
+                    {doc.expiryDate && <p className="text-carbon-200 text-xs">Vence el {formatDate(doc.expiryDate)}</p>}
+                  </div>
+                  <ExpiryBadge status={doc.expiryStatus} />
+                  <span className="text-primary-800 group-hover/doc:text-primary-900 flex items-center gap-1 text-sm font-medium group-hover/doc:underline">
+                    Ver <Eye className="size-3.5" aria-hidden />
+                  </span>
+                </ViewFileTile>
               </li>
             ))}
           </ul>

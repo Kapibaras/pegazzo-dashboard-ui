@@ -4,7 +4,7 @@ import { Eye, FileText, Info } from 'lucide-react';
 import { getDocumentTypeLabel, requiredDocumentTypes } from '@/lib/vehicle';
 import { VehicleDocument } from '@/types/vehicle';
 import DocumentUpload, { StoredDocument } from '../DocumentUpload';
-import ViewFileButton from '../ViewFileButton';
+import ViewFileTile from '../ViewFileTile';
 import { StepCard } from './fields';
 
 type DocumentsStepProps = {
@@ -87,16 +87,18 @@ const DocumentsStep = ({
         >
           <ul className="divide-surface-600/60 divide-y">
             {others.map((doc) => (
-              <li key={doc.id} className="flex items-center gap-3 py-2">
-                <FileText className="text-carbon-300 size-4" aria-hidden />
-                <span className="text-carbon-500 flex-1 text-sm">{getDocumentTypeLabel(doc.type)}</span>
-                <ViewFileButton
+              <li key={doc.id}>
+                <ViewFileTile
                   items={[{ url: doc.url, title: getDocumentTypeLabel(doc.type) }]}
                   aria-label={`Ver ${getDocumentTypeLabel(doc.type)}`}
-                  className="text-primary-800 flex cursor-pointer items-center gap-1 text-sm font-medium hover:underline"
+                  className="hover:bg-surface-400/60 group/doc -mx-2 flex items-center gap-3 rounded-md px-2 py-2 transition-colors"
                 >
-                  Ver <Eye className="size-3.5" aria-hidden />
-                </ViewFileButton>
+                  <FileText className="text-carbon-300 size-4" aria-hidden />
+                  <span className="text-carbon-500 flex-1 text-sm">{getDocumentTypeLabel(doc.type)}</span>
+                  <span className="text-primary-800 flex items-center gap-1 text-sm font-medium group-hover/doc:underline">
+                    Ver <Eye className="size-3.5" aria-hidden />
+                  </span>
+                </ViewFileTile>
               </li>
             ))}
           </ul>

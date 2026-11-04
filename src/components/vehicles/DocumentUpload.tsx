@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 import DocumentService from '@/services/documents';
 import { ToastService } from '@/services/toast';
 import { DocumentEntityType, DocumentRecord } from '@/types/vehicle';
-import ViewFileButton from './ViewFileButton';
+import ViewFileTile from './ViewFileTile';
 
 /** A document that is already stored for the entity (`url` is a presigned read URL). */
 export type StoredDocument = { id: number; url: string };
@@ -338,7 +338,11 @@ const DocumentUpload = ({
       )}
 
       {showStored && stored && (
-        <div className="border-success-500/40 flex items-center gap-3 rounded-lg border bg-white p-3">
+        <ViewFileTile
+          items={[{ url: stored.url, title: label ?? 'Documento' }]}
+          aria-label={`Ver ${label ?? 'documento'}`}
+          className="border-success-500/40 hover:bg-surface-400/60 group/doc flex items-center gap-3 rounded-lg border bg-white p-3 transition-colors"
+        >
           <div className="bg-success-50 flex size-12 shrink-0 items-center justify-center rounded-md">
             <FileText className="text-success-700 size-5" aria-hidden />
           </div>
@@ -348,19 +352,15 @@ const DocumentUpload = ({
               <CheckCircle2 className="size-3.5" aria-hidden /> Documento cargado
             </p>
           </div>
-          <ViewFileButton
-            items={[{ url: stored.url, title: label ?? 'Documento' }]}
-            aria-label={`Ver ${label ?? 'documento'}`}
-            className="text-primary-800 flex cursor-pointer items-center gap-1 text-sm font-medium hover:underline"
-          >
+          <span className="text-primary-800 flex items-center gap-1 text-sm font-medium group-hover/doc:underline">
             Ver <Eye className="size-3.5" aria-hidden />
-          </ViewFileButton>
+          </span>
           {!isReadOnly && (
             <Button type="button" variant="outline" size="sm" onClick={openPicker} className="cursor-pointer gap-1.5">
               <Replace className="size-3.5" aria-hidden /> Reemplazar
             </Button>
           )}
-        </div>
+        </ViewFileTile>
       )}
 
       {state === 'error' && !file && message && (
