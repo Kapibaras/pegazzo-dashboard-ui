@@ -109,14 +109,13 @@ export type VehicleDetail = VehicleBase & {
   assignedDriver?: AssignedDriver | null;
 };
 
-/** Payload for POST /management/cars (all required fields of the backend `CarSchema`). */
+/** Payload for POST /management/cars. There is no `status`: the backend creates every car as INACTIVE. */
 export type VehicleCreate = {
   id: string;
   make: string;
   model: string;
   year: string;
   color: string;
-  status: VehicleStatus;
   vin: string;
   plate: string;
   bodyType: string;
@@ -155,7 +154,7 @@ export type VehicleCreate = {
  * Payload for PATCH /management/cars/{id}. Every field optional; status has its own endpoint and images are managed
  * through /management/images (the PATCH rejects `agencyImage` and `photos`).
  */
-export type VehicleUpdate = Partial<Omit<VehicleCreate, 'id' | 'status'>>;
+export type VehicleUpdate = Partial<Omit<VehicleCreate, 'id'>>;
 
 export type VehicleFolioRequest = {
   associateId: number;
