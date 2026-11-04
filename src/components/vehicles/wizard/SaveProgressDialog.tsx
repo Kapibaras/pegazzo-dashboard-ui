@@ -24,6 +24,8 @@ type SaveProgressDialogProps = {
   canContinue: boolean;
   onRetry: () => void;
   onContinue: () => void;
+  /** Dismiss the dialog to go back and fix the form. Only offered once the chain stopped with errors. */
+  onClose: () => void;
 };
 
 const ICONS: Record<SaveTaskStatus, React.ReactNode> = {
@@ -40,7 +42,7 @@ const STATUS_TEXT: Record<SaveTaskStatus, string> = {
   error: 'Falló',
 };
 
-/** Overlay with the checklist of the save chain ("✓ Coche creado · ✗ Foto 2 falló — Reintentar"). Cannot be dismissed while running. */
+/** Overlay with the checklist of the save chain ("✓ Coche creado · ✗ Foto 2 falló — Reintentar"). Cannot be dismissed while running; once it stops with errors the user can close it and fix the form. */
 const SaveProgressDialog = ({
   open,
   title,
@@ -50,16 +52,18 @@ const SaveProgressDialog = ({
   canContinue,
   onRetry,
   onContinue,
+  onClose,
 }: SaveProgressDialogProps) => {
   const hasErrors = tasks.some((task) => task.status === 'error');
+  const canDismiss = !isRunning && hasErrors;
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onOpenChange={(next) => !next && canDismiss && onClose()}>
       <DialogContent
-        showCloseButton={false}
-        onInteractOutside={(event) => event.preventDefault()}
-        onEscapeKeyDown={(event) => event.preventDefault()}
-        className="sm:max-w-md"
+        showCloseButton={canDismiss}
+        onInteractOutside={(event) => !canDismiss && event.preventDefault()}
+        onEscapeKeyDown={(event) => !canDismiss && event.preventDefault()}
+        className="sm:max-w-lg"
       >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -87,11 +91,11 @@ const SaveProgressDialog = ({
         </ul>
 
         {!isRunning && hasErrors && (
-          <DialogFooter>
+          <DialogFooter className="flex-col gap-2 sm:flex-col sm:justify-stretch">
             <Button
               type="button"
               onClick={onRetry}
-              className="bg-terciary-500 text-primary-100 hover:bg-primary-800 cursor-pointer gap-2"
+              className="bg-terciary-500 text-primary-100 hover:bg-primary-800 w-full cursor-pointer gap-2"
             >
               <RefreshCw className="size-4" /> Reintentar pendientes
             </Button>
@@ -100,9 +104,12 @@ const SaveProgressDialog = ({
               variant="outline"
               disabled={!canContinue}
               onClick={onContinue}
-              className="cursor-pointer"
+              className="w-full cursor-pointer"
             >
               {continueLabel}
+            </Button>
+            <Button type="button" variant="ghost" onClick={onClose} className="w-full cursor-pointer">
+              Cerrar y corregir
             </Button>
           </DialogFooter>
         )}

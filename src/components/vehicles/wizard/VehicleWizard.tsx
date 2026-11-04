@@ -578,6 +578,7 @@ const VehicleWizard = (props: VehicleWizardProps) => {
         continueLabel={isEdit ? 'Cerrar' : 'Continuar a documentos'}
         canContinue={isEdit || !!carIdRef.current}
         onRetry={() => void runChain()}
+        onClose={() => setProgressOpen(false)}
         onContinue={() => {
           setProgressOpen(false);
           if (isCreate && carIdRef.current) setStepIndex(steps.indexOf('documents'));
