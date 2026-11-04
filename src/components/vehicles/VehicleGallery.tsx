@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import FileViewer from './FileViewer';
 import { VEHICLE_PLACEHOLDER_SRC } from './VehicleCard';
 
 type VehicleGalleryProps = {
@@ -17,6 +18,7 @@ const VehicleGallery = ({ agencyImage, photos, title, className }: VehicleGaller
   const images = [agencyImage, ...(photos ?? [])].filter((src): src is string => !!src);
   const slides = images.length > 0 ? images : [VEHICLE_PLACEHOLDER_SRC];
   const [index, setIndex] = useState(0);
+  const [viewerOpen, setViewerOpen] = useState(false);
   const current = Math.min(index, slides.length - 1);
   const hasMany = slides.length > 1;
 
@@ -32,13 +34,36 @@ const VehicleGallery = ({ agencyImage, photos, title, className }: VehicleGaller
       aria-roledescription="carrusel"
       aria-label={`Imágenes de ${title}`}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        key={slides[current]}
-        src={slides[current]}
-        alt={images.length > 0 ? `${title} (${current + 1} de ${slides.length})` : 'Imagen no disponible'}
-        className="size-full object-cover"
-      />
+      {images.length > 0 ? (
+        <button
+          type="button"
+          aria-label={`Ampliar imagen ${current + 1} de ${slides.length}`}
+          onClick={() => setViewerOpen(true)}
+          className="focus-visible:ring-primary-700 size-full cursor-zoom-in outline-none focus-visible:ring-2 focus-visible:ring-inset"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            key={slides[current]}
+            src={slides[current]}
+            alt={`${title} (${current + 1} de ${slides.length})`}
+            className="size-full object-cover"
+          />
+        </button>
+      ) : (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={slides[current]} alt="Imagen no disponible" className="size-full object-cover" />
+      )}
+      {images.length > 0 && (
+        <FileViewer
+          open={viewerOpen}
+          onOpenChange={setViewerOpen}
+          startIndex={current}
+          items={images.map((url, i) => ({
+            url,
+            title: i === 0 && agencyImage ? `Imagen de agencia · ${title}` : `Foto de ${title}`,
+          }))}
+        />
+      )}
 
       {hasMany && (
         <>

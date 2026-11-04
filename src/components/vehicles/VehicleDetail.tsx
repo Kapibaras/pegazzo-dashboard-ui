@@ -6,7 +6,7 @@ import {
   Car,
   ChevronRight,
   CircleDollarSign,
-  ExternalLink,
+  Eye,
   FileText,
   FileWarning,
   Fingerprint,
@@ -34,6 +34,7 @@ import { VehicleDetail as VehicleDetailData } from '@/types/vehicle';
 import CanManage from './CanManage';
 import ExpiryBadge from './ExpiryBadge';
 import VehicleDetailActions from './VehicleDetailActions';
+import ViewFileButton from './ViewFileButton';
 import VehicleGallery from './VehicleGallery';
 import VehicleInfoCard from './VehicleInfoCard';
 import VehicleStatCard from './VehicleStatCard';
@@ -280,12 +281,11 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
         </div>
         <div className="flex flex-wrap gap-3">
           {photos.map((src, index) => (
-            <a
+            <ViewFileButton
               key={src}
-              href={src}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Abrir foto ${index + 1} de ${title} en una pestaña nueva`}
+              items={photos.map((url, i) => ({ url, title: `Foto ${i + 1} de ${title}` }))}
+              startIndex={index}
+              aria-label={`Ver foto ${index + 1} de ${title}`}
               className="focus-visible:ring-primary-700 block cursor-zoom-in overflow-hidden rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -295,7 +295,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
                 className="border-surface-600/70 h-[100px] w-[140px] rounded-lg border object-cover transition-transform duration-300 hover:scale-105 motion-reduce:transition-none"
                 loading="lazy"
               />
-            </a>
+            </ViewFileButton>
           ))}
           <CanManage>
             <Link
@@ -336,15 +336,13 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
                   {doc.expiryDate && <p className="text-carbon-200 text-xs">Vence el {formatDate(doc.expiryDate)}</p>}
                 </div>
                 <ExpiryBadge status={doc.expiryStatus} />
-                <a
-                  href={doc.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <ViewFileButton
+                  items={[{ url: doc.url, title: getDocumentTypeLabel(doc.type) }]}
+                  aria-label={`Ver ${getDocumentTypeLabel(doc.type)}`}
                   className="text-primary-800 hover:text-primary-900 focus-visible:ring-primary-700 flex cursor-pointer items-center gap-1 rounded text-sm font-medium outline-none hover:underline focus-visible:ring-2"
                 >
-                  Ver <ExternalLink className="size-3.5" aria-hidden />
-                  <span className="sr-only">{getDocumentTypeLabel(doc.type)} (abre en una pestaña nueva)</span>
-                </a>
+                  Ver <Eye className="size-3.5" aria-hidden />
+                </ViewFileButton>
               </li>
             ))}
           </ul>

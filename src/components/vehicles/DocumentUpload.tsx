@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
-import { CheckCircle2, ExternalLink, FileText, Loader2, RefreshCw, Replace, UploadCloud, X } from 'lucide-react';
+import { CheckCircle2, Eye, FileText, Loader2, RefreshCw, Replace, UploadCloud, X } from 'lucide-react';
 import { SingletonAPIClient } from '@/api';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import DocumentService from '@/services/documents';
 import { ToastService } from '@/services/toast';
 import { DocumentEntityType, DocumentRecord } from '@/types/vehicle';
+import ViewFileButton from './ViewFileButton';
 
 /** A document that is already stored for the entity (`url` is a presigned read URL). */
 export type StoredDocument = { id: number; url: string };
@@ -347,15 +348,13 @@ const DocumentUpload = ({
               <CheckCircle2 className="size-3.5" aria-hidden /> Documento cargado
             </p>
           </div>
-          <a
-            href={stored.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary-800 flex items-center gap-1 text-sm font-medium hover:underline"
+          <ViewFileButton
+            items={[{ url: stored.url, title: label ?? 'Documento' }]}
+            aria-label={`Ver ${label ?? 'documento'}`}
+            className="text-primary-800 flex cursor-pointer items-center gap-1 text-sm font-medium hover:underline"
           >
-            Ver <ExternalLink className="size-3.5" aria-hidden />
-            <span className="sr-only">{label} (abre en una pestaña nueva)</span>
-          </a>
+            Ver <Eye className="size-3.5" aria-hidden />
+          </ViewFileButton>
           {!isReadOnly && (
             <Button type="button" variant="outline" size="sm" onClick={openPicker} className="cursor-pointer gap-1.5">
               <Replace className="size-3.5" aria-hidden /> Reemplazar

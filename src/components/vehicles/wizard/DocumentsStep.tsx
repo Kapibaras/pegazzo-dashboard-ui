@@ -1,9 +1,10 @@
 'use client';
 
-import { ExternalLink, FileText, Info } from 'lucide-react';
+import { Eye, FileText, Info } from 'lucide-react';
 import { getDocumentTypeLabel, requiredDocumentTypes } from '@/lib/vehicle';
 import { VehicleDocument } from '@/types/vehicle';
 import DocumentUpload, { StoredDocument } from '../DocumentUpload';
+import ViewFileButton from '../ViewFileButton';
 import { StepCard } from './fields';
 
 type DocumentsStepProps = {
@@ -89,14 +90,13 @@ const DocumentsStep = ({
               <li key={doc.id} className="flex items-center gap-3 py-2">
                 <FileText className="text-carbon-300 size-4" aria-hidden />
                 <span className="text-carbon-500 flex-1 text-sm">{getDocumentTypeLabel(doc.type)}</span>
-                <a
-                  href={doc.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary-800 flex items-center gap-1 text-sm font-medium hover:underline"
+                <ViewFileButton
+                  items={[{ url: doc.url, title: getDocumentTypeLabel(doc.type) }]}
+                  aria-label={`Ver ${getDocumentTypeLabel(doc.type)}`}
+                  className="text-primary-800 flex cursor-pointer items-center gap-1 text-sm font-medium hover:underline"
                 >
-                  Ver <ExternalLink className="size-3.5" aria-hidden />
-                </a>
+                  Ver <Eye className="size-3.5" aria-hidden />
+                </ViewFileButton>
               </li>
             ))}
           </ul>
