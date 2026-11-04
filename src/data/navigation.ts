@@ -27,7 +27,7 @@ const ROUTES_WITH_ICONS = [
   {
     title: 'Coches',
     icon: CarFront,
-    url: '/#',
+    url: '/coches',
     allowed: [Role.OWNER, Role.ADMIN, Role.EMPLOYEE],
   },
   {
@@ -46,10 +46,22 @@ const ROUTES_PATHNAMES: Record<string, string> = {
   '/balance': 'Balance',
   '/balance/transacciones': 'Balance',
   '/balance/autorizaciones': 'Balance',
+  '/coches': 'Coches',
   '/usuarios': 'Usuarios',
   '/settings': 'Configuración',
 };
 
-export { ROUTES_WITH_ICONS, ROUTES_PATHNAMES };
+/** Exact match first, then the longest registered prefix (so `/coches/ABC-1/editar` resolves to "Coches"). */
+const getRouteTitle = (pathname: string): string => {
+  if (ROUTES_PATHNAMES[pathname]) return ROUTES_PATHNAMES[pathname];
+
+  const prefix = Object.keys(ROUTES_PATHNAMES)
+    .filter((route) => route !== '/' && pathname.startsWith(`${route}/`))
+    .sort((a, b) => b.length - a.length)[0];
+
+  return prefix ? ROUTES_PATHNAMES[prefix] : 'Unknown';
+};
+
+export { ROUTES_WITH_ICONS, ROUTES_PATHNAMES, getRouteTitle };
 
 export type RoutesType = typeof ROUTES_WITH_ICONS;
