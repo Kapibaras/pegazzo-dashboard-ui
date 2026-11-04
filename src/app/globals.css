@@ -271,3 +271,31 @@
     @apply bg-surface-500 text-carbon-500;
   }
 }
+
+/* Slim scrollbar for dark surfaces (sidebar): transparent track, translucent thumb that lights up on hover. */
+/* Firefox has no ::-webkit-scrollbar; in Chromium the standard properties would override the rules below. */
+@supports not selector(::-webkit-scrollbar) {
+  .scroll-dark {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 255 255 / 0.22) transparent;
+  }
+}
+.scroll-dark::-webkit-scrollbar {
+  width: 8px;
+}
+.scroll-dark::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-dark::-webkit-scrollbar-thumb {
+  background-color: rgb(255 255 255 / 0.2);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background-color 150ms;
+}
+.scroll-dark::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-primary-400);
+}
+.scroll-dark::-webkit-scrollbar-button {
+  display: none;
+}
