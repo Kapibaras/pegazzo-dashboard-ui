@@ -321,9 +321,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="text-carbon-500 truncate text-sm font-semibold">{getDocumentTypeLabel(doc.type)}</p>
-                  <p className="text-carbon-200 text-xs">
-                    {doc.expiryDate ? `Vence el ${formatDate(doc.expiryDate)}` : 'Sin fecha de vencimiento'}
-                  </p>
+                  {doc.expiryDate && <p className="text-carbon-200 text-xs">Vence el {formatDate(doc.expiryDate)}</p>}
                 </div>
                 <ExpiryBadge status={doc.expiryStatus} />
                 <a
