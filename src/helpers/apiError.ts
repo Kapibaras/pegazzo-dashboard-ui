@@ -16,7 +16,9 @@ export const normalizeApiError = (error: unknown, fallback = 'Error inesperado.'
       response?: { status?: number; data?: { detail?: unknown } };
     };
 
-    const status = err.status_code ?? err.response?.status ?? err.status ?? 500;
+    // An axios error without a response (offline, CORS-blocked storage PUT, ...) is a network failure, not a 500.
+    const isNetworkError = !err.response && (err as { code?: string }).code === 'ERR_NETWORK';
+    const status = isNetworkError ? 0 : (err.status_code ?? err.response?.status ?? err.status ?? 500);
     const rawDetail = err.detail ?? err.response?.data?.detail ?? err.message;
     const detail = typeof rawDetail === 'string' ? rawDetail : fallback;
 
@@ -25,6 +27,9 @@ export const normalizeApiError = (error: unknown, fallback = 'Error inesperado.'
 
   return { status: 500, detail: fallback };
 };
+
+export const NETWORK_ERROR_MESSAGE =
+  'No se pudo conectar con el almacenamiento. Revisa tu conexión; si persiste, el bucket debe permitir este origen (CORS).';
 
 export const isAbortError = (error: unknown): boolean =>
   !!error &&

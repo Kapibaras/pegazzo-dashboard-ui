@@ -12,7 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import { useUser } from '@/contexts/UserProvider';
 import findErrorMessage from '@/errors/findErrorMessage';
-import { normalizeApiError } from '@/helpers/apiError';
+import { NETWORK_ERROR_MESSAGE, normalizeApiError } from '@/helpers/apiError';
 import useVehicleCatalogs from '@/hooks/vehicles/useVehicleCatalogs';
 import {
   buildVehicleSchema,
@@ -59,6 +59,7 @@ const EDIT_STEPS: WizardStepId[] = ['identity', 'technical', 'admin', 'associate
 /** Spanish message for the checklist: the mapped error text when we know it, otherwise the backend detail. */
 const describeError = (error: unknown): string => {
   const normalized = normalizeApiError(error, 'No se pudo completar la acción.');
+  if (normalized.status === 0) return NETWORK_ERROR_MESSAGE;
   if (normalized.status >= 500) return 'El servidor no pudo completar la acción. Inténtalo de nuevo en unos minutos.';
   const mapped = findErrorMessage(normalized, ['common', 'vehicles']);
   return mapped.title === 'Error inesperado' ? normalized.detail : mapped.message;

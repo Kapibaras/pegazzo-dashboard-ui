@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useUser } from '@/contexts/UserProvider';
 import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
-import { isAbortError, normalizeApiError } from '@/helpers/apiError';
+import { isAbortError, NETWORK_ERROR_MESSAGE, normalizeApiError } from '@/helpers/apiError';
 import { DOCUMENT_ACCEPT, IMAGE_ACCEPT, MAX_DOCUMENT_SIZE_MB } from '@/lib/vehicle';
 import { Role } from '@/lib/schemas/userSchema';
 import { cn } from '@/lib/utils';
@@ -127,8 +127,12 @@ const DocumentUpload = ({
 
         const apiError = normalizeApiError(error, 'No se pudo subir el archivo.');
         setState('error');
-        setMessage('No se pudo subir el archivo. Inténtalo de nuevo.');
         onError?.(apiError);
+        if (apiError.status === 0) {
+          setMessage(NETWORK_ERROR_MESSAGE);
+          return;
+        }
+        setMessage('No se pudo subir el archivo. Inténtalo de nuevo.');
         await handleApiError(apiError, ['common', 'vehicles']);
       }
     },
