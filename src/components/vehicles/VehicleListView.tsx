@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { LayoutGrid, List, Plus } from 'lucide-react';
+import { LayoutGrid, List, Plus, Tags } from 'lucide-react';
 import { ErrorCard } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/contexts/UserProvider';
@@ -116,6 +116,14 @@ const VehicleListView = ({ initialState }: VehicleListViewProps) => {
               </button>
             ))}
           </div>
+
+          {user.role === Role.OWNER && (
+            <Button asChild variant="outline" className="cursor-pointer gap-2">
+              <Link href="/coches/catalogo">
+                <Tags className="size-4" /> Catálogo
+              </Link>
+            </Button>
+          )}
 
           {canCreate && (
             <Button asChild className="bg-terciary-500 text-primary-100 hover:bg-primary-800 cursor-pointer gap-2">

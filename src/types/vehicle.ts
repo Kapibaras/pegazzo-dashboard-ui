@@ -172,8 +172,18 @@ export type VehicleModel = { id: number; make: string; model: string; abbreviati
 export type Insurance = { id: number; name: string; telephones?: string[] | null };
 export type InsuranceCreate = { name: string; telephones?: string[] };
 
-export type Associate = { id: number; name: string; surnames: string; telephones?: string[] | null };
+export type Associate = {
+  id: number;
+  name: string;
+  surnames: string;
+  telephones?: string[] | null;
+  /** Number of cars linked to the associate (listing and detail). */
+  car_count?: number;
+};
 export type AssociateCreate = { name: string; surnames: string; telephones?: string[] };
+export type AssociateUpdate = Partial<AssociateCreate>;
+/** GET /management/cars/associate/{id}: the associate plus the cars linked to it. */
+export type AssociateDetail = Associate & { cars: VehicleSummary[] };
 
 export type ActionSuccess = { message: string };
 

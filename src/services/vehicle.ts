@@ -4,6 +4,8 @@ import {
   ActionSuccess,
   Associate,
   AssociateCreate,
+  AssociateDetail,
+  AssociateUpdate,
   Insurance,
   InsuranceCreate,
   VehicleCreate,
@@ -70,6 +72,10 @@ export default class VehicleService extends AbstractAPIService {
     return (await this.client.post<VehicleModel>(`${CARS}/models`, data)).data;
   }
 
+  async deleteModel(id: number): Promise<void> {
+    await this.client.delete(`${CARS}/models/${id}`);
+  }
+
   async getInsurances(search?: string): Promise<Insurance[]> {
     return (await this.client.get<Insurance[]>(`${CARS}/insurance`, { params: search ? { search } : {} })).data;
   }
@@ -80,6 +86,18 @@ export default class VehicleService extends AbstractAPIService {
 
   async getAssociates(search?: string): Promise<Associate[]> {
     return (await this.client.get<Associate[]>(`${CARS}/associate`, { params: search ? { search } : {} })).data;
+  }
+
+  async getAssociate(id: number): Promise<AssociateDetail> {
+    return (await this.client.get<AssociateDetail>(`${CARS}/associate/${id}`)).data;
+  }
+
+  async updateAssociate(id: number, data: AssociateUpdate): Promise<Associate> {
+    return (await this.client.patch<Associate>(`${CARS}/associate/${id}`, data)).data;
+  }
+
+  async deleteAssociate(id: number): Promise<ActionSuccess> {
+    return (await this.client.delete<ActionSuccess>(`${CARS}/associate/${id}`)).data;
   }
 
   async createAssociate(data: AssociateCreate): Promise<Associate> {

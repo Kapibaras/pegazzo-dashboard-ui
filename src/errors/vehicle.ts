@@ -107,6 +107,24 @@ export const VEHICLE_ERRORS = {
     title: 'Aseguradora duplicada',
     message: 'Ya existe una aseguradora con ese nombre.',
   },
+  ASSOCIATE_IN_USE: {
+    status: 400,
+    backendDetailStartsWith: "Associate '",
+    title: 'No se puede eliminar',
+    message: 'El socio tiene coches asociados. Cambia el socio de esos coches antes de eliminarlo.',
+  },
+  ASSOCIATE_GONE: {
+    status: 404,
+    backendDetailStartsWith: 'Associate with id',
+    title: 'Socio no encontrado',
+    message: 'El socio ya no existe. Actualiza la lista.',
+  },
+  MODEL_BY_ID_NOT_FOUND: {
+    status: 404,
+    backendDetailStartsWith: 'Car model with id',
+    title: 'Modelo no encontrado',
+    message: 'El modelo ya no existe en el catálogo.',
+  },
   FORBIDDEN: {
     status: 403,
     backendDetail: 'Forbidden',
