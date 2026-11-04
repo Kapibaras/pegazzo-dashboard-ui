@@ -16,22 +16,27 @@ import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
 import { Role } from '@/lib/schemas/userSchema';
 import { cn } from '@/lib/utils';
 import { ToastService } from '@/services/toast';
+import { VehicleStatus } from '@/types/vehicle';
 import ArchiveVehicleDialog from './ArchiveVehicleDialog';
 
 type VehicleActionsMenuProps = {
   vehicleId: string;
   vehicleName: string;
   archived?: boolean;
+  status: VehicleStatus;
   onChanged?: () => void;
   className?: string;
   triggerClassName?: string;
 };
+
+export const ARCHIVE_REQUIRES_INACTIVE = 'Solo se pueden archivar coches inactivos. Cambia su estado primero.';
 
 /** 3-dot menu (Editar / Archivar·Desarchivar). Hidden for EMPLOYEE (read-only). */
 const VehicleActionsMenu = ({
   vehicleId,
   vehicleName,
   archived = false,
+  status,
   onChanged,
   className,
   triggerClassName,
@@ -87,10 +92,15 @@ const VehicleActionsMenu = ({
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
-              className="text-error-700 focus:text-error-700 cursor-pointer"
+              className="text-error-700 focus:text-error-700 cursor-pointer data-[disabled]:cursor-not-allowed"
+              disabled={status !== 'INACTIVE'}
+              title={status !== 'INACTIVE' ? ARCHIVE_REQUIRES_INACTIVE : undefined}
               onSelect={() => setConfirmOpen(true)}
             >
               <Archive className="text-error-700" /> Archivar
+              {status !== 'INACTIVE' && (
+                <span className="text-carbon-200 ml-auto pl-3 text-[11px] font-normal">Solo inactivos</span>
+              )}
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>

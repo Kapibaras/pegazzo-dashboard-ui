@@ -90,6 +90,7 @@ const VehicleTable = ({ vehicles, archived = false, isLoading = false, onChanged
                     vehicleId={vehicle.id}
                     vehicleName={title}
                     archived={archived}
+                    status={vehicle.status}
                     onChanged={onChanged}
                   />
                 </TableCell>

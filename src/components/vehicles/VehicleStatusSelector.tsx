@@ -32,7 +32,7 @@ type VehicleStatusSelectorProps = {
   vehicleName: string;
   status: VehicleStatus;
   archived: boolean;
-  /** Required documents that are still not uploaded. While any is missing the status cannot be changed. */
+  /** Required documents that are still not uploaded. While any is missing the car cannot be activated (it can still be set to Inactivo). */
   missingDocuments?: string[];
 };
 
@@ -54,16 +54,19 @@ const VehicleStatusSelector = ({
 
   if (user.role === Role.EMPLOYEE) return <VehicleStatusBadge status={status} size="lg" />;
 
+  // Missing documents only block *activating* the car: Inactivo stays reachable, so a car can always be taken out of
+  // service (and archived). With nothing else to choose, the control is shown locked.
   const lockedByDocuments = missingDocuments.length > 0;
-  const disabled = archived || lockedByDocuments;
+  const onlyInactiveLeft = lockedByDocuments && status === 'INACTIVE';
+  const disabled = archived || onlyInactiveLeft;
   const reason = archived
     ? 'Desarchiva el coche para poder cambiar su estado'
-    : lockedByDocuments
-      ? 'Carga los documentos obligatorios para poder cambiar el estado'
+    : onlyInactiveLeft
+      ? 'Carga los documentos obligatorios para poder activar el coche'
       : undefined;
 
   const change = async (next: string) => {
-    if (next === status || disabled) return;
+    if (next === status || disabled || (lockedByDocuments && next !== 'INACTIVE')) return;
 
     setIsBusy(true);
     const result = await updateVehicleStatusAction(vehicleId, next as VehicleStatus);
@@ -113,12 +116,22 @@ const VehicleStatusSelector = ({
       <DropdownMenuContent align="start" className="w-56">
         <DropdownMenuLabel className="text-carbon-300 text-xs font-medium">Cambiar estado</DropdownMenuLabel>
         <DropdownMenuRadioGroup value={status} onValueChange={(next) => void change(next)}>
-          {VEHICLE_STATUSES.map((value) => (
-            <DropdownMenuRadioItem key={value} value={value} className="cursor-pointer gap-2.5">
-              <span aria-hidden className={cn('size-2 rounded-full', STATUS_DOT[value])} />
-              {VEHICLE_STATUS_LABELS[value]}
-            </DropdownMenuRadioItem>
-          ))}
+          {VEHICLE_STATUSES.map((value) => {
+            const blocked = lockedByDocuments && value !== 'INACTIVE';
+            return (
+              <DropdownMenuRadioItem
+                key={value}
+                value={value}
+                disabled={blocked}
+                title={blocked ? 'Faltan documentos obligatorios' : undefined}
+                className="cursor-pointer gap-2.5"
+              >
+                <span aria-hidden className={cn('size-2 rounded-full', STATUS_DOT[value])} />
+                {VEHICLE_STATUS_LABELS[value]}
+                {blocked && <Lock className="text-carbon-200 ml-auto size-3.5" aria-hidden />}
+              </DropdownMenuRadioItem>
+            );
+          })}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

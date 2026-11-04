@@ -17,13 +17,16 @@ import { useUser } from '@/contexts/UserProvider';
 import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
 import { Role } from '@/lib/schemas/userSchema';
 import { ToastService } from '@/services/toast';
+import { VehicleStatus } from '@/types/vehicle';
 import ArchiveVehicleDialog from './ArchiveVehicleDialog';
 import DeleteVehicleDialog from './DeleteVehicleDialog';
+import { ARCHIVE_REQUIRES_INACTIVE } from './VehicleActionsMenu';
 
 type VehicleDetailActionsProps = {
   vehicleId: string;
   vehicleName: string;
   archived: boolean;
+  status: VehicleStatus;
   /** Required documents that are still not uploaded (offers a shortcut to upload them). */
   missingDocuments?: string[];
 };
@@ -36,6 +39,7 @@ const VehicleDetailActions = ({
   vehicleId,
   vehicleName,
   archived,
+  status,
   missingDocuments = [],
 }: VehicleDetailActionsProps) => {
   const { user } = useUser();
@@ -123,10 +127,15 @@ const VehicleDetailActions = ({
             </>
           ) : (
             <DropdownMenuItem
-              className="text-error-700 focus:text-error-700 cursor-pointer"
+              className="text-error-700 focus:text-error-700 cursor-pointer data-[disabled]:cursor-not-allowed"
+              disabled={status !== 'INACTIVE'}
+              title={status !== 'INACTIVE' ? ARCHIVE_REQUIRES_INACTIVE : undefined}
               onSelect={() => setArchiveOpen(true)}
             >
               <Archive className="text-error-700" /> Archivar
+              {status !== 'INACTIVE' && (
+                <span className="text-carbon-200 ml-auto pl-3 text-[11px] font-normal">Solo inactivos</span>
+              )}
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>

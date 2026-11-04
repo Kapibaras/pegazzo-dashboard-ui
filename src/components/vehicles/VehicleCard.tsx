@@ -64,6 +64,7 @@ const VehicleCard = ({ vehicle, archived = false, onChanged }: VehicleCardProps)
         vehicleId={vehicle.id}
         vehicleName={title}
         archived={archived}
+        status={vehicle.status}
         onChanged={onChanged}
         className="absolute top-2 right-2"
         triggerClassName="bg-white/90 hover:bg-white shadow-sm"

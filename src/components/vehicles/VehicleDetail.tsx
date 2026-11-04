@@ -95,6 +95,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
             vehicleId={vehicle.id}
             vehicleName={title}
             archived={archived}
+            status={vehicle.status}
             missingDocuments={missingDocuments}
           />
         </div>

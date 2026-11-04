@@ -53,6 +53,12 @@ export const VEHICLE_ERRORS = {
     title: 'No se puede archivar',
     message: 'El coche tiene un conductor asignado o una asignación próxima.',
   },
+  MUST_BE_INACTIVE: {
+    status: 400,
+    backendDetailStartsWith: 'Cannot archive a car that is not inactive',
+    title: 'No se puede archivar',
+    message: 'Pon el coche en estado Inactivo antes de archivarlo.',
+  },
   ARCHIVED_STATUS_CHANGE: {
     status: 400,
     backendDetailStartsWith: 'Cannot change the status of archived car',
