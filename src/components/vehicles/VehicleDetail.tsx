@@ -8,6 +8,7 @@ import {
   CircleDollarSign,
   ExternalLink,
   FileText,
+  FileWarning,
   Fingerprint,
   Gauge,
   Landmark,
@@ -27,6 +28,7 @@ import {
   getTransmissionLabel,
   getVehicleTitle,
   isPegazzoOwner,
+  requiredDocumentTypes,
 } from '@/lib/vehicle';
 import { VehicleDetail as VehicleDetailData } from '@/types/vehicle';
 import CanManage from './CanManage';
@@ -49,6 +51,10 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
   const pegazzoOwned = isPegazzoOwner(vehicle.legalOwnerName);
   const associate = vehicle.associate;
   const driver = vehicle.assignedDriver;
+  // Required documents (they depend on the financing) that are not uploaded yet: the status stays locked until done.
+  const missingDocuments = requiredDocumentTypes(vehicle.isFinancedLiquidated).filter(
+    (type) => !documents.some((doc) => doc.type === type),
+  );
 
   return (
     <article className="flex flex-col gap-6">
@@ -68,15 +74,46 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="typo-title text-carbon-500">{title}</h1>
               <VehicleStatusBadge status={vehicle.status} size="lg" />
-              {archived && <Badge className="bg-secondary-50 text-carbon-400 hover:bg-secondary-50 px-3 py-1 text-sm">Archivado</Badge>}
+              {archived && (
+                <Badge className="bg-secondary-50 text-carbon-400 hover:bg-secondary-50 px-3 py-1 text-sm">
+                  Archivado
+                </Badge>
+              )}
             </div>
             <p className="font-numbers text-carbon-300 text-sm">
               <span className="sr-only">Folio interno: </span>
               {vehicle.id}
             </p>
           </div>
-          <VehicleDetailActions vehicleId={vehicle.id} vehicleName={title} status={vehicle.status} archived={archived} />
+          <VehicleDetailActions
+            vehicleId={vehicle.id}
+            vehicleName={title}
+            status={vehicle.status}
+            archived={archived}
+            missingDocuments={missingDocuments}
+          />
         </div>
+
+        {missingDocuments.length > 0 && (
+          <div
+            role="status"
+            className="border-warning-600/30 bg-warning-100/60 text-warning-800 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border px-4 py-3 text-sm"
+          >
+            <FileWarning className="text-warning-700 size-5 shrink-0" aria-hidden />
+            <p className="min-w-0 flex-1">
+              <strong>Documentación incompleta.</strong> Faltan: {missingDocuments.map(getDocumentTypeLabel).join(', ')}
+              . Mientras tanto no se puede cambiar el estado del coche.
+            </p>
+            <CanManage>
+              <Link
+                href={`/coches/${encodeURIComponent(vehicle.id)}/editar?paso=documentos`}
+                className="text-warning-800 font-semibold underline underline-offset-2 hover:no-underline"
+              >
+                Completar documentos
+              </Link>
+            </CanManage>
+          </div>
+        )}
       </header>
 
       <div className="grid gap-5 lg:grid-cols-[400px_1fr]">
@@ -230,7 +267,9 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
             <span id="photos-title">Fotos del vehículo</span>
           </SectionTitle>
           <span className="text-carbon-300 text-sm">
-            {photos.length === 0 ? 'Aún no hay fotos' : `${photos.length} ${photos.length === 1 ? 'foto subida' : 'fotos subidas'}`}
+            {photos.length === 0
+              ? 'Aún no hay fotos'
+              : `${photos.length} ${photos.length === 1 ? 'foto subida' : 'fotos subidas'}`}
           </span>
         </div>
         <div className="flex flex-wrap gap-3">
@@ -249,7 +288,11 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
               href={`/coches/${encodeURIComponent(vehicle.id)}/editar`}
               className="border-surface-700/60 text-carbon-300 hover:border-primary-700 hover:text-primary-800 flex h-[100px] w-[140px] flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed text-sm transition-colors"
             >
-              {photos.length === 0 ? <Camera className="size-5" aria-hidden /> : <Plus className="size-5" aria-hidden />}
+              {photos.length === 0 ? (
+                <Camera className="size-5" aria-hidden />
+              ) : (
+                <Plus className="size-5" aria-hidden />
+              )}
               Agregar
             </Link>
           </CanManage>

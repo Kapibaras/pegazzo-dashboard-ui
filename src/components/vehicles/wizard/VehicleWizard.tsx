@@ -41,7 +41,13 @@ import SummaryStep, { FolioState } from './SummaryStep';
 import TechnicalStep from './TechnicalStep';
 import WizardStepper from './WizardStepper';
 
-type VehicleWizardProps = { mode: 'create' } | { mode: 'edit'; vehicle: VehicleDetail };
+type VehicleWizardProps =
+  | { mode: 'create' }
+  | {
+      mode: 'edit';
+      vehicle: VehicleDetail;
+      /** Step to open first (e.g. the documents step from a "Completar documentos" link). */ initialStep?: WizardStepId;
+    };
 
 type SaveTask = SaveTaskView & { run: () => Promise<void> };
 
@@ -109,7 +115,9 @@ const VehicleWizard = (props: VehicleWizardProps) => {
   );
   const initialPhotos = useMemo(() => (vehicle?.photos ?? []).map(createExistingImage), [vehicle]);
 
-  const [stepIndex, setStepIndex] = useState(0);
+  const [stepIndex, setStepIndex] = useState(() =>
+    props.mode === 'edit' && props.initialStep ? Math.max(0, steps.indexOf(props.initialStep)) : 0,
+  );
   const [agencyImages, setAgencyImages] = useState<ImageItem[]>(initialAgency);
   const [photos, setPhotos] = useState<ImageItem[]>(initialPhotos);
   // The current document of each type. It lives here so it survives navigating between steps; when a type has several
@@ -402,7 +410,7 @@ const VehicleWizard = (props: VehicleWizardProps) => {
   const leaveWithoutAllDocuments = () => {
     ToastService.info(
       'Documentación pendiente',
-      `Faltan ${missingDocuments.length} ${missingDocuments.length === 1 ? 'documento' : 'documentos'}. Puedes cargarlos desde la edición del coche.`,
+      `Faltan ${missingDocuments.length} ${missingDocuments.length === 1 ? 'documento' : 'documentos'}. Mientras falten no podrás cambiar el estado del coche; cárgalos desde su detalle o su edición.`,
     );
     router.push('/coches');
   };

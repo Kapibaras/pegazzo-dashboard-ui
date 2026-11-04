@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Archive, ArchiveRestore, MoreVertical, Pencil, RefreshCw, Trash2 } from 'lucide-react';
+import { Archive, ArchiveRestore, FileWarning, MoreVertical, Pencil, RefreshCw, Trash2 } from 'lucide-react';
 import { archiveVehicleAction, unarchiveVehicleAction, updateVehicleStatusAction } from '@/actions/vehicles';
 import { Button } from '@/components/ui/button';
 import {
@@ -32,10 +32,18 @@ type VehicleDetailActionsProps = {
   vehicleName: string;
   status: VehicleStatus;
   archived: boolean;
+  /** Required documents that are still not uploaded. While any is missing the status cannot be changed. */
+  missingDocuments?: string[];
 };
 
 /** Detail page actions behind a single 3-dot menu. Edit / archive / delete are OWNER/ADMIN only (EMPLOYEE: none). */
-const VehicleDetailActions = ({ vehicleId, vehicleName, status, archived }: VehicleDetailActionsProps) => {
+const VehicleDetailActions = ({
+  vehicleId,
+  vehicleName,
+  status,
+  archived,
+  missingDocuments = [],
+}: VehicleDetailActionsProps) => {
   const { user } = useUser();
   const router = useRouter();
   const { handleApiError } = useApiErrorHandler();
@@ -64,8 +72,10 @@ const VehicleDetailActions = ({ vehicleId, vehicleName, status, archived }: Vehi
     router.refresh();
   };
 
+  const statusLocked = missingDocuments.length > 0;
+
   const handleStatusChange = (next: string) => {
-    if (next === status) return;
+    if (next === status || statusLocked) return;
     void runAction(
       () => updateVehicleStatusAction(vehicleId, next as VehicleStatus),
       'Estado actualizado',
@@ -96,7 +106,11 @@ const VehicleDetailActions = ({ vehicleId, vehicleName, status, archived }: Vehi
           </DropdownMenuItem>
 
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger disabled={archived} className="cursor-pointer">
+            <DropdownMenuSubTrigger
+              disabled={archived || statusLocked}
+              title={statusLocked ? 'Carga los documentos obligatorios para poder cambiar el estado' : undefined}
+              className="cursor-pointer"
+            >
               <RefreshCw /> Cambiar estado
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
@@ -109,6 +123,14 @@ const VehicleDetailActions = ({ vehicleId, vehicleName, status, archived }: Vehi
               </DropdownMenuRadioGroup>
             </DropdownMenuSubContent>
           </DropdownMenuSub>
+
+          {statusLocked && !archived && (
+            <DropdownMenuItem asChild className="text-warning-700 focus:text-warning-700 cursor-pointer">
+              <Link href={`/coches/${encodeURIComponent(vehicleId)}/editar?paso=documentos`}>
+                <FileWarning className="text-warning-700" /> Completar documentos ({missingDocuments.length})
+              </Link>
+            </DropdownMenuItem>
+          )}
 
           <DropdownMenuSeparator />
 
@@ -157,7 +179,12 @@ const VehicleDetailActions = ({ vehicleId, vehicleName, status, archived }: Vehi
           )
         }
       />
-      <DeleteVehicleDialog open={deleteOpen} onOpenChange={setDeleteOpen} vehicleId={vehicleId} vehicleName={vehicleName} />
+      <DeleteVehicleDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        vehicleId={vehicleId}
+        vehicleName={vehicleName}
+      />
     </>
   );
 };
