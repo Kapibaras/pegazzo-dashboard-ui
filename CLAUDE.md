@@ -96,24 +96,24 @@ Single source of truth: `@utility typo-*` in `src/app/globals.css`. **Every piec
 
 | Token                       | Size / weight           | Role                                                       |
 | --------------------------- | ----------------------- | ---------------------------------------------------------- |
-| `typo-title`                | 24px (28px `md+`) / 700 | Page `h1`                                                  |
-| `typo-subtitle`             | 18px / 600              | Section, card, dialog and sheet titles; main nav           |
-| `typo-text`                 | 16px / 400              | Body text (also the `body` default)                        |
-| `typo-bold-text`            | 16px / 600              | Emphasis, table headers, list/card item names              |
-| `typo-sm-text`              | 14px / 400              | Secondary text, dense table cells, helper text             |
-| `typo-label`                | 14px / 500              | Form labels, detail labels, tabs                           |
-| `typo-button`               | 15px / 700              | Text of buttons (primary actions, dialogs, forms)          |
-| `typo-nav` / `typo-nav-sub` | 24px / 600, 21px / 500  | Sidebar items and sub-items                                |
-| `typo-caption`              | 12px / 400              | Hints, badges, small errors (**minimum allowed size**)     |
-| `typo-overline`             | 12px / 600 uppercase    | Micro-labels (detail-sheet field names, calendar weekdays) |
-| `typo-numbers`              | 16px / 500 mono         | Inline numeric values                                      |
-| `typo-kpi` / `typo-kpi-sm`  | 32px / 24px, 600 mono   | Headline / secondary KPI figures                           |
+| `typo-title`                | 27px (31px `md+`) / 700 | Page `h1`                                                  |
+| `typo-subtitle`             | 20px / 600              | Section, card, dialog and sheet titles; main nav           |
+| `typo-text`                 | 18px / 400              | Body text (also the `body` default)                        |
+| `typo-bold-text`            | 18px / 600              | Emphasis, table headers, list/card item names              |
+| `typo-sm-text`              | 16px / 400              | Secondary text, dense table cells, helper text             |
+| `typo-label`                | 16px / 500              | Form labels, detail labels, tabs                           |
+| `typo-button`               | 17px / 700              | Text of buttons (primary actions, dialogs, forms)          |
+| `typo-nav` / `typo-nav-sub` | 22px / 600, 19px / 500  | Sidebar items and sub-items                                |
+| `typo-caption`              | 14px / 400              | Hints, badges, small errors (**minimum allowed size**)     |
+| `typo-overline`             | 14px / 600 uppercase    | Micro-labels (detail-sheet field names, calendar weekdays) |
+| `typo-numbers`              | 18px / 500 mono         | Inline numeric values                                      |
+| `typo-kpi` / `typo-kpi-sm`  | 35px / 27px, 600 mono   | Headline / secondary KPI figures                           |
 
 Rules:
 
 - **Forbidden** in feature components: `text-xs…text-9xl` (except decorative display text such as the 404), `text-[..px|rem]`, stacking a `typo-*` with a size/weight class, `font-bold`/`font-semibold`/`font-medium` as a substitute for a token (inline `font-semibold` emphasis on a `<span>` inside a sentence is the only exception), `font-mono` (use `font-numbers`).
 - Colors: `text-carbon-500` primary, `text-carbon-300` secondary/muted (AA contrast). `text-carbon-200` only for placeholders, disabled state and decorative icons — **never** for informational text. `--muted-foreground` is mapped to `carbon-300`.
-- Form controls (`Input`, `Textarea`, `SelectTrigger`) are 16px on mobile and 14px from `md` (prevents iOS zoom). Labels use `typo-label text-carbon-500`.
+- Form controls (`Input`, `Textarea`, `SelectTrigger`) are 18px on mobile and 16px from `md` (prevents iOS zoom). Labels use `typo-label text-carbon-500`.
 - `src/components/ui/*` primitives already follow this scale; when adding a new shadcn component, align its text classes to it before using it.
 - Missing a role? Add a new `@utility typo-*` in `globals.css` and document it in this table — don't use one-off classes.
 

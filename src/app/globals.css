@@ -116,19 +116,19 @@
  */
 @utility typo-title {
   font-family: var(--font-sans);
-  font-size: 1.5rem;
+  font-size: 1.6875rem;
   font-style: normal;
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: 0.01em;
   @media (min-width: 768px) {
-    font-size: 1.75rem;
+    font-size: 1.9375rem;
   }
 }
 
 @utility typo-subtitle {
   font-family: var(--font-sans);
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-style: normal;
   font-weight: 600;
   line-height: 1.3;
@@ -137,7 +137,7 @@
 
 @utility typo-text {
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: 1.125rem;
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
@@ -146,7 +146,7 @@
 
 @utility typo-bold-text {
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: 1.125rem;
   font-style: normal;
   font-weight: 600;
   line-height: 1.5;
@@ -155,7 +155,7 @@
 
 @utility typo-sm-text {
   font-family: var(--font-sans);
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-style: normal;
   font-weight: 400;
   line-height: 1.45;
@@ -164,7 +164,7 @@
 
 @utility typo-label {
   font-family: var(--font-sans);
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-style: normal;
   font-weight: 500;
   line-height: 1.3;
@@ -173,7 +173,7 @@
 
 @utility typo-button {
   font-family: var(--font-sans);
-  font-size: 0.9375rem;
+  font-size: 1.0625rem;
   font-style: normal;
   font-weight: 700;
   line-height: 1.3;
@@ -182,7 +182,7 @@
 
 @utility typo-nav {
   font-family: var(--font-sans);
-  font-size: 1.3rem;
+  font-size: 1.3625rem;
   font-style: normal;
   font-weight: 600;
   line-height: 1.25;
@@ -191,7 +191,7 @@
 
 @utility typo-nav-sub {
   font-family: var(--font-sans);
-  font-size: 1.1125rem;
+  font-size: 1.175rem;
   font-style: normal;
   font-weight: 500;
   line-height: 1.3;
@@ -200,7 +200,7 @@
 
 @utility typo-caption {
   font-family: var(--font-sans);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
   line-height: 1.35;
@@ -209,7 +209,7 @@
 
 @utility typo-overline {
   font-family: var(--font-sans);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-style: normal;
   font-weight: 600;
   line-height: 1.2;
@@ -219,7 +219,7 @@
 
 @utility typo-numbers {
   font-family: var(--font-numbers);
-  font-size: 1rem;
+  font-size: 1.125rem;
   font-style: normal;
   font-weight: 500;
   line-height: 1.3;
@@ -228,7 +228,7 @@
 
 @utility typo-kpi {
   font-family: var(--font-numbers);
-  font-size: 2rem;
+  font-size: 2.1875rem;
   font-style: normal;
   font-weight: 600;
   line-height: 1.1;
@@ -237,7 +237,7 @@
 
 @utility typo-kpi-sm {
   font-family: var(--font-numbers);
-  font-size: 1.5rem;
+  font-size: 1.6875rem;
   font-style: normal;
   font-weight: 600;
   line-height: 1.15;
