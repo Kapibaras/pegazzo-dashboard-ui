@@ -95,6 +95,7 @@ const VehicleWizard = (props: VehicleWizardProps) => {
       buildVehicleSchema({
         initialPolicyDate: vehicle ? initialValues.policyExpirationDate : undefined,
         initialEngineType: vehicle ? initialValues.engineType : undefined,
+        initialTireSpecification: vehicle ? initialValues.tireSpecification : undefined,
       }),
     [vehicle, initialValues],
   );

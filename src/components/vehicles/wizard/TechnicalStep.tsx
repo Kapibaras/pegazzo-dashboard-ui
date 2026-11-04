@@ -5,6 +5,7 @@ import { VehicleFormValues } from '@/lib/schemas/vehicleSchema';
 import { MAX_VEHICLE_PHOTOS } from '@/lib/vehicle';
 import ImageUpload, { ImageItem } from '../ImageUpload';
 import { FieldGrid, StepCard, TextField } from './fields';
+import TireField from './TireField';
 
 type TechnicalStepProps = {
   form: UseFormReturn<VehicleFormValues>;
@@ -28,14 +29,7 @@ const TechnicalStep = ({ form, photos, onPhotosChange }: TechnicalStepProps) => 
           <TextField control={control} name="odometer" label="Odómetro" inputMode="numeric" suffix="km" mono />
           <TextField control={control} name="doorsNumber" label="Puertas" inputMode="numeric" mono />
           <TextField control={control} name="passengersNumber" label="Pasajeros" inputMode="numeric" mono />
-          <TextField
-            control={control}
-            name="tireSpecification"
-            label="Llantas"
-            placeholder="185/65 R15"
-            maxLength={20}
-            mono
-          />
+          <TireField control={control} />
         </FieldGrid>
       </StepCard>
 

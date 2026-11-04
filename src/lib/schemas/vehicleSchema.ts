@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isValidTireSpecification } from '@/lib/tire';
 import { VehicleCreate, VehicleDetail, VehicleUpdate } from '@/types/vehicle';
 
 /**
@@ -15,11 +16,7 @@ const required = (label: string): string => {
 };
 
 const text = (label: string, max: number) =>
-  z
-    .string()
-    .trim()
-    .min(1, required(label))
-    .max(max, `Máximo ${max} caracteres.`);
+  z.string().trim().min(1, required(label)).max(max, `Máximo ${max} caracteres.`);
 
 const integer = (label: string, min: number) =>
   z
@@ -67,7 +64,10 @@ const engineType = (initial?: string) =>
     .trim()
     .min(1, required('El motor'))
     .max(30, 'Máximo 30 caracteres.')
-    .refine((value) => value === initial || isEngineLitres(value), 'Ingresa solo el número de litros, por ejemplo 1.5.');
+    .refine(
+      (value) => value === initial || isEngineLitres(value),
+      'Ingresa solo el número de litros, por ejemplo 1.5.',
+    );
 
 const baseSchema = z.object({
   // Step 1 – Identidad
@@ -126,12 +126,26 @@ type SchemaOptions = {
   initialPolicyDate?: string;
   /** In edit mode an engine saved as free text (not a plain number of litres) can be kept unchanged. */
   initialEngineType?: string;
+  /** In edit mode a tyre spec saved as free text can be kept unchanged. */
+  initialTireSpecification?: string;
 };
 
-export const buildVehicleSchema = ({ initialPolicyDate, initialEngineType }: SchemaOptions = {}) =>
+export const buildVehicleSchema = ({
+  initialPolicyDate,
+  initialEngineType,
+  initialTireSpecification,
+}: SchemaOptions = {}) =>
   baseSchema
     .extend({
       engineType: engineType(initialEngineType),
+      tireSpecification: z
+        .string()
+        .trim()
+        .min(1, required('La especificación de llantas'))
+        .refine(
+          (value) => value === initialTireSpecification || isValidTireSpecification(value),
+          'Completa ancho, perfil y rin. Ejemplo: 185/65 R15.',
+        ),
       policyExpirationDate: date('La vigencia de la póliza').refine(
         (value) => value === initialPolicyDate || Date.parse(`${value}T23:59:59Z`) > Date.now(),
         'La vigencia de la póliza no puede estar en el pasado.',
@@ -347,7 +361,9 @@ const FINANCING_FIELDS: (keyof VehicleFormValues)[] = [
 
 /** Only the fields that changed (the backend re-validates e.g. the policy date, so unchanged ones are never sent). */
 export const toUpdatePayload = (values: VehicleFormValues, initial: VehicleFormValues): VehicleUpdate => {
-  const changed = (Object.keys(values) as (keyof VehicleFormValues)[]).filter((field) => values[field] !== initial[field]);
+  const changed = (Object.keys(values) as (keyof VehicleFormValues)[]).filter(
+    (field) => values[field] !== initial[field],
+  );
 
   // The backend validates the *resulting* financing state, so send the whole block when any part of it changes.
   if (changed.includes('isFinancedLiquidated') || FINANCING_FIELDS.some((field) => changed.includes(field))) {
