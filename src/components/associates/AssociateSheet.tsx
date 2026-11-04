@@ -114,7 +114,7 @@ const AssociateSheet = ({ associateId, onClose }: AssociateSheetProps) => {
                               <span className="typo-bold-text text-primary-700 block truncate">
                                 {getVehicleTitle(car)}
                               </span>
-                              <span className="typo-sm-text text-carbon-300 typo-numbers block truncate">
+                              <span className="typo-sm-text text-carbon-300 typo-numbers block break-all">
                                 {car.id} · {car.plate}
                               </span>
                             </span>
