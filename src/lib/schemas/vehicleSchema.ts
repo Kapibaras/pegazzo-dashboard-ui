@@ -349,7 +349,7 @@ export const toCreatePayload = (values: VehicleFormValues, folio: string): Vehic
     {},
   );
 
-  return { ...payload, id: folio, status: 'ACTIVE' } as VehicleCreate;
+  return { ...payload, id: folio, status: 'INACTIVE' } as VehicleCreate;
 };
 
 const FINANCING_FIELDS: (keyof VehicleFormValues)[] = [
