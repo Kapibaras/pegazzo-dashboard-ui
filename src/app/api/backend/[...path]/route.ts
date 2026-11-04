@@ -11,10 +11,15 @@ async function proxyRequest(request: NextRequest, { params }: { params: Promise<
   const headers = new Headers(request.headers);
   headers.delete('host');
 
-  const res = await fetch(url.toString(), {
-    method: request.method,
-    headers,
-    body: request.method !== 'GET' && request.method !== 'HEAD' ? await request.text() : undefined,
+  const body = request.method !== 'GET' && request.method !== 'HEAD' ? await request.text() : undefined;
+  const send = () => fetch(url.toString(), { method: request.method, headers, body });
+
+  // The backend (gunicorn) closes idle keep-alive sockets after ~2s while undici keeps reusing them for longer, so a
+  // request can land on an already-closed socket ("other side closed"). Nothing reached the server in that case, so
+  // retrying once on a fresh connection is safe, even for POST/PATCH.
+  const res = await send().catch((error: unknown) => {
+    if ((error as { cause?: { code?: string } })?.cause?.code === 'UND_ERR_SOCKET') return send();
+    throw error;
   });
 
   const responseHeaders = new Headers(res.headers);
