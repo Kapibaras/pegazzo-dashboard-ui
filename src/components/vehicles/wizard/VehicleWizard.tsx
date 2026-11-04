@@ -25,11 +25,12 @@ import {
   WizardStepId,
 } from '@/lib/schemas/vehicleSchema';
 import { Role } from '@/lib/schemas/userSchema';
-import { getVehicleTitle } from '@/lib/vehicle';
+import { getVehicleTitle, requiredDocumentTypes } from '@/lib/vehicle';
 import ImageService from '@/services/images';
 import { ToastService } from '@/services/toast';
 import VehicleService from '@/services/vehicle';
 import { VehicleDetail, VehicleUpdate } from '@/types/vehicle';
+import { StoredDocument } from '../DocumentUpload';
 import { createExistingImage, ImageItem, revokeStagedImages } from '../ImageUpload';
 import AdminStep from './AdminStep';
 import AssociateStep from './AssociateStep';
@@ -66,7 +67,9 @@ const describeError = (error: unknown): string => {
 };
 
 const stepOfField = (field: string): WizardStepId => {
-  const entry = (Object.entries(STEP_FIELDS) as [WizardStepId, string[]][]).find(([, fields]) => fields.includes(field));
+  const entry = (Object.entries(STEP_FIELDS) as [WizardStepId, string[]][]).find(([, fields]) =>
+    fields.includes(field),
+  );
   return entry ? entry[0] : 'identity';
 };
 
@@ -77,7 +80,10 @@ const VehicleWizard = (props: VehicleWizardProps) => {
   const vehicle = props.mode === 'edit' ? props.vehicle : null;
 
   const steps = isEdit ? EDIT_STEPS : CREATE_STEPS;
-  const initialValues = useMemo(() => (vehicle ? vehicleToFormValues(vehicle) : DEFAULT_VEHICLE_FORM_VALUES), [vehicle]);
+  const initialValues = useMemo(
+    () => (vehicle ? vehicleToFormValues(vehicle) : DEFAULT_VEHICLE_FORM_VALUES),
+    [vehicle],
+  );
   const schema = useMemo(
     () =>
       buildVehicleSchema({
@@ -97,12 +103,28 @@ const VehicleWizard = (props: VehicleWizardProps) => {
   const vehicleService = useMemo(() => new VehicleService(SingletonAPIClient.getInstance()), []);
   const imageService = useMemo(() => new ImageService(SingletonAPIClient.getInstance()), []);
 
-  const initialAgency = useMemo(() => (vehicle?.agencyImage ? [createExistingImage(vehicle.agencyImage)] : []), [vehicle]);
+  const initialAgency = useMemo(
+    () => (vehicle?.agencyImage ? [createExistingImage(vehicle.agencyImage)] : []),
+    [vehicle],
+  );
   const initialPhotos = useMemo(() => (vehicle?.photos ?? []).map(createExistingImage), [vehicle]);
 
   const [stepIndex, setStepIndex] = useState(0);
   const [agencyImages, setAgencyImages] = useState<ImageItem[]>(initialAgency);
   const [photos, setPhotos] = useState<ImageItem[]>(initialPhotos);
+  // The current document of each type. It lives here so it survives navigating between steps; when a type has several
+  // documents (old uploads) the newest one is the current one.
+  const [storedDocuments, setStoredDocuments] = useState<Record<string, StoredDocument>>(() =>
+    (vehicle?.documents ?? []).reduce<Record<string, StoredDocument>>(
+      (acc, doc) =>
+        !acc[doc.type] || doc.id > acc[doc.type].id ? { ...acc, [doc.type]: { id: doc.id, url: doc.url } } : acc,
+      {},
+    ),
+  );
+  const handleDocumentChange = useCallback(
+    (type: string, document: StoredDocument) => setStoredDocuments((prev) => ({ ...prev, [type]: document })),
+    [],
+  );
   const [carId, setCarId] = useState<string | null>(vehicle?.id ?? null);
   const [folioState, setFolioState] = useState<FolioState>({ status: 'idle', folio: '' });
   const [taskViews, setTaskViews] = useState<SaveTaskView[]>([]);
@@ -359,7 +381,9 @@ const VehicleWizard = (props: VehicleWizardProps) => {
         <CardContent className="flex flex-col items-center gap-4 py-14 text-center">
           <ShieldAlert className="text-warning-700 size-10" aria-hidden />
           <p className="typo-subtitle text-carbon-500">Sin permiso</p>
-          <p className="typo-sm-text text-carbon-300">Solo propietarios y administradores pueden {isEdit ? 'editar' : 'registrar'} coches.</p>
+          <p className="typo-sm-text text-carbon-300">
+            Solo propietarios y administradores pueden {isEdit ? 'editar' : 'registrar'} coches.
+          </p>
           <Button asChild className="cursor-pointer">
             <Link href="/coches">Volver al listado</Link>
           </Button>
@@ -372,6 +396,16 @@ const VehicleWizard = (props: VehicleWizardProps) => {
   const title = isEdit ? 'Editar coche' : 'Agregar coche';
   const crumb = isEdit ? getVehicleTitle(vehicle!) : 'Agregar coche';
   const isDocumentsStep = stepId === 'documents';
+  const missingDocuments = requiredDocumentTypes(values.isFinancedLiquidated).filter((type) => !storedDocuments[type]);
+
+  /** The car is already saved, so the user may leave without all the documents; they stay pending for the edit form. */
+  const leaveWithoutAllDocuments = () => {
+    ToastService.info(
+      'Documentación pendiente',
+      `Faltan ${missingDocuments.length} ${missingDocuments.length === 1 ? 'documento' : 'documentos'}. Puedes cargarlos desde la edición del coche.`,
+    );
+    router.push('/coches');
+  };
 
   return (
     <div ref={topRef} className="mx-auto flex max-w-[920px] scroll-mt-6 flex-col gap-6">
@@ -383,7 +417,10 @@ const VehicleWizard = (props: VehicleWizardProps) => {
           <ChevronRight className="size-3.5" aria-hidden />
           {isEdit && (
             <>
-              <Link href={`/coches/${encodeURIComponent(vehicle!.id)}`} className="hover:text-primary-800 hover:underline">
+              <Link
+                href={`/coches/${encodeURIComponent(vehicle!.id)}`}
+                className="hover:text-primary-800 hover:underline"
+              >
                 {crumb}
               </Link>
               <ChevronRight className="size-3.5" aria-hidden />
@@ -454,6 +491,8 @@ const VehicleWizard = (props: VehicleWizardProps) => {
               carId={carId}
               isLiquidated={values.isFinancedLiquidated}
               policyExpirationDate={values.policyExpirationDate}
+              storedDocuments={storedDocuments}
+              onDocumentChange={handleDocumentChange}
               existingDocuments={vehicle?.documents}
             />
           )}
@@ -464,9 +503,17 @@ const VehicleWizard = (props: VehicleWizardProps) => {
                 <Link href={isEdit ? `/coches/${encodeURIComponent(vehicle!.id)}` : '/coches'}>Cancelar</Link>
               </Button>
             ) : isDocumentsStep ? (
-              <span />
+              <Button type="button" variant="outline" onClick={leaveWithoutAllDocuments} className="cursor-pointer">
+                Completar después
+              </Button>
             ) : (
-              <Button type="button" variant="outline" onClick={goBack} disabled={isSaving} className="cursor-pointer gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={goBack}
+                disabled={isSaving}
+                className="cursor-pointer gap-2"
+              >
                 <ArrowLeft className="size-4" /> Atrás
               </Button>
             )}
@@ -490,7 +537,15 @@ const VehicleWizard = (props: VehicleWizardProps) => {
                 Crear coche
               </Button>
             ) : isDocumentsStep ? (
-              <Button type="button" onClick={primaryAction} className="bg-success-500 hover:bg-success-700 cursor-pointer text-white">
+              <Button
+                type="button"
+                onClick={primaryAction}
+                disabled={missingDocuments.length > 0}
+                title={
+                  missingDocuments.length > 0 ? `Faltan ${missingDocuments.length} documentos obligatorios` : undefined
+                }
+                className="bg-success-500 hover:bg-success-700 cursor-pointer text-white"
+              >
                 Finalizar
               </Button>
             ) : (

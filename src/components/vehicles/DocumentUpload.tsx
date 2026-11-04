@@ -1,8 +1,9 @@
 'use client';
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
-import { CheckCircle2, FileText, Loader2, RefreshCw, UploadCloud, X } from 'lucide-react';
+import { CheckCircle2, ExternalLink, FileText, Loader2, RefreshCw, Replace, UploadCloud, X } from 'lucide-react';
 import { SingletonAPIClient } from '@/api';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useUser } from '@/contexts/UserProvider';
@@ -12,9 +13,13 @@ import { DOCUMENT_ACCEPT, IMAGE_ACCEPT, MAX_DOCUMENT_SIZE_MB } from '@/lib/vehic
 import { Role } from '@/lib/schemas/userSchema';
 import { cn } from '@/lib/utils';
 import DocumentService from '@/services/documents';
+import { ToastService } from '@/services/toast';
 import { DocumentEntityType, DocumentRecord } from '@/types/vehicle';
 
-type UploadState = 'idle' | 'uploading' | 'success' | 'error';
+/** A document that is already stored for the entity (`url` is a presigned read URL). */
+export type StoredDocument = { id: number; url: string };
+
+type UploadState = 'idle' | 'uploading' | 'error';
 
 export type DocumentUploadProps = {
   entityType: DocumentEntityType;
@@ -22,14 +27,17 @@ export type DocumentUploadProps = {
   /** Taxonomy key sent as `type` when the document record is confirmed (e.g. `invoice`). */
   documentType: string;
   label?: string;
+  /** Marks the slot as mandatory (badge). The parent decides what to do when it is still empty. */
+  required?: boolean;
   expiryDate?: string | null;
   accept?: readonly string[];
   maxSizeMB?: number;
   disabled?: boolean;
-  /** Lets the user delete the uploaded document (DELETE /documents/{id}). Defaults to `true`. */
-  allowRemove?: boolean;
+  /** The document already stored in this slot, if any. It can be replaced in place. */
+  current?: StoredDocument | null;
+  /** Called with the stored document after every upload/replace. */
+  onChange?: (document: StoredDocument) => void;
   onUploaded?: (document: DocumentRecord) => void;
-  onRemoved?: () => void;
   onError?: (error: { status: number; detail: string }) => void;
   className?: string;
 };
@@ -41,18 +49,24 @@ const ACCEPT_LABELS: Record<string, string> = {
   'image/webp': 'WEBP',
 };
 
+/**
+ * One document slot. Without a stored document it is a dropzone; with one it shows the document with "Ver" and
+ * "Reemplazar". Replacing uploads the new file first and only then deletes the previous record, so a failed upload
+ * never leaves the slot empty.
+ */
 const DocumentUpload = ({
   entityType,
   entityId,
   documentType,
   label,
+  required = false,
   expiryDate,
   accept = DOCUMENT_ACCEPT,
   maxSizeMB = MAX_DOCUMENT_SIZE_MB,
   disabled = false,
-  allowRemove = true,
+  current = null,
+  onChange,
   onUploaded,
-  onRemoved,
   onError,
   className,
 }: DocumentUploadProps) => {
@@ -62,12 +76,12 @@ const DocumentUpload = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
+  const [stored, setStored] = useState<StoredDocument | null>(current);
   const [state, setState] = useState<UploadState>('idle');
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [message, setMessage] = useState<string | null>(null);
-  const [uploaded, setUploaded] = useState<DocumentRecord | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   const service = useMemo(() => new DocumentService(SingletonAPIClient.getInstance()), []);
@@ -116,12 +130,26 @@ const DocumentUpload = ({
           onProgress: setProgress,
           signal: controller.signal,
         });
-
         if (controller.signal.aborted) return;
-        setUploaded(created);
-        setProgress(100);
-        setState('success');
+
+        const next: StoredDocument = { id: created.id, url: created.url };
+        const previous = stored;
+        setStored(next);
+        setState('idle');
+        onChange?.(next);
         onUploaded?.(created);
+
+        // Replacing: the new document is already safe, so the old record (and its file) can go now.
+        if (previous && previous.id !== next.id) {
+          try {
+            await service.delete(previous.id);
+          } catch {
+            ToastService.info(
+              'Documento reemplazado',
+              'El documento anterior no se pudo eliminar; avisa a un administrador.',
+            );
+          }
+        }
       } catch (error) {
         if (controller.signal.aborted || isAbortError(error)) return;
 
@@ -136,7 +164,7 @@ const DocumentUpload = ({
         await handleApiError(apiError, ['common', 'vehicles']);
       }
     },
-    [service, entityType, entityId, documentType, expiryDate, onUploaded, onError, handleApiError],
+    [service, entityType, entityId, documentType, expiryDate, stored, onChange, onUploaded, onError, handleApiError],
   );
 
   const handleFile = useCallback(
@@ -145,9 +173,9 @@ const DocumentUpload = ({
 
       const validationError = validate(candidate);
       if (validationError) {
+        setState('error');
         setFile(null);
         setPreviewUrl(null);
-        setState('error');
         setMessage(validationError);
         return;
       }
@@ -159,43 +187,37 @@ const DocumentUpload = ({
     [isReadOnly, validate, startUpload],
   );
 
-  const reset = () => {
+  const openPicker = () => {
+    if (!isReadOnly) inputRef.current?.click();
+  };
+
+  /** Leaves the failed/uploading state: back to the stored document, or to the empty dropzone. */
+  const dismiss = () => {
     abortRef.current?.abort();
     setState('idle');
     setFile(null);
     setPreviewUrl(null);
     setProgress(0);
     setMessage(null);
-    setUploaded(null);
     if (inputRef.current) inputRef.current.value = '';
   };
 
-  const handleRemove = async () => {
-    if (state === 'success' && uploaded && allowRemove) {
-      try {
-        await service.delete(uploaded.id);
-      } catch (error) {
-        const apiError = normalizeApiError(error);
-        await handleApiError(apiError, ['common', 'vehicles']);
-        return;
-      }
-      onRemoved?.();
-    }
-    reset();
-  };
-
-  const openPicker = () => {
-    if (!isReadOnly) inputRef.current?.click();
-  };
-
-  const showDropzone = state === 'idle' || (state === 'error' && !file);
+  const showProgress = !!file && (state === 'uploading' || state === 'error');
+  const showDropzone = !stored && !showProgress;
+  // A rejected file (wrong type/size) never reaches the progress card, so the stored document stays visible.
+  const showStored = !!stored && !showProgress;
 
   return (
     <div className={cn('flex flex-col gap-2', className)}>
       {label && (
-        <label htmlFor={inputId} className="typo-sm-text text-carbon-400 font-medium">
-          {label}
-        </label>
+        <div className="flex items-center gap-2">
+          <label htmlFor={inputId} className="typo-sm-text text-carbon-400 font-medium">
+            {label}
+          </label>
+          {required && (
+            <Badge className="bg-error-50 text-error-700 hover:bg-error-50 px-1.5 py-0 text-[10px]">Obligatorio</Badge>
+          )}
+        </div>
       )}
 
       <input
@@ -205,7 +227,10 @@ const DocumentUpload = ({
         className="sr-only"
         accept={accept.join(',')}
         disabled={isReadOnly}
-        onChange={(event) => handleFile(event.target.files?.[0])}
+        onChange={(event) => {
+          handleFile(event.target.files?.[0]);
+          event.target.value = '';
+        }}
       />
 
       {showDropzone && (
@@ -233,7 +258,9 @@ const DocumentUpload = ({
           }}
           className={cn(
             'border-surface-700/60 bg-surface-400 flex flex-col items-center gap-2 rounded-lg border-2 border-dashed px-4 py-6 text-center transition-colors',
-            isReadOnly ? 'cursor-not-allowed opacity-60' : 'hover:border-primary-700 hover:bg-primary-50 cursor-pointer',
+            isReadOnly
+              ? 'cursor-not-allowed opacity-60'
+              : 'hover:border-primary-700 hover:bg-primary-50 cursor-pointer',
             isDragging && 'border-primary-700 bg-primary-50',
           )}
         >
@@ -252,7 +279,7 @@ const DocumentUpload = ({
         </div>
       )}
 
-      {file && state !== 'idle' && (
+      {showProgress && file && (
         <div
           className={cn(
             'flex items-center gap-3 rounded-lg border p-3',
@@ -267,21 +294,14 @@ const DocumentUpload = ({
               <FileText className="text-primary-700 size-6" aria-hidden />
             </div>
           )}
-
           <div className="min-w-0 flex-1">
             <p className="typo-sm-text text-carbon-500 truncate font-medium">{file.name}</p>
             <p className="text-carbon-300 text-xs">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>
-
             {state === 'uploading' && (
               <div className="mt-2 flex items-center gap-2">
                 <Progress value={progress} aria-label="Progreso de subida" className="flex-1" />
                 <span className="text-carbon-300 w-9 text-right text-xs tabular-nums">{progress}%</span>
               </div>
-            )}
-            {state === 'success' && (
-              <p className="text-success-700 mt-1 flex items-center gap-1 text-xs">
-                <CheckCircle2 className="size-3.5" aria-hidden /> Documento cargado
-              </p>
             )}
             {state === 'error' && message && (
               <p role="alert" className="text-error-700 mt-1 text-xs">
@@ -289,10 +309,9 @@ const DocumentUpload = ({
               </p>
             )}
           </div>
-
           <div className="flex shrink-0 items-center gap-1">
             {state === 'uploading' && <Loader2 className="text-primary-700 size-4 animate-spin" aria-hidden />}
-            {state === 'error' && file && (
+            {state === 'error' && (
               <Button
                 type="button"
                 variant="ghost"
@@ -304,18 +323,44 @@ const DocumentUpload = ({
                 <RefreshCw className="size-4" />
               </Button>
             )}
-            {!isReadOnly && (state !== 'success' || allowRemove) && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                aria-label={state === 'uploading' ? 'Cancelar subida' : 'Quitar archivo'}
-                onClick={() => void handleRemove()}
-              >
-                <X className="size-4" />
-              </Button>
-            )}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={state === 'uploading' ? 'Cancelar subida' : 'Descartar archivo'}
+              onClick={dismiss}
+            >
+              <X className="size-4" />
+            </Button>
           </div>
+        </div>
+      )}
+
+      {showStored && stored && (
+        <div className="border-success-500/40 flex items-center gap-3 rounded-lg border bg-white p-3">
+          <div className="bg-success-50 flex size-12 shrink-0 items-center justify-center rounded-md">
+            <FileText className="text-success-700 size-5" aria-hidden />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="typo-sm-text text-carbon-500 truncate font-medium">{file?.name ?? label ?? 'Documento'}</p>
+            <p className="text-success-700 flex items-center gap-1 text-xs">
+              <CheckCircle2 className="size-3.5" aria-hidden /> Documento cargado
+            </p>
+          </div>
+          <a
+            href={stored.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary-800 flex items-center gap-1 text-sm font-medium hover:underline"
+          >
+            Ver <ExternalLink className="size-3.5" aria-hidden />
+            <span className="sr-only">{label} (abre en una pestaña nueva)</span>
+          </a>
+          {!isReadOnly && (
+            <Button type="button" variant="outline" size="sm" onClick={openPicker} className="cursor-pointer gap-1.5">
+              <Replace className="size-3.5" aria-hidden /> Reemplazar
+            </Button>
+          )}
         </div>
       )}
 

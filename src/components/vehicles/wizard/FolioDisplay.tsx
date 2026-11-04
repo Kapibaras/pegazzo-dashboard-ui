@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 const FOLIO_PATTERN = /^([A-Z]+)-([A-Z]+)-(.+?)\(([^)]+)\)-(\d+)$/;
 
 const SEGMENTS = [
-  { key: 'owner', label: 'Propietario', hint: 'S socio · US Uriel/Gaby · PG Pegazzo', className: 'bg-primary-100 text-primary-900' },
+  { key: 'owner', label: 'Propietario', hint: 'S socio · US nosotros (Pedro/Gaby) · PG Pegazzo', className: 'bg-primary-100 text-primary-900' },
   { key: 'associate', label: 'Socio', hint: 'Iniciales del socio', className: 'bg-success-50 text-success-700' },
   { key: 'car', label: 'Coche', hint: 'Abreviatura del modelo', className: 'bg-warning-100 text-warning-700' },
   { key: 'transmission', label: 'Transmisión', hint: 'TM manual · TA automática', className: 'bg-secondary-50 text-carbon-400' },

@@ -114,3 +114,14 @@ export const getTransmissionLabel = (value: string): string => TRANSMISSION_LABE
 
 /** Pegazzo-owned cars store "Pegazzo" as the legal owner name (see the wizard's "Propiedad de Pegazzo" toggle). */
 export const isPegazzoOwner = (legalOwnerName: string): boolean => legalOwnerName.trim().toLowerCase() === 'pegazzo';
+
+/**
+ * Documents that must be uploaded for a car, which depend on its financing:
+ * - liquidated: the purchase invoice exists and there is no credit contract nor amortization table to ask for;
+ * - not liquidated: the credit contract and the amortization table are asked for instead (the invoice is not available yet).
+ * The insurance policy, circulation card and plates are always required.
+ */
+export const requiredDocumentTypes = (isLiquidated: boolean): string[] =>
+  isLiquidated
+    ? ['invoice', 'insurance_policy', 'circulation_card', 'plates']
+    : ['credit_contract', 'amortization_table', 'insurance_policy', 'circulation_card', 'plates'];
