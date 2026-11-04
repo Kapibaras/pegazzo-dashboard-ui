@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { LayoutGrid, List, PlusCircle, Tags } from 'lucide-react';
+import { LayoutGrid, List, PlusCircle, Settings } from 'lucide-react';
 import { ErrorCard } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/contexts/UserProvider';
@@ -120,8 +120,8 @@ const VehicleListView = ({ initialState }: VehicleListViewProps) => {
 
           {user.role === Role.OWNER && (
             <Button asChild variant="outline" className={outlineButton()}>
-              <Link href="/coches/catalogo">
-                <Tags className={BUTTON_ICON_CLASS} aria-hidden /> Catálogo
+              <Link href="/configuracion/coches">
+                <Settings className={BUTTON_ICON_CLASS} aria-hidden /> Configuración
               </Link>
             </Button>
           )}

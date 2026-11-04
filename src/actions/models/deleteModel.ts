@@ -11,7 +11,7 @@ export default async function deleteModel(id: number) {
   return serverAction(async () => {
     const cookies = await getCookiesServer();
     await new VehicleService(new ScopedAPIClient(cookies)).deleteModel(id);
-    revalidatePath('/coches/catalogo');
+    revalidatePath('/configuracion/coches');
     return { success: true as const };
   }, toActionError);
 }

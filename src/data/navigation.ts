@@ -41,7 +41,7 @@ const ROUTES_WITH_ICONS = [
     icon: Building2,
     subroutes: [
       { title: 'Usuarios', url: '/usuarios' },
-      { title: 'Configuración', url: '#' },
+      { title: 'Configuración', url: '/configuracion/coches' },
     ],
     allowed: [Role.OWNER],
   },
@@ -53,10 +53,9 @@ const ROUTES_PATHNAMES: Record<string, string> = {
   '/balance/transacciones': 'Balance',
   '/balance/autorizaciones': 'Balance',
   '/coches': 'Coches',
-  '/coches/catalogo': 'Catálogo de modelos',
   '/socios': 'Socios',
   '/usuarios': 'Usuarios',
-  '/settings': 'Configuración',
+  '/configuracion/coches': 'Configuración',
 };
 
 /** Exact match first, then the longest registered prefix (so `/coches/ABC-1/editar` resolves to "Coches"). */

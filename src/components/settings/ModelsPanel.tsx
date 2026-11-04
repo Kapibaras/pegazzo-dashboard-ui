@@ -1,15 +1,14 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Layers, PlusCircle, Search, Tags, Trash2 } from 'lucide-react';
+import { Layers, PlusCircle, Search, Tags, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { CreateModelDialog } from '@/components/vehicles/QuickCreateDialogs';
 import VehicleStatCard from '@/components/vehicles/VehicleStatCard';
-import { BUTTON_ICON_CLASS, outlineButton, primaryButton } from '@/lib/buttonStyles';
+import { BUTTON_ICON_CLASS, primaryButton } from '@/lib/buttonStyles';
 import { searchFieldClass } from '@/lib/formField';
 import { VehicleModelGroup } from '@/types/vehicle';
 import DeleteModelDialog, { ModelToDelete } from './DeleteModelDialog';
@@ -25,7 +24,7 @@ const normalize = (text: string) =>
  * brand name creates the brand and deleting its last model removes it. The data comes from the server page; search runs
  * here, delete goes through a server action that revalidates this route and `router.refresh()` follows a create.
  */
-const ModelCatalogView = ({ groups }: { groups: VehicleModelGroup[] }) => {
+const ModelsPanel = ({ groups }: { groups: VehicleModelGroup[] }) => {
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [createOpen, setCreateOpen] = useState(false);
@@ -56,26 +55,6 @@ const ModelCatalogView = ({ groups }: { groups: VehicleModelGroup[] }) => {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-3">
-          <Button asChild variant="outline" className={outlineButton('min-h-9 px-4 py-2')}>
-            <Link href="/coches">
-              <ArrowLeft className="size-4" aria-hidden /> Coches
-            </Link>
-          </Button>
-          <div className="space-y-1">
-            <h1 className="typo-title text-carbon-500">Catálogo de marcas y modelos</h1>
-            <p className="typo-text text-carbon-300">
-              Las opciones que aparecen al registrar un coche y con las que se arma su folio.
-            </p>
-          </div>
-        </div>
-        <Button onClick={() => openCreate()} className={primaryButton()}>
-          <PlusCircle className={BUTTON_ICON_CLASS} aria-hidden />
-          Agregar modelo
-        </Button>
-      </div>
-
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <VehicleStatCard
           icon={Tags}
@@ -98,16 +77,22 @@ const ModelCatalogView = ({ groups }: { groups: VehicleModelGroup[] }) => {
         />
       </div>
 
-      <div className="relative w-full max-w-md">
-        <Search className="text-carbon-200 absolute top-1/2 left-4 size-4 -translate-y-1/2" aria-hidden />
-        <Input
-          type="search"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="Buscar marca o modelo..."
-          aria-label="Buscar marca o modelo"
-          className={searchFieldClass()}
-        />
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative w-full max-w-md">
+          <Search className="text-carbon-200 absolute top-1/2 left-4 size-4 -translate-y-1/2" aria-hidden />
+          <Input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Buscar marca o modelo..."
+            aria-label="Buscar marca o modelo"
+            className={searchFieldClass()}
+          />
+        </div>
+        <Button onClick={() => openCreate()} className={primaryButton()}>
+          <PlusCircle className={BUTTON_ICON_CLASS} aria-hidden />
+          Agregar modelo
+        </Button>
       </div>
 
       {filtered.length === 0 ? (
@@ -207,4 +192,4 @@ const ModelCatalogView = ({ groups }: { groups: VehicleModelGroup[] }) => {
   );
 };
 
-export default ModelCatalogView;
+export default ModelsPanel;

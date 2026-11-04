@@ -119,6 +119,18 @@ export const VEHICLE_ERRORS = {
     title: 'Socio no encontrado',
     message: 'El socio ya no existe. Actualiza la lista.',
   },
+  INSURANCE_IN_USE: {
+    status: 400,
+    backendDetailStartsWith: "Insurance provider '",
+    title: 'No se puede eliminar',
+    message: 'Hay coches con esta aseguradora. Cambia la aseguradora de esos coches antes de eliminarla.',
+  },
+  INSURANCE_GONE: {
+    status: 404,
+    backendDetailStartsWith: 'Insurance provider with id',
+    title: 'Aseguradora no encontrada',
+    message: 'La aseguradora ya no existe. Actualiza la lista.',
+  },
   MODEL_BY_ID_NOT_FOUND: {
     status: 404,
     backendDetailStartsWith: 'Car model with id',

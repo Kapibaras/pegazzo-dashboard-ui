@@ -169,8 +169,15 @@ export type VehicleModelGroup = { make: string; models: VehicleModelItem[] };
 export type VehicleModelCreate = { make: string; model: string; abbreviation: string };
 export type VehicleModel = { id: number; make: string; model: string; abbreviation: string };
 
-export type Insurance = { id: number; name: string; telephones?: string[] | null };
+export type Insurance = {
+  id: number;
+  name: string;
+  telephones?: string[] | null;
+  /** Number of cars insured by this provider (a provider with cars cannot be deleted). */
+  carCount?: number;
+};
 export type InsuranceCreate = { name: string; telephones?: string[] };
+export type InsuranceUpdate = Partial<InsuranceCreate>;
 
 export type Associate = {
   id: number;

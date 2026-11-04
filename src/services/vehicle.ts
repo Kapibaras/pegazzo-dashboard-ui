@@ -8,6 +8,7 @@ import {
   AssociateUpdate,
   Insurance,
   InsuranceCreate,
+  InsuranceUpdate,
   VehicleCreate,
   VehicleDetail,
   VehicleFolioRequest,
@@ -82,6 +83,14 @@ export default class VehicleService extends AbstractAPIService {
 
   async createInsurance(data: InsuranceCreate): Promise<Insurance> {
     return (await this.client.post<Insurance>(`${CARS}/insurance`, data)).data;
+  }
+
+  async updateInsurance(id: number, data: InsuranceUpdate): Promise<Insurance> {
+    return (await this.client.patch<Insurance>(`${CARS}/insurance/${id}`, data)).data;
+  }
+
+  async deleteInsurance(id: number): Promise<ActionSuccess> {
+    return (await this.client.delete<ActionSuccess>(`${CARS}/insurance/${id}`)).data;
   }
 
   async getAssociates(search?: string): Promise<Associate[]> {
