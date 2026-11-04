@@ -91,3 +91,26 @@ export const formatDate = (value: string | null | undefined): string => {
   if (Number.isNaN(date.getTime())) return '—';
   return new Intl.DateTimeFormat('es-MX', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(date);
 };
+
+export const DOCUMENT_TYPE_LABELS: Record<string, string> = {
+  circulation_card: 'Tarjeta de circulación',
+  plates: 'Placas',
+  insurance_policy: 'Póliza de seguro',
+  invoice: 'Factura de compra',
+  credit_contract: 'Contrato de crédito',
+  amortization_table: 'Tabla de amortización',
+};
+
+export const getDocumentTypeLabel = (type: string): string => DOCUMENT_TYPE_LABELS[type] ?? type;
+
+const TRANSMISSION_LABELS: Record<string, string> = {
+  TM: 'Manual (TM)',
+  TA: 'Automática (TA)',
+  MT: 'Manual (MT)',
+  AT: 'Automática (AT)',
+};
+
+export const getTransmissionLabel = (value: string): string => TRANSMISSION_LABELS[value.toUpperCase()] ?? value;
+
+/** Pegazzo-owned cars store "Pegazzo" as the legal owner name (see the wizard's "Propiedad de Pegazzo" toggle). */
+export const isPegazzoOwner = (legalOwnerName: string): boolean => legalOwnerName.trim().toLowerCase() === 'pegazzo';
