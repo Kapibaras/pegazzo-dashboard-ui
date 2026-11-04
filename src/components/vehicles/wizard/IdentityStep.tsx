@@ -20,7 +20,7 @@ type IdentityStepProps = {
   showFolioNotice?: boolean;
 };
 
-const BODY_TYPES = ['Sedán', 'Hatchback', 'SUV', 'Pickup', 'Van', 'Coupé'];
+export const BODY_TYPE_OPTIONS = ['Sedán', 'Hatchback', 'SUV', 'Pickup', 'Van', 'Coupé'].map((value) => ({ value, label: value }));
 const SEPARATOR = '\u0000';
 
 export const TRANSMISSION_OPTIONS = [
@@ -31,7 +31,13 @@ export const TRANSMISSION_OPTIONS = [
 const IdentityStep = ({ form, catalogs, agencyImages, onAgencyImagesChange, showFolioNotice = true }: IdentityStepProps) => {
   const [createOpen, setCreateOpen] = useState(false);
   const [createMake, setCreateMake] = useState('');
-  const { make, model } = form.watch();
+  const { make, model, bodyType } = form.watch();
+
+  // A car saved with a body type outside the list (free text before this was a dropdown) keeps showing its value.
+  const bodyTypeOptions =
+    bodyType && !BODY_TYPE_OPTIONS.some((option) => option.value === bodyType)
+      ? [{ value: bodyType, label: bodyType }, ...BODY_TYPE_OPTIONS]
+      : BODY_TYPE_OPTIONS;
 
   const options = useMemo<ComboboxOption[]>(
     () =>
@@ -108,13 +114,12 @@ const IdentityStep = ({ form, catalogs, agencyImages, onAgencyImagesChange, show
           />
           <TextField control={form.control} name="year" label="Año" placeholder="2024" inputMode="numeric" maxLength={4} mono />
           <TextField control={form.control} name="color" label="Color" placeholder="Blanco" maxLength={30} />
-          <TextField
+          <SelectField
             control={form.control}
             name="bodyType"
             label="Carrocería"
-            placeholder="Sedán"
-            maxLength={30}
-            list="body-types"
+            options={bodyTypeOptions}
+            placeholder="Selecciona"
           />
           <TextField control={form.control} name="engineType" label="Motor" placeholder="1.5L" maxLength={30} />
           <SelectField
@@ -125,11 +130,6 @@ const IdentityStep = ({ form, catalogs, agencyImages, onAgencyImagesChange, show
             placeholder="Selecciona"
           />
         </FieldGrid>
-        <datalist id="body-types">
-          {BODY_TYPES.map((type) => (
-            <option key={type} value={type} />
-          ))}
-        </datalist>
       </StepCard>
 
       <CreateModelDialog

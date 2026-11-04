@@ -25,7 +25,6 @@ type TextFieldProps = {
   optional?: boolean;
   suffix?: string;
   className?: string;
-  list?: string;
 };
 
 export const TextField = ({
@@ -42,7 +41,6 @@ export const TextField = ({
   optional,
   suffix,
   className,
-  list,
 }: TextFieldProps) => (
   <FormField
     control={control}
@@ -62,7 +60,6 @@ export const TextField = ({
               placeholder={placeholder}
               disabled={disabled}
               maxLength={maxLength}
-              list={list}
               autoComplete="off"
               className={cn('bg-surface-400 border-surface-600 h-9', mono && 'font-numbers', suffix && 'pr-14')}
             />
