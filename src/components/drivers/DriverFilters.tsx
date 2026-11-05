@@ -1,0 +1,157 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { ArrowUpDown, Search, SlidersHorizontal, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { DRIVER_SORT_OPTIONS, DRIVER_STATUSES, DRIVER_STATUS_LABELS, getDriverSortOptionValue } from '@/lib/driver';
+import { searchFieldClass } from '@/lib/formField';
+import { cn } from '@/lib/utils';
+import { DriverSortBy, DriverStatus } from '@/types/driver';
+import { SortOrder } from '@/types/transaction';
+
+const ALL_VALUE = '__all__';
+const SEARCH_DEBOUNCE_MS = 400;
+
+const TRIGGER_CLASSES = cn(
+  'cursor-pointer border-primary-200/40 bg-primary-50/40 text-primary-800 font-medium shadow-sm transition-all',
+  'hover:bg-primary-100/60 hover:border-primary-300/50 focus:ring-primary-400/30',
+  'data-[state=open]:bg-primary-100/60 data-[state=open]:border-primary-400/50',
+);
+const ITEM_CLASSES = 'text-primary-800 focus:bg-primary-100/60 focus:text-primary-900 cursor-pointer font-medium';
+
+type DriverFiltersProps = {
+  search: string;
+  status: DriverStatus | undefined;
+  sortBy: DriverSortBy;
+  sortOrder: SortOrder;
+  archived: boolean;
+  onSearchChange: (value: string) => void;
+  onStatusChange: (value: DriverStatus | undefined) => void;
+  onSortChange: (sortBy: DriverSortBy, sortOrder: SortOrder) => void;
+  onArchivedChange: (value: boolean) => void;
+};
+
+const DriverFilters = ({
+  search,
+  status,
+  sortBy,
+  sortOrder,
+  archived,
+  onSearchChange,
+  onStatusChange,
+  onSortChange,
+  onArchivedChange,
+}: DriverFiltersProps) => {
+  const [draft, setDraft] = useState(search);
+
+  // Debounced search (the URL/query only changes once the user pauses typing).
+  useEffect(() => {
+    if (draft === search) return;
+    const timeout = setTimeout(() => onSearchChange(draft), SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(timeout);
+  }, [draft, search, onSearchChange]);
+
+  const handleSort = (value: string) => {
+    const option = DRIVER_SORT_OPTIONS.find((candidate) => candidate.value === value);
+    if (option) onSortChange(option.sortBy, option.sortOrder);
+  };
+
+  const sortValue = getDriverSortOptionValue(sortBy, sortOrder);
+  const hasKnownSort = DRIVER_SORT_OPTIONS.some((option) => option.value === sortValue);
+
+  return (
+    <div className="flex flex-wrap items-center gap-3" role="search">
+      <div className="relative min-w-[240px] flex-1 sm:max-w-md">
+        <Search
+          className="text-carbon-200 pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2"
+          aria-hidden
+        />
+        <Input
+          value={draft}
+          onChange={(event) => setDraft(event.target.value)}
+          placeholder="Buscar por nombre, apellidos o id…"
+          aria-label="Buscar conductores"
+          className={searchFieldClass({ className: 'pr-10' })}
+        />
+        {draft && (
+          <button
+            type="button"
+            aria-label="Limpiar búsqueda"
+            onClick={() => {
+              setDraft('');
+              onSearchChange('');
+            }}
+            className="text-carbon-300 hover:text-carbon-500 absolute top-1/2 right-3.5 -translate-y-1/2 cursor-pointer"
+          >
+            <X className="size-4" />
+          </button>
+        )}
+      </div>
+
+      <Select
+        value={status ?? ALL_VALUE}
+        onValueChange={(value) => onStatusChange(value === ALL_VALUE ? undefined : (value as DriverStatus))}
+      >
+        <SelectTrigger size="sm" aria-label="Filtrar por estado" className={TRIGGER_CLASSES}>
+          <span className="text-primary-700/80">Estado:</span>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={ALL_VALUE} className={ITEM_CLASSES}>
+            Todos
+          </SelectItem>
+          {DRIVER_STATUSES.map((value) => (
+            <SelectItem key={value} value={value} className={ITEM_CLASSES}>
+              {DRIVER_STATUS_LABELS[value]}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select value={hasKnownSort ? sortValue : undefined} onValueChange={handleSort}>
+        <SelectTrigger size="sm" aria-label="Ordenar conductores" className={TRIGGER_CLASSES}>
+          <ArrowUpDown className="size-4" aria-hidden />
+          <span className="text-primary-700/80">Ordenar:</span>
+          <SelectValue placeholder="Recientes" />
+        </SelectTrigger>
+        <SelectContent>
+          {DRIVER_SORT_OPTIONS.map((option) => (
+            <SelectItem key={option.value} value={option.value} className={ITEM_CLASSES}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className={cn(TRIGGER_CLASSES, 'h-8 gap-2 px-3', archived && 'border-primary-700 bg-primary-100/70')}
+          >
+            <SlidersHorizontal className="size-4" aria-hidden />
+            Filtros
+            {archived && <span className="bg-primary-700 size-1.5 rounded-full" aria-label="Filtro activo" />}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="end" className="w-72">
+          <label className="flex cursor-pointer items-center justify-between gap-4">
+            <span className="flex flex-col">
+              <span className="typo-label text-carbon-500">Ver archivados</span>
+              <span className="typo-caption text-carbon-300">Muestra solo los conductores archivados.</span>
+            </span>
+            <Switch checked={archived} onCheckedChange={onArchivedChange} aria-label="Ver archivados" />
+          </label>
+        </PopoverContent>
+      </Popover>
+    </div>
+  );
+};
+
+export default DriverFilters;
