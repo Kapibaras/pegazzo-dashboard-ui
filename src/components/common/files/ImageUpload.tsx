@@ -3,7 +3,7 @@
 import { useCallback, useId, useRef, useState } from 'react';
 import { ImagePlus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { IMAGE_ACCEPT, MAX_IMAGE_SIZE_MB } from '@/lib/vehicle';
+import { IMAGE_ACCEPT, MAX_IMAGE_SIZE_MB } from '@/lib/documents';
 import { cn } from '@/lib/utils';
 
 /** An image held by the form: either already stored (`url`) or staged locally (`file`) until the save chain runs. */

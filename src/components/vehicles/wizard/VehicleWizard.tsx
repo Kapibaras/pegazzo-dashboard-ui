@@ -30,16 +30,16 @@ import ImageService from '@/services/images';
 import { ToastService } from '@/services/toast';
 import VehicleService from '@/services/vehicle';
 import { VehicleDetail, VehicleUpdate } from '@/types/vehicle';
-import { StoredDocument } from '../DocumentUpload';
-import { createExistingImage, ImageItem, revokeStagedImages } from '../ImageUpload';
+import { StoredDocument } from '@/components/common/files/DocumentUpload';
+import { createExistingImage, ImageItem, revokeStagedImages } from '@/components/common/files/ImageUpload';
 import AdminStep from './AdminStep';
 import AssociateStep from './AssociateStep';
 import DocumentsStep from './DocumentsStep';
 import IdentityStep from './IdentityStep';
-import SaveProgressDialog, { SaveTaskView } from './SaveProgressDialog';
+import SaveProgressDialog, { SaveTaskView } from '@/components/common/wizard/SaveProgressDialog';
 import SummaryStep, { FolioState } from './SummaryStep';
 import TechnicalStep from './TechnicalStep';
-import WizardStepper from './WizardStepper';
+import WizardStepper from '@/components/common/wizard/WizardStepper';
 
 type VehicleWizardProps =
   | { mode: 'create' }

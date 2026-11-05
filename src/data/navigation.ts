@@ -1,5 +1,5 @@
 import { Role } from '@/lib/schemas/userSchema';
-import { Building2, CarFront, CircleDollarSign, Handshake, House } from 'lucide-react';
+import { Building2, CarFront, CircleDollarSign, Handshake, House, IdCard } from 'lucide-react';
 
 const ROUTES_WITH_ICONS = [
   {
@@ -31,6 +31,12 @@ const ROUTES_WITH_ICONS = [
     allowed: [Role.OWNER, Role.ADMIN, Role.EMPLOYEE],
   },
   {
+    title: 'Conductores',
+    icon: IdCard,
+    url: '/conductores',
+    allowed: [Role.OWNER, Role.ADMIN, Role.EMPLOYEE],
+  },
+  {
     title: 'Socios',
     icon: Handshake,
     url: '/socios',
@@ -53,6 +59,7 @@ const ROUTES_PATHNAMES: Record<string, string> = {
   '/balance/transacciones': 'Balance',
   '/balance/autorizaciones': 'Balance',
   '/coches': 'Coches',
+  '/conductores': 'Conductores',
   '/socios': 'Socios',
   '/usuarios': 'Usuarios',
   '/configuracion/coches': 'Configuración',

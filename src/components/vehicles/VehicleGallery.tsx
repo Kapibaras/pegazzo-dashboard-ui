@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import FileViewer from './FileViewer';
+import FileViewer from '@/components/common/files/FileViewer';
 import { VEHICLE_PLACEHOLDER_SRC } from './VehicleCard';
 
 type VehicleGalleryProps = {

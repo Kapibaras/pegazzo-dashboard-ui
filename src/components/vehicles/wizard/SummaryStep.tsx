@@ -3,11 +3,12 @@
 import { AlertCircle, Info, Landmark, Loader2, RefreshCw, ShieldCheck, UserRound, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { engineTypeToApi, VehicleFormValues } from '@/lib/schemas/vehicleSchema';
-import { formatCurrency, formatDate } from '@/lib/vehicle';
+import { formatDate } from '@/lib/format';
+import { formatCurrency } from '@/lib/vehicle';
 import { Associate, Insurance } from '@/types/vehicle';
-import VehicleInfoCard from '../VehicleInfoCard';
+import InfoCard from '@/components/common/InfoCard';
 import FolioDisplay from './FolioDisplay';
-import { StepCard } from './fields';
+import { StepCard } from '@/components/common/wizard/fields';
 
 export type FolioState = { status: 'idle' | 'loading' | 'ready' | 'error'; folio: string; message?: string };
 
@@ -44,7 +45,7 @@ const SummaryStep = ({
       description={`${values.color} · ${values.bodyType} · ${engineTypeToApi(values.engineType)}`}
     >
       <div className="grid gap-5 lg:grid-cols-2">
-        <VehicleInfoCard
+        <InfoCard
           icon={Wrench}
           title="Técnico"
           rows={[
@@ -55,7 +56,7 @@ const SummaryStep = ({
             { label: 'Fotos', value: `${photoCount} · imagen de agencia: ${agencyImageCount ? 'sí' : 'no'}` },
           ]}
         />
-        <VehicleInfoCard
+        <InfoCard
           icon={ShieldCheck}
           title="Seguro"
           rows={[
@@ -65,7 +66,7 @@ const SummaryStep = ({
             { label: 'Vigencia', value: formatDate(values.policyExpirationDate), mono: true },
           ]}
         />
-        <VehicleInfoCard
+        <InfoCard
           icon={Landmark}
           title="Financiamiento"
           rows={
@@ -79,7 +80,7 @@ const SummaryStep = ({
                 ]
           }
         />
-        <VehicleInfoCard
+        <InfoCard
           icon={UserRound}
           title="Socio y propietario"
           rows={[

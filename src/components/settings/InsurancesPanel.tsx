@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { CreateInsuranceDialog } from '@/components/vehicles/QuickCreateDialogs';
-import VehicleStatCard from '@/components/vehicles/VehicleStatCard';
+import StatCard from '@/components/common/StatCard';
 import { BUTTON_ICON_CLASS, primaryButton } from '@/lib/buttonStyles';
 import { searchFieldClass } from '@/lib/formField';
 import { Insurance } from '@/types/vehicle';
@@ -46,19 +46,19 @@ const InsurancesPanel = ({ insurances }: { insurances: Insurance[] }) => {
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <VehicleStatCard
+        <StatCard
           icon={ShieldCheck}
           label="Aseguradoras"
           value={insurances.length}
           chipClassName="bg-primary-100 text-primary-800"
         />
-        <VehicleStatCard
+        <StatCard
           icon={CarFront}
           label="Coches asegurados"
           value={insuredCars}
           chipClassName="bg-success-50 text-success-700"
         />
-        <VehicleStatCard
+        <StatCard
           icon={Phone}
           label="Con teléfono de contacto"
           value={withPhone}

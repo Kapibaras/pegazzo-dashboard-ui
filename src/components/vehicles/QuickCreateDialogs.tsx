@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import PhoneInput from './PhoneInput';
+import PhoneInput from '@/components/common/PhoneInput';
 import { Label } from '@/components/ui/label';
 import { normalizeApiError } from '@/helpers/apiError';
 import { fieldClass } from '@/lib/formField';

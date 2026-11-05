@@ -1,0 +1,205 @@
+'use client';
+
+import { Info, MapPinHouse } from 'lucide-react';
+import DocumentUpload, { StoredDocument } from '@/components/common/files/DocumentUpload';
+import { StepCard } from '@/components/common/wizard/fields';
+import { formatAddress } from '@/lib/address';
+import {
+  DRIVER_DOCUMENT_TYPES,
+  GARAGE_DOCUMENT_TYPES,
+  GARAGE_PROOF_LABEL,
+  GUARANTOR_DOCUMENT_TYPES,
+  LATER_DOCUMENTS_NOTE,
+  REQUIRED_DRIVER_DOCUMENT_TYPES,
+  REQUIRED_GARAGE_DOCUMENT_TYPES,
+  REQUIRED_GUARANTOR_DOCUMENT_TYPES,
+  getDriverDocumentLabel,
+} from '@/lib/driver';
+import { AddressFormValues } from '@/lib/address';
+
+export type DocumentsStepGuarantor = {
+  /** Backend id. Missing for a guarantor added in the edit form that has not been saved yet. */
+  guarantorId?: number;
+  label: string;
+  /** Uses the driver's address: its proof is copied from the driver's. */
+  sameAsDriver?: boolean;
+};
+
+export type DocumentsStepGarage = {
+  /** Backend id. Missing for a garage added in the edit form that has not been saved yet. */
+  garageId?: number;
+  address: AddressFormValues;
+  /** Uses the driver's address: its proof is copied from the driver's. */
+  sameAsDriver?: boolean;
+};
+
+type DocumentsStepProps = {
+  driverId: string;
+  /** `YYYY-MM-DD`; it is the expiry date of the driver's license document. */
+  licenseValidity?: string;
+  /** Current document of each type of the driver (kept by the wizard so it survives navigating between steps). */
+  storedDocuments: Record<string, StoredDocument>;
+  onDocumentChange: (type: string, document: StoredDocument) => void;
+  guarantors: DocumentsStepGuarantor[];
+  /** Current documents of each guarantor, by guarantor id. */
+  guarantorDocuments: Record<number, Record<string, StoredDocument>>;
+  onGuarantorDocumentChange: (guarantorId: number, type: string, document: StoredDocument) => void;
+  garages: DocumentsStepGarage[];
+  /** Current documents of each garage, by garage id. */
+  garageDocuments: Record<number, Record<string, StoredDocument>>;
+  onGarageDocumentChange: (garageId: number, type: string, document: StoredDocument) => void;
+  /** Number of required documents still missing (driver + guarantors + garages). */
+  missingCount: number;
+  requiredCount: number;
+};
+
+const ERROR_MODULES = ['common', 'drivers'] as const;
+
+const CopiedFromDriverNote = () => (
+  <p className="typo-caption text-carbon-300">
+    Usa el domicilio del conductor: en cuanto el conductor tenga su comprobante de domicilio se copia aquí
+    automáticamente (si este espacio está vacío). También puedes subir otro.
+  </p>
+);
+
+const UnsavedNote = ({ what }: { what: string }) => (
+  <p
+    className="typo-sm-text bg-warning-100/60 text-warning-800 flex items-center gap-2 rounded-lg px-4 py-3"
+    role="note"
+  >
+    <MapPinHouse className="size-4 shrink-0" aria-hidden />
+    Guarda los cambios para poder subir los documentos de {what}.
+  </p>
+);
+
+const DocumentsStep = ({
+  driverId,
+  licenseValidity,
+  storedDocuments,
+  onDocumentChange,
+  guarantors,
+  guarantorDocuments,
+  onGuarantorDocumentChange,
+  garages,
+  garageDocuments,
+  onGarageDocumentChange,
+  missingCount,
+  requiredCount,
+}: DocumentsStepProps) => {
+  const uploaded = requiredCount - missingCount;
+
+  return (
+    <div className="flex flex-col gap-5">
+      <div
+        className="typo-sm-text bg-primary-50 text-primary-900 flex items-start gap-3 rounded-lg px-4 py-3"
+        role="note"
+      >
+        <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
+        <div className="flex flex-col gap-2">
+          <p>
+            Cada archivo se sube en cuanto lo seleccionas. Son obligatorios la INE, la licencia y el comprobante de
+            domicilio del conductor; la INE y el comprobante de domicilio de cada aval; y el comprobante de domicilio de
+            cada cochera. Si subiste uno por error, usa <strong>Reemplazar</strong>.
+          </p>
+          <p>{LATER_DOCUMENTS_NOTE}</p>
+        </div>
+      </div>
+
+      <StepCard
+        title="Documentación del conductor"
+        description="PDF, JPG, PNG o WEBP. Si es una foto, procura que el documento se vea completo y sin reflejos."
+      >
+        <p
+          className={missingCount === 0 ? 'typo-label text-success-700' : 'typo-label text-carbon-400'}
+          role="status"
+          aria-live="polite"
+        >
+          {missingCount === 0
+            ? `Documentación obligatoria completa (${uploaded} de ${requiredCount}).`
+            : `${uploaded} de ${requiredCount} documentos obligatorios cargados · faltan ${missingCount}.`}
+        </p>
+
+        <div className="grid items-start gap-5 lg:grid-cols-2">
+          {DRIVER_DOCUMENT_TYPES.map((type) => (
+            <DocumentUpload
+              key={type}
+              entityType="driver"
+              entityId={driverId}
+              documentType={type}
+              label={getDriverDocumentLabel(type)}
+              required={REQUIRED_DRIVER_DOCUMENT_TYPES.includes(type)}
+              errorModules={[...ERROR_MODULES]}
+              current={storedDocuments[type] ?? null}
+              onChange={(document) => onDocumentChange(type, document)}
+              expiryDate={type === 'driver_license' && licenseValidity ? `${licenseValidity}T00:00:00Z` : undefined}
+            />
+          ))}
+        </div>
+      </StepCard>
+
+      {garages.map((garage, index) => (
+        <StepCard
+          key={garage.garageId ?? `new-garage-${index}`}
+          title={`Cochera ${index + 1}`}
+          description={formatAddress(garage.address)}
+        >
+          {garage.garageId === undefined ? (
+            <UnsavedNote what="esta cochera" />
+          ) : (
+            <>
+              {garage.sameAsDriver && <CopiedFromDriverNote />}
+              <div className="grid items-start gap-5 lg:grid-cols-2">
+                {GARAGE_DOCUMENT_TYPES.map((type) => (
+                  <DocumentUpload
+                    key={type}
+                    entityType="garage"
+                    entityId={String(garage.garageId)}
+                    documentType={type}
+                    label={GARAGE_PROOF_LABEL}
+                    required={REQUIRED_GARAGE_DOCUMENT_TYPES.includes(type)}
+                    errorModules={[...ERROR_MODULES]}
+                    current={garageDocuments[garage.garageId as number]?.[type] ?? null}
+                    onChange={(document) => onGarageDocumentChange(garage.garageId as number, type, document)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </StepCard>
+      ))}
+
+      {guarantors.map((guarantor, index) => (
+        <StepCard
+          key={guarantor.guarantorId ?? `new-${index}`}
+          title={`Aval ${index + 1} · ${guarantor.label || 'Sin nombre'}`}
+          description="INE y comprobante de domicilio son obligatorios."
+        >
+          {guarantor.guarantorId === undefined ? (
+            <UnsavedNote what="este aval" />
+          ) : (
+            <>
+              {guarantor.sameAsDriver && <CopiedFromDriverNote />}
+              <div className="grid items-start gap-5 lg:grid-cols-2">
+                {GUARANTOR_DOCUMENT_TYPES.map((type) => (
+                  <DocumentUpload
+                    key={type}
+                    entityType="guarantor"
+                    entityId={String(guarantor.guarantorId)}
+                    documentType={type}
+                    label={getDriverDocumentLabel(type)}
+                    required={REQUIRED_GUARANTOR_DOCUMENT_TYPES.includes(type)}
+                    errorModules={[...ERROR_MODULES]}
+                    current={guarantorDocuments[guarantor.guarantorId as number]?.[type] ?? null}
+                    onChange={(document) => onGuarantorDocumentChange(guarantor.guarantorId as number, type, document)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </StepCard>
+      ))}
+    </div>
+  );
+};
+
+export default DocumentsStep;

@@ -1,5 +1,5 @@
 import { SortOrder } from '@/types/transaction';
-import { DocumentExpiryStatus, VehicleSortBy, VehicleStatus } from '@/types/vehicle';
+import { VehicleSortBy, VehicleStatus } from '@/types/vehicle';
 
 export const DEFAULT_VEHICLE_PAGE = 1;
 export const DEFAULT_VEHICLE_LIMIT = 12;
@@ -12,10 +12,6 @@ export type VehicleView = 'grid' | 'table';
 export const DEFAULT_VEHICLE_VIEW: VehicleView = 'grid';
 
 export const MAX_VEHICLE_PHOTOS = 4;
-export const MAX_IMAGE_SIZE_MB = 10;
-export const MAX_DOCUMENT_SIZE_MB = 15;
-export const IMAGE_ACCEPT = ['image/jpeg', 'image/png', 'image/webp'] as const;
-export const DOCUMENT_ACCEPT = ['application/pdf', ...IMAGE_ACCEPT] as const;
 
 export const VEHICLE_STATUSES: VehicleStatus[] = ['ACTIVE', 'INACTIVE', 'IN_MAINTENANCE'];
 
@@ -23,12 +19,6 @@ export const VEHICLE_STATUS_LABELS: Record<VehicleStatus, string> = {
   ACTIVE: 'Activo',
   INACTIVE: 'Inactivo',
   IN_MAINTENANCE: 'En mantenimiento',
-};
-
-export const EXPIRY_STATUS_LABELS: Record<DocumentExpiryStatus, string> = {
-  valid: 'Vigente',
-  expiring_soon: 'Por vencer',
-  expired: 'Vencido',
 };
 
 export type VehicleSortOption = { value: string; label: string; sortBy: VehicleSortBy; sortOrder: SortOrder };
@@ -86,15 +76,6 @@ export const formatCurrency = (value: number | string | null | undefined): strin
 
 export const formatOdometer = (value: number | null | undefined): string =>
   value === null || value === undefined ? '—' : `${new Intl.NumberFormat('es-MX').format(value)} km`;
-
-export const formatDate = (value: string | null | undefined): string => {
-  if (!value) return '—';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
-  return new Intl.DateTimeFormat('es-MX', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(
-    date,
-  );
-};
 
 export const DOCUMENT_TYPE_LABELS: Record<string, string> = {
   circulation_card: 'Tarjeta de circulación',

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { updateInsuranceAction } from '@/actions/insurances';
-import PhoneListField from '@/components/associates/PhoneListField';
+import PhoneListField from '@/components/common/PhoneListField';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,

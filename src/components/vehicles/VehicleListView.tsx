@@ -9,13 +9,13 @@ import { useUser } from '@/contexts/UserProvider';
 import { useVehicles, VehicleListState } from '@/hooks/vehicles';
 import { BUTTON_ICON_CLASS, outlineButton, primaryButton } from '@/lib/buttonStyles';
 import { Role } from '@/lib/schemas/userSchema';
-import { DEFAULT_VEHICLE_VIEW, VEHICLE_VIEW_STORAGE_KEY, VehicleView } from '@/lib/vehicle';
+import { DEFAULT_VEHICLE_VIEW, VEHICLE_LIMIT_OPTIONS, VEHICLE_VIEW_STORAGE_KEY, VehicleView } from '@/lib/vehicle';
 import { cn } from '@/lib/utils';
 import VehicleCard from './VehicleCard';
 import VehicleEmptyState from './VehicleEmptyState';
 import VehicleFilters from './VehicleFilters';
 import VehicleListSkeleton from './VehicleListSkeleton';
-import VehiclePagination from './VehiclePagination';
+import ListPagination from '@/components/common/ListPagination';
 import VehicleTable from './VehicleTable';
 
 type VehicleListViewProps = {
@@ -173,11 +173,13 @@ const VehicleListView = ({ initialState }: VehicleListViewProps) => {
             )}
 
             {pagination && pagination.totalPages > 0 && (
-              <VehiclePagination
+              <ListPagination
                 page={page}
                 totalPages={pagination.totalPages}
                 total={pagination.total}
                 limit={limit}
+                limitOptions={VEHICLE_LIMIT_OPTIONS}
+                noun="coches"
                 onPageChange={setPage}
                 onLimitChange={setLimit}
                 isLoading={isLoading}

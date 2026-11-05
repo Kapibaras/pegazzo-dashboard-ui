@@ -17,7 +17,7 @@ import { Role } from '@/lib/schemas/userSchema';
 import { cn } from '@/lib/utils';
 import { ToastService } from '@/services/toast';
 import { VehicleStatus } from '@/types/vehicle';
-import ArchiveVehicleDialog from './ArchiveVehicleDialog';
+import ArchiveDialog from '@/components/common/ArchiveDialog';
 
 type VehicleActionsMenuProps = {
   vehicleId: string;
@@ -106,10 +106,11 @@ const VehicleActionsMenu = ({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <ArchiveVehicleDialog
+      <ArchiveDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
-        vehicleName={vehicleName}
+        entityLabel="coche"
+        entityName={vehicleName}
         isArchiving={isBusy}
         onConfirm={() => void run('archive')}
       />
