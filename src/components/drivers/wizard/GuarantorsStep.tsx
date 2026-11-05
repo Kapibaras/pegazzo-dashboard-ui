@@ -8,12 +8,15 @@ import { Button } from '@/components/ui/button';
 import { FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { MAX_GUARANTORS } from '@/lib/driver';
 import { DriverFormValues, EMPTY_GUARANTOR } from '@/lib/schemas/driverSchema';
+import AddressFieldset from './AddressFieldset';
+import { LegacyAddresses } from './AddressStep';
 
 type GuarantorsStepProps = {
   form: UseFormReturn<DriverFormValues>;
+  legacy: LegacyAddresses;
 };
 
-const GuarantorsStep = ({ form }: GuarantorsStepProps) => {
+const GuarantorsStep = ({ form, legacy }: GuarantorsStepProps) => {
   const { fields, append, remove } = useFieldArray({ control: form.control, name: 'guarantors' });
   const rootError = form.formState.errors.guarantors?.root?.message ?? form.formState.errors.guarantors?.message;
 
@@ -38,12 +41,7 @@ const GuarantorsStep = ({ form }: GuarantorsStepProps) => {
         >
           <FieldGrid>
             <TextField control={form.control} name={`guarantors.${index}.name`} label="Nombre(s)" maxLength={50} />
-            <TextField
-              control={form.control}
-              name={`guarantors.${index}.surnames`}
-              label="Apellidos"
-              maxLength={100}
-            />
+            <TextField control={form.control} name={`guarantors.${index}.surnames`} label="Apellidos" maxLength={100} />
             <TextField
               control={form.control}
               name={`guarantors.${index}.relation`}
@@ -51,13 +49,13 @@ const GuarantorsStep = ({ form }: GuarantorsStepProps) => {
               placeholder="Hermana, amigo, compañero de trabajo…"
               maxLength={50}
             />
-            <TextField
-              control={form.control}
-              name={`guarantors.${index}.address`}
-              label="Domicilio"
-              maxLength={255}
-            />
           </FieldGrid>
+
+          <AddressFieldset
+            form={form}
+            path={`guarantors.${index}.address`}
+            legacyText={item.guarantorId ? legacy.guarantors[item.guarantorId] : null}
+          />
 
           <FormField
             control={form.control}
@@ -96,7 +94,7 @@ const GuarantorsStep = ({ form }: GuarantorsStepProps) => {
         <Button
           type="button"
           variant="outline"
-          onClick={() => append({ ...EMPTY_GUARANTOR })}
+          onClick={() => append({ ...EMPTY_GUARANTOR, address: { ...EMPTY_GUARANTOR.address } })}
           disabled={fields.length >= MAX_GUARANTORS}
           className="cursor-pointer gap-2"
         >

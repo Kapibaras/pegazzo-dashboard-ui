@@ -26,6 +26,8 @@ type TextFieldProps<T extends FieldValues> = {
   hint?: string;
   optional?: boolean;
   suffix?: string;
+  /** Converts what the user types before it reaches the form, e.g. to upper case for a CURP. */
+  transform?: (value: string) => string;
   /** Shows the number with thousands separators while typing; the form value stays raw ("1234567.5"). */
   format?: NumberFormat;
   className?: string;
@@ -44,6 +46,7 @@ export const TextField = <T extends FieldValues>({
   hint,
   optional,
   suffix,
+  transform,
   format,
   className,
 }: TextFieldProps<T>) => (
@@ -72,7 +75,9 @@ export const TextField = <T extends FieldValues>({
                       const caret = caretForCount(formatNumberDisplay(raw), Math.min(count, raw.length));
                       requestAnimationFrame(() => input.setSelectionRange(caret, caret));
                     }
-                  : field.onChange
+                  : transform
+                    ? (event) => field.onChange(transform(event.target.value))
+                    : field.onChange
               }
               type={type}
               inputMode={inputMode}

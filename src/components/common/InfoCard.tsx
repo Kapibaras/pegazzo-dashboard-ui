@@ -1,7 +1,13 @@
 import { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export type InfoRow = { label: string; value: React.ReactNode; mono?: boolean };
+export type InfoRow = {
+  label: string;
+  value: React.ReactNode;
+  mono?: boolean;
+  /** Long text (an address): spans the whole row and wraps instead of being cut with an ellipsis. */
+  wide?: boolean;
+};
 
 type InfoCardProps = {
   icon: LucideIcon;
@@ -37,9 +43,15 @@ const InfoCard = ({ icon: Icon, title, rows, badge, chipClassName, className }: 
 
     <dl className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
       {rows.map((row) => (
-        <div key={row.label} className="flex min-w-0 flex-col gap-0.5">
+        <div key={row.label} className={cn('flex min-w-0 flex-col gap-0.5', row.wide && 'sm:col-span-2')}>
           <dt className="typo-caption text-carbon-300">{row.label}</dt>
-          <dd className={cn('typo-sm-text text-carbon-500 truncate', row.mono && 'font-numbers')}>
+          <dd
+            className={cn(
+              'typo-sm-text text-carbon-500',
+              row.wide ? 'break-words' : 'truncate',
+              row.mono && 'font-numbers',
+            )}
+          >
             {row.value || '—'}
           </dd>
         </div>

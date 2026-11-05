@@ -14,8 +14,8 @@ export const DRIVER_ERRORS = {
   IDENTIFICATION_EXISTS: {
     status: 400,
     backendDetailStartsWith: 'Identification number',
-    title: 'Identificación duplicada',
-    message: 'Ya existe un conductor registrado con ese número de identificación.',
+    title: 'CURP duplicada',
+    message: 'Ya existe un conductor registrado con esa CURP.',
   },
   LICENSE_NUMBER_EXISTS: {
     status: 400,
@@ -46,6 +46,12 @@ export const DRIVER_ERRORS = {
     backendDetailStartsWith: 'Guarantor',
     title: 'Aval no encontrado',
     message: 'El aval ya no existe o no pertenece a este conductor. Actualiza la página.',
+  },
+  GARAGE_NOT_FOUND: {
+    status: 404,
+    backendDetailStartsWith: 'Garage with id',
+    title: 'Cochera no encontrada',
+    message: 'La cochera ya no existe o no pertenece a este conductor. Actualiza la página.',
   },
   INVALID_CONTENT_TYPE: {
     status: 400,

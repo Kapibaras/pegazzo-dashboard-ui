@@ -12,7 +12,7 @@ export type ApiDocument = {
 
 export type ActionSuccess = { message: string };
 
-export type DocumentEntityType = 'car' | 'driver' | 'guarantor';
+export type DocumentEntityType = 'car' | 'driver' | 'guarantor' | 'garage';
 export type ImageEntityType = 'car_agency_image' | 'car_photo' | 'driver_photo';
 
 export type UploadUrlRequest = {

@@ -19,6 +19,7 @@ import findErrorMessage from '@/errors/findErrorMessage';
 import { NETWORK_ERROR_MESSAGE, normalizeApiError } from '@/helpers/apiError';
 import {
   REQUIRED_DRIVER_DOCUMENT_TYPES,
+  REQUIRED_GARAGE_DOCUMENT_TYPES,
   REQUIRED_GUARANTOR_DOCUMENT_TYPES,
   currentDocumentsByType,
   getDriverFullName,
@@ -26,11 +27,13 @@ import {
 import {
   buildDriverSchema,
   DEFAULT_DRIVER_FORM_VALUES,
+  diffGarages,
   diffGuarantors,
   driverToFormValues,
   DriverFormValues,
   STEP_FIELDS,
   toCreatePayload,
+  toGaragePayload,
   toGuarantorPayload,
   toUpdatePayload,
   WizardStepId,
@@ -40,7 +43,7 @@ import DriverService from '@/services/driver';
 import ImageService from '@/services/images';
 import { ToastService } from '@/services/toast';
 import { DriverDetail } from '@/types/driver';
-import AddressStep from './AddressStep';
+import AddressStep, { LegacyAddresses } from './AddressStep';
 import DataStep from './DataStep';
 import DocumentsStep from './DocumentsStep';
 import GuarantorsStep from './GuarantorsStep';
@@ -131,8 +134,33 @@ const DriverWizard = (props: DriverWizardProps) => {
       ]),
     ),
   );
+  const [garageDocuments, setGarageDocuments] = useState<Record<number, Record<string, StoredDocument>>>(() =>
+    Object.fromEntries(
+      (driver?.garages ?? []).map((garage) => [garage.id, toStored(currentDocumentsByType(garage.documents ?? []))]),
+    ),
+  );
+  // Addresses saved as free text before the split into fields: shown so the user can re-enter them by fields.
+  const legacyAddresses = useMemo<LegacyAddresses>(
+    () => ({
+      driver: driver && !driver.addressFields ? driver.address : null,
+      garages: Object.fromEntries(
+        (driver?.garages ?? []).filter((garage) => !garage.addressFields).map((garage) => [garage.id, garage.address]),
+      ),
+      guarantors: Object.fromEntries(
+        (driver?.guarantors ?? [])
+          .filter((guarantor) => !guarantor.addressFields)
+          .map((guarantor) => [guarantor.id, guarantor.address]),
+      ),
+    }),
+    [driver],
+  );
   const handleDocumentChange = useCallback(
     (type: string, document: StoredDocument) => setStoredDocuments((prev) => ({ ...prev, [type]: document })),
+    [],
+  );
+  const handleGarageDocumentChange = useCallback(
+    (garageId: number, type: string, document: StoredDocument) =>
+      setGarageDocuments((prev) => ({ ...prev, [garageId]: { ...prev[garageId], [type]: document } })),
     [],
   );
   const handleGuarantorDocumentChange = useCallback(
@@ -245,6 +273,17 @@ const DriverWizard = (props: DriverWizardProps) => {
     },
   });
 
+  /** Creates one garage and stores its id in the form so the documents step can upload its address proof. */
+  const createGarageTask = (index: number, label: string, snapshot: DriverFormValues): SaveTask => ({
+    key: `garage-new-${index}`,
+    label: `Registrar cochera: ${label}`,
+    status: 'pending',
+    run: async () => {
+      const created = await driverService.createGarage(driverIdRef.current!, toGaragePayload(snapshot.garages[index]));
+      form.setValue(`garages.${index}.garageId`, created.id);
+    },
+  });
+
   const startCreate = async () => {
     // The driver already exists (a previous attempt got past the first task): only the pending tasks are retried.
     if (driverIdRef.current && tasksRef.current.length > 0) {
@@ -271,6 +310,9 @@ const DriverWizard = (props: DriverWizardProps) => {
     const photo = photoTask();
     if (photo) tasks.push(photo);
 
+    snapshot.garages.forEach((garage, index) =>
+      tasks.push(createGarageTask(index, `${garage.address.street} ${garage.address.exteriorNumber}`.trim(), snapshot)),
+    );
     snapshot.guarantors.forEach((guarantor, index) =>
       tasks.push(createGuarantorTask(index, `${guarantor.name} ${guarantor.surnames}`.trim(), snapshot)),
     );
@@ -294,6 +336,7 @@ const DriverWizard = (props: DriverWizardProps) => {
     const snapshot = form.getValues();
     const payload = toUpdatePayload(snapshot, initialValues);
     const changes = diffGuarantors(snapshot.guarantors, initialValues.guarantors);
+    const garageChanges = diffGarages(snapshot.garages, initialValues.garages);
     const photoRemoved = !!driver?.photo && photos.length === 0;
 
     const tasks: SaveTask[] = [];
@@ -341,6 +384,29 @@ const DriverWizard = (props: DriverWizardProps) => {
     changes.added.forEach((guarantor) => {
       const index = snapshot.guarantors.indexOf(guarantor);
       tasks.push(createGuarantorTask(index, `${guarantor.name} ${guarantor.surnames}`.trim(), snapshot));
+    });
+
+    garageChanges.removed.forEach((id) =>
+      tasks.push({
+        key: `garage-remove-${id}`,
+        label: 'Quitar cochera',
+        status: 'pending',
+        run: async () => driverService.removeGarage(driver!.id, id),
+      }),
+    );
+    garageChanges.updated.forEach(({ id, payload: garagePayload }) =>
+      tasks.push({
+        key: `garage-update-${id}`,
+        label: 'Actualizar cochera',
+        status: 'pending',
+        run: async () => {
+          await driverService.updateGarage(driver!.id, id, garagePayload);
+        },
+      }),
+    );
+    garageChanges.added.forEach((garage) => {
+      const index = snapshot.garages.indexOf(garage);
+      tasks.push(createGarageTask(index, `${garage.address.street} ${garage.address.exteriorNumber}`.trim(), snapshot));
     });
 
     if (tasks.length === 0) {
@@ -402,9 +468,19 @@ const DriverWizard = (props: DriverWizardProps) => {
   const isDocumentsStep = stepId === 'documents';
 
   const requiredCount =
-    REQUIRED_DRIVER_DOCUMENT_TYPES.length + values.guarantors.length * REQUIRED_GUARANTOR_DOCUMENT_TYPES.length;
+    REQUIRED_DRIVER_DOCUMENT_TYPES.length +
+    values.guarantors.length * REQUIRED_GUARANTOR_DOCUMENT_TYPES.length +
+    values.garages.length * REQUIRED_GARAGE_DOCUMENT_TYPES.length;
   const missingCount =
     REQUIRED_DRIVER_DOCUMENT_TYPES.filter((type) => !storedDocuments[type]).length +
+    values.garages.reduce(
+      (sum, garage) =>
+        sum +
+        REQUIRED_GARAGE_DOCUMENT_TYPES.filter(
+          (type) => garage.garageId === undefined || !garageDocuments[garage.garageId]?.[type],
+        ).length,
+      0,
+    ) +
     values.guarantors.reduce(
       (sum, guarantor) =>
         sum +
@@ -480,9 +556,9 @@ const DriverWizard = (props: DriverWizardProps) => {
           className="flex flex-col gap-6"
         >
           {stepId === 'data' && <DataStep form={form} showFolioNotice={isCreate} />}
-          {stepId === 'address' && <AddressStep form={form} />}
+          {stepId === 'address' && <AddressStep form={form} legacy={legacyAddresses} />}
           {stepId === 'photo' && <PhotoStep photos={photos} onPhotosChange={setPhotos} />}
-          {stepId === 'guarantors' && <GuarantorsStep form={form} />}
+          {stepId === 'guarantors' && <GuarantorsStep form={form} legacy={legacyAddresses} />}
           {stepId === 'summary' && <SummaryStep values={values} hasPhoto={photos.length > 0} />}
           {isDocumentsStep && driverId && (
             <DocumentsStep
@@ -496,6 +572,9 @@ const DriverWizard = (props: DriverWizardProps) => {
               }))}
               guarantorDocuments={guarantorDocuments}
               onGuarantorDocumentChange={handleGuarantorDocumentChange}
+              garages={values.garages.map((garage) => ({ garageId: garage.garageId, address: garage.address }))}
+              garageDocuments={garageDocuments}
+              onGarageDocumentChange={handleGarageDocumentChange}
               missingCount={missingCount}
               requiredCount={requiredCount}
             />

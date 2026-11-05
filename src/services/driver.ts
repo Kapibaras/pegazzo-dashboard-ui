@@ -9,6 +9,9 @@ import {
   DriversResponse,
   DriverStatus,
   DriverUpdate,
+  GarageCreate,
+  GarageRecord,
+  GarageUpdate,
   GuarantorCreate,
   GuarantorRecord,
   GuarantorUpdate,
@@ -61,6 +64,18 @@ export default class DriverService extends AbstractAPIService {
 
   async updateGuarantor(driverId: string, guarantorId: number, data: GuarantorUpdate): Promise<GuarantorRecord> {
     return (await this.client.patch<GuarantorRecord>(`${driverPath(driverId)}/guarantors/${guarantorId}`, data)).data;
+  }
+
+  async createGarage(driverId: string, data: GarageCreate): Promise<GarageRecord> {
+    return (await this.client.post<GarageRecord>(`${driverPath(driverId)}/garages`, data)).data;
+  }
+
+  async updateGarage(driverId: string, garageId: number, data: GarageUpdate): Promise<GarageRecord> {
+    return (await this.client.patch<GarageRecord>(`${driverPath(driverId)}/garages/${garageId}`, data)).data;
+  }
+
+  async removeGarage(driverId: string, garageId: number): Promise<void> {
+    await this.client.delete(`${driverPath(driverId)}/garages/${garageId}`);
   }
 
   async removeGuarantor(driverId: string, guarantorId: number): Promise<void> {

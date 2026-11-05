@@ -14,27 +14,34 @@ type DriverDocumentListProps = {
   required: readonly string[];
   /** Added to the viewer title, e.g. the guarantor's name. */
   viewerTitleSuffix?: string;
+  /** Replaces the label of a type, e.g. the address proof of a garage. */
+  labelOverrides?: Record<string, string>;
 };
 
 /**
  * The documents of a driver or a guarantor, one row per type of the taxonomy: the current document opens the in-app
  * viewer (←/→ pages through all of them); a type without document is shown as missing.
  */
-const DriverDocumentList = ({ types, documents, required, viewerTitleSuffix }: DriverDocumentListProps) => {
+const DriverDocumentList = ({
+  types,
+  documents,
+  required,
+  viewerTitleSuffix,
+  labelOverrides = {},
+}: DriverDocumentListProps) => {
+  const labelOf = (type: string) => labelOverrides[type] ?? getDriverDocumentLabel(type);
   const current = currentDocumentsByType(documents);
   const present = types.filter((type) => current[type]);
   const viewerItems = present.map((type) => ({
     url: current[type].url,
-    title: viewerTitleSuffix
-      ? `${getDriverDocumentLabel(type)} · ${viewerTitleSuffix}`
-      : getDriverDocumentLabel(type),
+    title: viewerTitleSuffix ? `${labelOf(type)} · ${viewerTitleSuffix}` : labelOf(type),
   }));
 
   return (
     <ul className="border-surface-600/70 divide-surface-600/60 divide-y overflow-hidden rounded-xl border bg-white">
       {types.map((type) => {
         const doc = current[type];
-        const label = getDriverDocumentLabel(type);
+        const label = labelOf(type);
 
         if (!doc) {
           const isRequired = required.includes(type);
@@ -66,7 +73,9 @@ const DriverDocumentList = ({ types, documents, required, viewerTitleSuffix }: D
               </span>
               <div className="min-w-0 flex-1">
                 <p className="typo-label text-carbon-500 truncate">{label}</p>
-                {doc.expiryDate && <p className="typo-caption text-carbon-300">Vence el {formatDate(doc.expiryDate)}</p>}
+                {doc.expiryDate && (
+                  <p className="typo-caption text-carbon-300">Vence el {formatDate(doc.expiryDate)}</p>
+                )}
               </div>
               <ExpiryBadge status={doc.expiryStatus} />
               <span className="typo-label text-primary-800 group-hover/doc:text-primary-900 flex items-center gap-1 group-hover/doc:underline">

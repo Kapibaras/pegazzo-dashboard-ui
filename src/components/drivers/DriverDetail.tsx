@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   UserRound,
   UsersRound,
+  Warehouse,
 } from 'lucide-react';
 import CanManage from '@/components/common/CanManage';
 import ViewFileButton from '@/components/common/files/ViewFileButton';
@@ -21,9 +22,13 @@ import { VEHICLE_PLACEHOLDER_SRC } from '@/components/vehicles/VehicleCard';
 import { EXPIRY_STATUS_LABELS, getExpiryStatus } from '@/lib/documents';
 import {
   DRIVER_DOCUMENT_TYPES,
+  GARAGE_DOCUMENT_TYPES,
+  GARAGE_PROOF_LABEL,
   GUARANTOR_DOCUMENT_TYPES,
+  LATER_DOCUMENTS_NOTE,
   MAX_GUARANTORS,
   REQUIRED_DRIVER_DOCUMENT_TYPES,
+  REQUIRED_GARAGE_DOCUMENT_TYPES,
   REQUIRED_GUARANTOR_DOCUMENT_TYPES,
   getActivationBlocker,
   getDriverDocumentLabel,
@@ -53,6 +58,7 @@ const DriverDetail = ({ driver }: { driver: DriverDetailData }) => {
   const fullName = getDriverFullName(driver);
   const archived = !!driver.archivedAt;
   const guarantors = driver.guarantors ?? [];
+  const garages = driver.garages ?? [];
   const car = driver.assignedCar;
   const missing = getMissingDriverDocuments(driver);
   const activationBlocker = getActivationBlocker(driver);
@@ -64,8 +70,11 @@ const DriverDetail = ({ driver }: { driver: DriverDetailData }) => {
     ...missing.guarantors.flatMap(({ guarantor, missing: types }) =>
       types.map((type) => `${getDriverDocumentLabel(type)} de ${guarantor.name} ${guarantor.surnames}`.trim()),
     ),
+    ...missing.garages.flatMap(({ garage, missing: types }) =>
+      types.map(() => `${GARAGE_PROOF_LABEL} (${garage.address})`),
+    ),
   ];
-  const showBanner = missingLabels.length > 0 || guarantors.length === 0;
+  const showBanner = missingLabels.length > 0 || guarantors.length === 0 || garages.length === 0;
 
   return (
     <article className="flex flex-col gap-6">
@@ -118,8 +127,8 @@ const DriverDetail = ({ driver }: { driver: DriverDetailData }) => {
           >
             <FileWarning className="text-warning-700 size-5 shrink-0" aria-hidden />
             <p className="min-w-0 flex-1">
-              <strong>Información incompleta.</strong>{' '}
-              {guarantors.length === 0 && 'Falta registrar al menos un aval. '}
+              <strong>Información incompleta.</strong> {guarantors.length === 0 && 'Falta registrar al menos un aval. '}
+              {garages.length === 0 && 'Falta registrar al menos una cochera. '}
               {missingLabels.length > 0 && `Faltan: ${missingLabels.join(', ')}. `}
               Mientras tanto no se puede activar al conductor.
             </p>
@@ -190,7 +199,7 @@ const DriverDetail = ({ driver }: { driver: DriverDetailData }) => {
           rows={[
             { label: 'Nombre', value: driver.name },
             { label: 'Apellidos', value: driver.surnames },
-            { label: 'Identificación', value: driver.identificationNumber, mono: true },
+            { label: 'CURP', value: driver.identificationNumber, mono: true },
           ]}
         />
         <InfoCard
@@ -211,16 +220,9 @@ const DriverDetail = ({ driver }: { driver: DriverDetailData }) => {
         <InfoCard
           icon={Phone}
           title="Contacto"
-          rows={[{ label: 'Teléfonos', value: driver.telephones?.join(' · '), mono: true }]}
+          rows={[{ label: 'Teléfonos', value: driver.telephones?.join(' · '), mono: true, wide: true }]}
         />
-        <InfoCard
-          icon={Home}
-          title="Domicilio"
-          rows={[
-            { label: 'Domicilio', value: driver.address },
-            { label: 'Cocheras', value: driver.garageAddress?.join(' · ') },
-          ]}
-        />
+        <InfoCard icon={Home} title="Domicilio" rows={[{ label: 'Domicilio', value: driver.address, wide: true }]} />
       </div>
 
       <section className="flex flex-col gap-3" aria-labelledby="documents-title">
@@ -232,6 +234,50 @@ const DriverDetail = ({ driver }: { driver: DriverDetailData }) => {
           documents={driver.documents ?? []}
           required={REQUIRED_DRIVER_DOCUMENT_TYPES}
         />
+        <p className="typo-caption text-carbon-300">{LATER_DOCUMENTS_NOTE}</p>
+      </section>
+
+      <section className="flex flex-col gap-3" aria-labelledby="garages-title">
+        <div className="flex items-center gap-3">
+          <SectionTitle>
+            <span id="garages-title">Cocheras</span>
+          </SectionTitle>
+          <span className="typo-sm-text text-carbon-300">
+            {garages.length === 0
+              ? 'Sin cocheras registradas'
+              : `${garages.length} ${garages.length === 1 ? 'cochera' : 'cocheras'}`}
+          </span>
+        </div>
+
+        {garages.length === 0 ? (
+          <p className="typo-sm-text text-carbon-300 border-surface-700/60 rounded-lg border-2 border-dashed px-4 py-6 text-center">
+            Este conductor aún no tiene cocheras.
+          </p>
+        ) : (
+          <div className="grid gap-5 lg:grid-cols-2">
+            {garages.map((garage, index) => (
+              <div
+                key={garage.id}
+                className="border-surface-600/70 flex flex-col gap-4 rounded-xl border bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
+              >
+                <header className="flex items-center gap-3">
+                  <span className="bg-primary-50 text-primary-800 flex size-9 shrink-0 items-center justify-center rounded-lg">
+                    <Warehouse className="size-[18px]" aria-hidden />
+                  </span>
+                  <h3 className="typo-bold-text text-carbon-500">Cochera {index + 1}</h3>
+                </header>
+                <p className="typo-sm-text text-carbon-500 break-words">{garage.address}</p>
+                <DriverDocumentList
+                  types={GARAGE_DOCUMENT_TYPES}
+                  documents={garage.documents ?? []}
+                  required={REQUIRED_GARAGE_DOCUMENT_TYPES}
+                  labelOverrides={{ proof_of_address: GARAGE_PROOF_LABEL }}
+                  viewerTitleSuffix={`Cochera ${index + 1}`}
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="flex flex-col gap-3" aria-labelledby="guarantors-title">
@@ -274,13 +320,13 @@ const DriverDetail = ({ driver }: { driver: DriverDetailData }) => {
                   <dl className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
                     <div className="flex min-w-0 flex-col gap-0.5">
                       <dt className="typo-caption text-carbon-300">Teléfonos</dt>
-                      <dd className="typo-sm-text font-numbers text-carbon-500 truncate">
+                      <dd className="typo-sm-text font-numbers text-carbon-500 break-words">
                         {guarantor.telephones?.join(' · ') || '—'}
                       </dd>
                     </div>
                     <div className="flex min-w-0 flex-col gap-0.5">
                       <dt className="typo-caption text-carbon-300">Domicilio</dt>
-                      <dd className="typo-sm-text text-carbon-500 truncate">{guarantor.address || '—'}</dd>
+                      <dd className="typo-sm-text text-carbon-500 break-words">{guarantor.address || '—'}</dd>
                     </div>
                   </dl>
 

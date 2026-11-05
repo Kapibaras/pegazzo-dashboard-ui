@@ -1,8 +1,9 @@
 'use client';
 
-import { Home, IdCard, Info, Phone, ShieldCheck, UserRound } from 'lucide-react';
+import { Home, IdCard, Info, Phone, ShieldCheck, UserRound, Warehouse } from 'lucide-react';
 import InfoCard from '@/components/common/InfoCard';
 import { StepCard } from '@/components/common/wizard/fields';
+import { formatAddress } from '@/lib/address';
 import { formatDate } from '@/lib/format';
 import { DriverFormValues } from '@/lib/schemas/driverSchema';
 
@@ -26,7 +27,7 @@ const SummaryStep = ({ values, hasPhoto }: SummaryStepProps) => (
 
     <StepCard
       title={`${values.name} ${values.surnames}`.trim()}
-      description={`${hasPhoto ? 'Con foto' : 'Sin foto'} · ${values.guarantors.length} ${values.guarantors.length === 1 ? 'aval' : 'avales'}`}
+      description={`${hasPhoto ? 'Con foto' : 'Sin foto'} · ${values.garages.length} ${values.garages.length === 1 ? 'cochera' : 'cocheras'} · ${values.guarantors.length} ${values.guarantors.length === 1 ? 'aval' : 'avales'}`}
     >
       <div className="grid gap-5 lg:grid-cols-2">
         <InfoCard
@@ -35,7 +36,7 @@ const SummaryStep = ({ values, hasPhoto }: SummaryStepProps) => (
           rows={[
             { label: 'Nombre', value: values.name },
             { label: 'Apellidos', value: values.surnames },
-            { label: 'Identificación', value: values.identificationNumber, mono: true },
+            { label: 'CURP', value: values.identificationNumber, mono: true },
           ]}
         />
         <InfoCard
@@ -49,26 +50,31 @@ const SummaryStep = ({ values, hasPhoto }: SummaryStepProps) => (
         <InfoCard
           icon={Phone}
           title="Contacto"
-          rows={[{ label: 'Teléfonos', value: values.telephones.join(' · '), mono: true }]}
+          rows={[{ label: 'Teléfonos', value: values.telephones.join(' · '), mono: true, wide: true }]}
         />
         <InfoCard
           icon={Home}
           title="Domicilio"
-          rows={[
-            { label: 'Domicilio', value: values.address },
-            { label: 'Cocheras', value: values.garageAddress.join(' · ') },
-          ]}
+          rows={[{ label: 'Domicilio', value: formatAddress(values.address), wide: true }]}
         />
+        {values.garages.map((garage, index) => (
+          <InfoCard
+            key={`garage-${index}`}
+            icon={Warehouse}
+            title={`Cochera ${index + 1}`}
+            rows={[{ label: 'Domicilio', value: formatAddress(garage.address), wide: true }]}
+          />
+        ))}
         {values.guarantors.map((guarantor, index) => (
           <InfoCard
-            key={`${guarantor.name}-${index}`}
+            key={`guarantor-${index}`}
             icon={ShieldCheck}
             title={`Aval ${index + 1}`}
             rows={[
               { label: 'Nombre', value: `${guarantor.name} ${guarantor.surnames}`.trim() },
               { label: 'Parentesco', value: guarantor.relation },
-              { label: 'Teléfonos', value: guarantor.telephones.join(' · '), mono: true },
-              { label: 'Domicilio', value: guarantor.address },
+              { label: 'Teléfonos', value: guarantor.telephones.join(' · '), mono: true, wide: true },
+              { label: 'Domicilio', value: formatAddress(guarantor.address), wide: true },
             ]}
           />
         ))}

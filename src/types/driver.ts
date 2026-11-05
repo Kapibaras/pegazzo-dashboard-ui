@@ -27,13 +27,34 @@ export type DriversParams = {
   sortOrder?: SortOrder;
 };
 
+/** A postal address split into fields; the backend joins them into the text it stores. */
+export type AddressFields = {
+  street: string;
+  exteriorNumber: string;
+  interiorNumber?: string | null;
+  neighborhood: string;
+  postalCode: string;
+  municipality: string;
+  state: string;
+};
+
 export type Guarantor = {
   id: number;
   name: string;
   surnames: string;
   telephones: string[];
   address: string;
+  /** `null` for addresses saved as free text before the split into fields. */
+  addressFields?: AddressFields | null;
   relation: string;
+  documents: ApiDocument[];
+};
+
+/** A garage of the driver; its address proof is the `proof_of_address` document attached to it. */
+export type Garage = {
+  id: number;
+  address: string;
+  addressFields?: AddressFields | null;
   documents: ApiDocument[];
 };
 
@@ -52,7 +73,7 @@ export type DriverRecord = DriverSummary & {
   licenseValidity: string;
   identificationNumber: string;
   address: string;
-  garageAddress: string[];
+  addressFields?: AddressFields | null;
   createdAt: string;
   updatedAt: string;
   archivedAt?: string | null;
@@ -61,6 +82,7 @@ export type DriverRecord = DriverSummary & {
 export type DriverDetail = DriverRecord & {
   documents: ApiDocument[];
   guarantors: Guarantor[];
+  garages: Garage[];
   assignedCar?: AssignedCar | null;
 };
 
@@ -73,9 +95,9 @@ export type DriverCreate = {
   licenseNumber: string;
   /** ISO datetime with timezone (naive datetimes are rejected). */
   licenseValidity: string;
+  /** CURP (18 characters). */
   identificationNumber: string;
-  address: string;
-  garageAddress: string[];
+  addressFields: AddressFields;
 };
 
 /** PATCH /management/drivers/{id}: only the changed fields. `photo: null` clears the photo; `status` has its own endpoint. */
@@ -85,10 +107,16 @@ export type GuarantorCreate = {
   name: string;
   surnames: string;
   telephones: string[];
-  address: string;
+  addressFields: AddressFields;
   relation: string;
 };
 export type GuarantorUpdate = Partial<GuarantorCreate>;
 
 /** Response of the guarantor endpoints (no documents; those come with the driver detail). */
 export type GuarantorRecord = Omit<Guarantor, 'documents'> & { createdAt: string; updatedAt: string };
+
+export type GarageCreate = { addressFields: AddressFields };
+export type GarageUpdate = GarageCreate;
+
+/** Response of the garage endpoints (no documents; those come with the driver detail). */
+export type GarageRecord = Omit<Garage, 'documents'> & { createdAt: string; updatedAt: string };
