@@ -9,7 +9,7 @@ import { VehicleFormValues } from '@/lib/schemas/vehicleSchema';
 import useVehicleCatalogs from '@/hooks/vehicles/useVehicleCatalogs';
 import { CreateAssociateDialog } from '../QuickCreateDialogs';
 import SearchCombobox from '../SearchCombobox';
-import { StepCard } from './fields';
+import { StepCard } from '@/components/common/wizard/fields';
 
 type AssociateStepProps = {
   form: UseFormReturn<VehicleFormValues>;

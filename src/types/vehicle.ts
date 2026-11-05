@@ -1,8 +1,8 @@
+import { ApiDocument } from './document';
 import { PaginationMeta, SortOrder } from './transaction';
 
 export type VehicleStatus = 'ACTIVE' | 'INACTIVE' | 'IN_MAINTENANCE';
 export type VehicleSortBy = 'make' | 'plate' | 'status' | 'year' | 'created_at';
-export type DocumentExpiryStatus = 'valid' | 'expiring_soon' | 'expired';
 
 export type VehicleSummary = {
   id: string;
@@ -44,15 +44,6 @@ export type VehicleAssociate = {
   name: string;
   surnames: string;
   telephones: string[];
-};
-
-export type VehicleDocument = {
-  id: number;
-  type: string;
-  category: string;
-  expiryDate?: string | null;
-  url: string;
-  expiryStatus?: DocumentExpiryStatus | null;
 };
 
 export type AssignedDriver = {
@@ -105,7 +96,7 @@ type VehicleBase = {
 export type VehicleDetail = VehicleBase & {
   insurance: VehicleInsurance;
   associate?: VehicleAssociate | null;
-  documents: VehicleDocument[];
+  documents: ApiDocument[];
   assignedDriver?: AssignedDriver | null;
 };
 
@@ -191,44 +182,3 @@ export type AssociateCreate = { name: string; surnames: string; telephones?: str
 export type AssociateUpdate = Partial<AssociateCreate>;
 /** GET /management/cars/associate/{id}: the associate plus the cars linked to it. */
 export type AssociateDetail = Associate & { cars: VehicleSummary[] };
-
-export type ActionSuccess = { message: string };
-
-export type DocumentEntityType = 'car' | 'driver' | 'guarantor';
-export type ImageEntityType = 'car_agency_image' | 'car_photo' | 'driver_photo';
-
-export type UploadUrlRequest = {
-  filename: string;
-  content_type: string;
-  entity_type: DocumentEntityType;
-  entity_id: string;
-};
-export type UploadUrlResponse = { upload_url: string; key: string; expires_in: number };
-
-export type DocumentConfirm = {
-  key: string;
-  type: string;
-  entity_type: DocumentEntityType;
-  entity_id: string;
-  expiry_date?: string | null;
-};
-
-export type DocumentRecord = {
-  id: number;
-  type: string;
-  url: string;
-  category: string;
-  status: string;
-  extracted_fields?: unknown;
-  expiry_date?: string | null;
-  created_at: string;
-  updated_at: string;
-};
-
-export type ImageUploadUrlRequest = {
-  filename: string;
-  content_type: string;
-  entity_type: ImageEntityType;
-  entity_id: string;
-};
-export type ImageUploadUrlResponse = { upload_url: string; key: string; public_url: string; expires_in: number };

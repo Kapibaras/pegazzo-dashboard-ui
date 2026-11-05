@@ -6,10 +6,10 @@ import { UseFormReturn } from 'react-hook-form';
 import { FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { isEngineLitres, VehicleFormValues } from '@/lib/schemas/vehicleSchema';
 import useVehicleCatalogs from '@/hooks/vehicles/useVehicleCatalogs';
-import ImageUpload, { ImageItem } from '../ImageUpload';
+import ImageUpload, { ImageItem } from '@/components/common/files/ImageUpload';
 import { CreateModelDialog } from '../QuickCreateDialogs';
 import SearchCombobox, { ComboboxOption } from '../SearchCombobox';
-import { FieldGrid, SelectField, StepCard, TextField } from './fields';
+import { FieldGrid, SelectField, StepCard, TextField } from '@/components/common/wizard/fields';
 
 type IdentityStepProps = {
   form: UseFormReturn<VehicleFormValues>;

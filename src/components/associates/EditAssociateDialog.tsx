@@ -18,7 +18,7 @@ import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
 import { fieldClass } from '@/lib/formField';
 import { ToastService } from '@/services/toast';
 import { Associate } from '@/types/vehicle';
-import PhoneListField from './PhoneListField';
+import PhoneListField from '@/components/common/PhoneListField';
 
 type EditAssociateDialogProps = {
   open: boolean;

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AbstractAPIService from './base/AbstractAPIService';
 import APIClientBase from '@/api/clients/base';
-import { ImageEntityType, ImageUploadUrlRequest, ImageUploadUrlResponse } from '@/types/vehicle';
+import { ImageEntityType, ImageUploadUrlRequest, ImageUploadUrlResponse } from '@/types/document';
 
 const IMAGES = '/management/images';
 
@@ -39,6 +39,11 @@ export default class ImageService extends AbstractAPIService {
 
     await this.uploadToStorage(upload_url, file, signal);
     return public_url;
+  }
+
+  /** Attaches an already uploaded public image as the driver photo (replaces the previous one). */
+  async setDriverPhoto(driverId: string, url: string): Promise<void> {
+    await this.client.patch(`${IMAGES}/drivers/${encodeURIComponent(driverId)}/photo`, { url });
   }
 
   async setCarAgencyImage(carId: string, url: string): Promise<void> {

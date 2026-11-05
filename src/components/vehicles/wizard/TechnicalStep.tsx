@@ -3,8 +3,8 @@
 import { UseFormReturn } from 'react-hook-form';
 import { VehicleFormValues } from '@/lib/schemas/vehicleSchema';
 import { MAX_VEHICLE_PHOTOS } from '@/lib/vehicle';
-import ImageUpload, { ImageItem } from '../ImageUpload';
-import { FieldGrid, StepCard, TextField } from './fields';
+import ImageUpload, { ImageItem } from '@/components/common/files/ImageUpload';
+import { FieldGrid, StepCard, TextField } from '@/components/common/wizard/fields';
 import TireField from './TireField';
 
 type TechnicalStepProps = {

@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import useVehicleCatalogs from '@/hooks/vehicles/useVehicleCatalogs';
 import { CreateInsuranceDialog } from '../QuickCreateDialogs';
 import SearchCombobox from '../SearchCombobox';
-import { FieldGrid, StepCard, TextField } from './fields';
+import { FieldGrid, StepCard, TextField } from '@/components/common/wizard/fields';
 
 type AdminStepProps = {
   form: UseFormReturn<VehicleFormValues>;

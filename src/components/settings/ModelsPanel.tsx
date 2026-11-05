@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { CreateModelDialog } from '@/components/vehicles/QuickCreateDialogs';
-import VehicleStatCard from '@/components/vehicles/VehicleStatCard';
+import StatCard from '@/components/common/StatCard';
 import { BUTTON_ICON_CLASS, primaryButton } from '@/lib/buttonStyles';
 import { searchFieldClass } from '@/lib/formField';
 import { VehicleModelGroup } from '@/types/vehicle';
@@ -56,19 +56,9 @@ const ModelsPanel = ({ groups }: { groups: VehicleModelGroup[] }) => {
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <VehicleStatCard
-          icon={Tags}
-          label="Marcas"
-          value={groups.length}
-          chipClassName="bg-primary-100 text-primary-800"
-        />
-        <VehicleStatCard
-          icon={Layers}
-          label="Modelos"
-          value={modelCount}
-          chipClassName="bg-success-50 text-success-700"
-        />
-        <VehicleStatCard
+        <StatCard icon={Tags} label="Marcas" value={groups.length} chipClassName="bg-primary-100 text-primary-800" />
+        <StatCard icon={Layers} label="Modelos" value={modelCount} chipClassName="bg-success-50 text-success-700" />
+        <StatCard
           icon={Tags}
           label="Marca con más modelos"
           value={largest?.make ?? '—'}

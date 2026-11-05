@@ -1,7 +1,7 @@
 import AbstractAPIService from './base/AbstractAPIService';
 import APIClientBase from '@/api/clients/base';
+import { ActionSuccess } from '@/types/document';
 import {
-  ActionSuccess,
   Associate,
   AssociateCreate,
   AssociateDetail,

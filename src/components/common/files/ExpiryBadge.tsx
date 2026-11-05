@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
-import { EXPIRY_STATUS_LABELS } from '@/lib/vehicle';
+import { EXPIRY_STATUS_LABELS } from '@/lib/documents';
 import { cn } from '@/lib/utils';
-import { DocumentExpiryStatus } from '@/types/vehicle';
+import { DocumentExpiryStatus } from '@/types/document';
 
 const EXPIRY_CLASSES: Record<DocumentExpiryStatus, string> = {
   valid: 'bg-success-50 text-success-700 hover:bg-success-50',

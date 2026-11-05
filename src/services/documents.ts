@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AbstractAPIService from './base/AbstractAPIService';
 import APIClientBase from '@/api/clients/base';
-import { DocumentConfirm, DocumentRecord, UploadUrlRequest, UploadUrlResponse } from '@/types/vehicle';
+import { DocumentConfirm, DocumentRecord, UploadUrlRequest, UploadUrlResponse } from '@/types/document';
 
 const DOCUMENTS = '/management/documents';
 

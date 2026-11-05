@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { CreateAssociateDialog } from '@/components/vehicles/QuickCreateDialogs';
-import VehicleStatCard from '@/components/vehicles/VehicleStatCard';
+import StatCard from '@/components/common/StatCard';
 import { BUTTON_ICON_CLASS, primaryButton } from '@/lib/buttonStyles';
 import { searchFieldClass } from '@/lib/formField';
 import { cn } from '@/lib/utils';
@@ -63,21 +63,21 @@ const AssociatesView = ({ associates }: { associates: Associate[] }) => {
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <VehicleStatCard
+        <StatCard
           icon={UsersRound}
           label="Socios"
           value={total}
           hint={total === 1 ? 'registrado' : 'registrados'}
           chipClassName="bg-primary-100 text-primary-800"
         />
-        <VehicleStatCard
+        <StatCard
           icon={CarFront}
           label="Coches asociados"
           value={totalCars}
           hint="entre todos los socios"
           chipClassName="bg-success-50 text-success-700"
         />
-        <VehicleStatCard
+        <StatCard
           icon={UserRoundX}
           label="Sin coches"
           value={withoutCars}

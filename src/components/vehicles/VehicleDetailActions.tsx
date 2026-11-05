@@ -18,7 +18,7 @@ import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
 import { Role } from '@/lib/schemas/userSchema';
 import { ToastService } from '@/services/toast';
 import { VehicleStatus } from '@/types/vehicle';
-import ArchiveVehicleDialog from './ArchiveVehicleDialog';
+import ArchiveDialog from '@/components/common/ArchiveDialog';
 import DeleteVehicleDialog from './DeleteVehicleDialog';
 import { ARCHIVE_REQUIRES_INACTIVE } from './VehicleActionsMenu';
 
@@ -141,10 +141,11 @@ const VehicleDetailActions = ({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <ArchiveVehicleDialog
+      <ArchiveDialog
         open={archiveOpen}
         onOpenChange={setArchiveOpen}
-        vehicleName={vehicleName}
+        entityLabel="coche"
+        entityName={vehicleName}
         isArchiving={isBusy}
         onConfirm={() =>
           void runAction(

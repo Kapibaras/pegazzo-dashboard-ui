@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Plus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import PhoneInput from '@/components/vehicles/PhoneInput';
+import PhoneInput from '@/components/common/PhoneInput';
 
 type PhoneListFieldProps = {
   value: string[];

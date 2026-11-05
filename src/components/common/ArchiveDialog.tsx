@@ -12,30 +12,27 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-type ArchiveVehicleDialogProps = {
+type ArchiveDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  vehicleName: string;
+  /** Singular noun in lower case, e.g. "coche" or "conductor". */
+  entityLabel: string;
+  entityName: string;
   isArchiving: boolean;
   onConfirm: () => void;
 };
 
-const ArchiveVehicleDialog = ({
-  open,
-  onOpenChange,
-  vehicleName,
-  isArchiving,
-  onConfirm,
-}: ArchiveVehicleDialogProps) => (
+/** Confirmation to archive a record of any module (vehicles, drivers…). */
+const ArchiveDialog = ({ open, onOpenChange, entityLabel, entityName, isArchiving, onConfirm }: ArchiveDialogProps) => (
   <AlertDialog open={open} onOpenChange={onOpenChange}>
     <AlertDialogContent>
       <AlertDialogHeader>
         <div className="bg-warning-100 mb-1 flex size-11 items-center justify-center rounded-full">
           <TriangleAlert className="text-warning-700 size-5" aria-hidden />
         </div>
-        <AlertDialogTitle className="typo-subtitle text-carbon-500">¿Archivar coche?</AlertDialogTitle>
+        <AlertDialogTitle className="typo-subtitle text-carbon-500">¿Archivar {entityLabel}?</AlertDialogTitle>
         <AlertDialogDescription className="typo-text text-carbon-300">
-          <span className="font-semibold">{vehicleName}</span> dejará de aparecer en el listado. Podrás consultarlo en
+          <span className="font-semibold">{entityName}</span> dejará de aparecer en el listado. Podrás consultarlo en
           Filtros → «Ver archivados» y desarchivarlo cuando quieras.
         </AlertDialogDescription>
       </AlertDialogHeader>
@@ -58,4 +55,4 @@ const ArchiveVehicleDialog = ({
   </AlertDialog>
 );
 
-export default ArchiveVehicleDialog;
+export default ArchiveDialog;

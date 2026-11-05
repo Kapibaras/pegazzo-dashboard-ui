@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 
 export type InfoRow = { label: string; value: React.ReactNode; mono?: boolean };
 
-type VehicleInfoCardProps = {
+type InfoCardProps = {
   icon: LucideIcon;
   title: string;
   rows: InfoRow[];
@@ -13,7 +13,7 @@ type VehicleInfoCardProps = {
 };
 
 /** Section card of the detail page: icon chip + title (+ optional badge) and a label/value list. */
-const VehicleInfoCard = ({ icon: Icon, title, rows, badge, chipClassName, className }: VehicleInfoCardProps) => (
+const InfoCard = ({ icon: Icon, title, rows, badge, chipClassName, className }: InfoCardProps) => (
   <section
     className={cn(
       'border-surface-600/70 flex flex-col gap-4 rounded-xl border bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]',
@@ -48,4 +48,4 @@ const VehicleInfoCard = ({ icon: Icon, title, rows, badge, chipClassName, classN
   </section>
 );
 
-export default VehicleInfoCard;
+export default InfoCard;

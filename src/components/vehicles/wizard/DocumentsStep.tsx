@@ -2,10 +2,10 @@
 
 import { Eye, FileText, Info } from 'lucide-react';
 import { getDocumentTypeLabel, requiredDocumentTypes } from '@/lib/vehicle';
-import { VehicleDocument } from '@/types/vehicle';
-import DocumentUpload, { StoredDocument } from '../DocumentUpload';
-import ViewFileTile from '../ViewFileTile';
-import { StepCard } from './fields';
+import { ApiDocument } from '@/types/document';
+import DocumentUpload, { StoredDocument } from '@/components/common/files/DocumentUpload';
+import ViewFileTile from '@/components/common/files/ViewFileTile';
+import { StepCard } from '@/components/common/wizard/fields';
 
 type DocumentsStepProps = {
   carId: string;
@@ -16,7 +16,7 @@ type DocumentsStepProps = {
   storedDocuments: Record<string, StoredDocument>;
   onDocumentChange: (type: string, document: StoredDocument) => void;
   /** Documents the car already had, to list the ones that are not required in the current situation. */
-  existingDocuments?: VehicleDocument[];
+  existingDocuments?: ApiDocument[];
 };
 
 const DocumentsStep = ({
@@ -73,6 +73,7 @@ const DocumentsStep = ({
               documentType={type}
               label={getDocumentTypeLabel(type)}
               required
+              errorModules={['common', 'vehicles']}
               current={storedDocuments[type] ?? null}
               onChange={(document) => onDocumentChange(type, document)}
               expiryDate={

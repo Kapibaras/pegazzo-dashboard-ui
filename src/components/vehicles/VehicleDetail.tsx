@@ -22,7 +22,6 @@ import {
 import { Badge } from '@/components/ui/badge';
 import {
   formatCurrency,
-  formatDate,
   formatOdometer,
   getDocumentTypeLabel,
   getTransmissionLabel,
@@ -30,15 +29,16 @@ import {
   isPegazzoOwner,
   requiredDocumentTypes,
 } from '@/lib/vehicle';
+import { formatDate } from '@/lib/format';
 import { VehicleDetail as VehicleDetailData } from '@/types/vehicle';
-import CanManage from './CanManage';
-import ExpiryBadge from './ExpiryBadge';
+import CanManage from '@/components/common/CanManage';
+import ExpiryBadge from '@/components/common/files/ExpiryBadge';
 import VehicleDetailActions from './VehicleDetailActions';
-import ViewFileButton from './ViewFileButton';
-import ViewFileTile from './ViewFileTile';
+import ViewFileButton from '@/components/common/files/ViewFileButton';
+import ViewFileTile from '@/components/common/files/ViewFileTile';
 import VehicleGallery from './VehicleGallery';
-import VehicleInfoCard from './VehicleInfoCard';
-import VehicleStatCard from './VehicleStatCard';
+import InfoCard from '@/components/common/InfoCard';
+import StatCard from '@/components/common/StatCard';
 import VehicleStatusSelector from './VehicleStatusSelector';
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
@@ -128,26 +128,26 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
         <VehicleGallery agencyImage={vehicle.agencyImage} photos={vehicle.photos} title={title} />
 
         <div className="grid grid-cols-2 gap-4">
-          <VehicleStatCard
+          <StatCard
             icon={Gauge}
             label="Odómetro"
             value={formatOdometer(vehicle.odometer)}
             chipClassName="bg-primary-50 text-primary-800"
           />
-          <VehicleStatCard
+          <StatCard
             icon={CircleDollarSign}
             label="Valor de unidad"
             value={formatCurrency(vehicle.unitValue)}
             chipClassName="bg-success-50 text-success-700"
           />
-          <VehicleStatCard
+          <StatCard
             icon={CalendarClock}
             label="Vencimiento de póliza"
             value={formatDate(vehicle.insurance?.policyExpirationDate)}
             hint={vehicle.insurance?.name}
             chipClassName="bg-warning-100 text-warning-700"
           />
-          <VehicleStatCard
+          <StatCard
             icon={UserRound}
             label="Socio"
             value={associate ? `${associate.name} ${associate.surnames}` : 'Sin socio'}
@@ -158,7 +158,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
       </div>
 
       <div className="grid gap-5 lg:grid-cols-2">
-        <VehicleInfoCard
+        <InfoCard
           icon={Car}
           title="Identidad"
           rows={[
@@ -169,7 +169,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
             { label: 'Carrocería', value: vehicle.bodyType },
           ]}
         />
-        <VehicleInfoCard
+        <InfoCard
           icon={Wrench}
           title="Datos técnicos"
           rows={[
@@ -183,7 +183,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
             { label: 'Llantas', value: vehicle.tireSpecification, mono: true },
           ]}
         />
-        <VehicleInfoCard
+        <InfoCard
           icon={BatteryCharging}
           title="Batería"
           rows={[
@@ -192,7 +192,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
             { label: 'Fecha', value: formatDate(vehicle.batteryDate), mono: true },
           ]}
         />
-        <VehicleInfoCard
+        <InfoCard
           icon={ShieldCheck}
           title="Seguro"
           rows={[
@@ -202,7 +202,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
             { label: 'Vigencia', value: formatDate(vehicle.insurance?.policyExpirationDate), mono: true },
           ]}
         />
-        <VehicleInfoCard
+        <InfoCard
           icon={Receipt}
           title="Registro y facturación"
           rows={[
@@ -213,7 +213,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
             { label: 'Fecha de alta RPV', value: formatDate(vehicle.altaPublicVehicleRegistry), mono: true },
           ]}
         />
-        <VehicleInfoCard
+        <InfoCard
           icon={Landmark}
           title="Financiamiento"
           badge={
@@ -238,7 +238,7 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
                 ]
           }
         />
-        <VehicleInfoCard
+        <InfoCard
           icon={Scale}
           title="Propietario legal"
           badge={
@@ -257,13 +257,22 @@ const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
             { label: 'Apellidos', value: vehicle.legalOwnerSurnames },
           ]}
         />
-        <VehicleInfoCard
+        <InfoCard
           icon={Fingerprint}
           title="Conductor asignado"
           rows={[
             {
               label: 'Conductor',
-              value: driver ? `${driver.name} ${driver.surnames}` : 'Sin asignar',
+              value: driver ? (
+                <Link
+                  href={`/conductores/${encodeURIComponent(driver.id)}`}
+                  className="text-primary-800 hover:underline"
+                >
+                  {driver.name} {driver.surnames}
+                </Link>
+              ) : (
+                'Sin asignar'
+              ),
             },
           ]}
         />

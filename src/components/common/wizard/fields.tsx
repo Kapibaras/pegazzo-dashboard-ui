@@ -1,21 +1,21 @@
 'use client';
 
-import { Control } from 'react-hook-form';
+import { Control, FieldPath, FieldPathValue, FieldValues } from 'react-hook-form';
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { fieldClass } from '@/lib/formField';
 import { caretForCount, countSignificant, formatNumberDisplay, NumberFormat, sanitizeNumber } from '@/lib/inputFormat';
 import { cn } from '@/lib/utils';
-import { VehicleFormValues } from '@/lib/schemas/vehicleSchema';
 
-type StringFieldName = {
-  [K in keyof VehicleFormValues]: VehicleFormValues[K] extends string ? K : never;
-}[keyof VehicleFormValues];
+/** Names of the form fields that hold a string. */
+export type StringFieldName<T extends FieldValues> = {
+  [K in FieldPath<T>]: FieldPathValue<T, K> extends string ? K : never;
+}[FieldPath<T>];
 
-type TextFieldProps = {
-  control: Control<VehicleFormValues>;
-  name: StringFieldName;
+type TextFieldProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: StringFieldName<T>;
   label: string;
   placeholder?: string;
   type?: 'text' | 'date' | 'tel';
@@ -31,7 +31,7 @@ type TextFieldProps = {
   className?: string;
 };
 
-export const TextField = ({
+export const TextField = <T extends FieldValues>({
   control,
   name,
   label,
@@ -46,7 +46,7 @@ export const TextField = ({
   suffix,
   format,
   className,
-}: TextFieldProps) => (
+}: TextFieldProps<T>) => (
   <FormField
     control={control}
     name={name}
@@ -96,9 +96,9 @@ export const TextField = ({
   />
 );
 
-type SelectFieldProps = {
-  control: Control<VehicleFormValues>;
-  name: StringFieldName;
+type SelectFieldProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: StringFieldName<T>;
   label: string;
   options: { value: string; label: string }[];
   placeholder?: string;
@@ -106,7 +106,15 @@ type SelectFieldProps = {
   className?: string;
 };
 
-export const SelectField = ({ control, name, label, options, placeholder, disabled, className }: SelectFieldProps) => (
+export const SelectField = <T extends FieldValues>({
+  control,
+  name,
+  label,
+  options,
+  placeholder,
+  disabled,
+  className,
+}: SelectFieldProps<T>) => (
   <FormField
     control={control}
     name={name}

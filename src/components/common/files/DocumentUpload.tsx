@@ -7,14 +7,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useUser } from '@/contexts/UserProvider';
-import { useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
+import { type ErrorModules, useApiErrorHandler } from '@/hooks/errors/useApiErrorHandler';
 import { isAbortError, NETWORK_ERROR_MESSAGE, normalizeApiError } from '@/helpers/apiError';
-import { DOCUMENT_ACCEPT, IMAGE_ACCEPT, MAX_DOCUMENT_SIZE_MB } from '@/lib/vehicle';
+import { DOCUMENT_ACCEPT, IMAGE_ACCEPT, MAX_DOCUMENT_SIZE_MB } from '@/lib/documents';
 import { Role } from '@/lib/schemas/userSchema';
 import { cn } from '@/lib/utils';
 import DocumentService from '@/services/documents';
 import { ToastService } from '@/services/toast';
-import { DocumentEntityType, DocumentRecord } from '@/types/vehicle';
+import { DocumentEntityType, DocumentRecord } from '@/types/document';
 import ViewFileTile from './ViewFileTile';
 
 /** A document that is already stored for the entity (`url` is a presigned read URL). */
@@ -40,6 +40,8 @@ export type DocumentUploadProps = {
   onChange?: (document: StoredDocument) => void;
   onUploaded?: (document: DocumentRecord) => void;
   onError?: (error: { status: number; detail: string }) => void;
+  /** Error maps used to translate backend failures into toasts (the feature module of the caller, e.g. `vehicles`). */
+  errorModules?: ErrorModules[];
   className?: string;
 };
 
@@ -69,6 +71,7 @@ const DocumentUpload = ({
   onChange,
   onUploaded,
   onError,
+  errorModules = ['common'],
   className,
 }: DocumentUploadProps) => {
   const { user } = useUser();
@@ -162,10 +165,22 @@ const DocumentUpload = ({
           return;
         }
         setMessage('No se pudo subir el archivo. Inténtalo de nuevo.');
-        await handleApiError(apiError, ['common', 'vehicles']);
+        await handleApiError(apiError, errorModules);
       }
     },
-    [service, entityType, entityId, documentType, expiryDate, stored, onChange, onUploaded, onError, handleApiError],
+    [
+      service,
+      entityType,
+      entityId,
+      documentType,
+      expiryDate,
+      stored,
+      onChange,
+      onUploaded,
+      onError,
+      handleApiError,
+      errorModules,
+    ],
   );
 
   const handleFile = useCallback(
