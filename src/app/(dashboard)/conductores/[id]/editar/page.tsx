@@ -26,7 +26,22 @@ const EditDriverPage = async ({ params, searchParams }: Props) => {
 
   try {
     const driver = await new DriverService(new ScopedAPIClient(cookies)).getDriver(safeDecode(id));
-    return <DriverWizard mode="edit" driver={driver} initialStep={paso === 'documentos' ? 'documents' : undefined} />;
+    // The wizard keeps its own state: remount it when the saved data changed (e.g. proofs deleted after an address edit).
+    const version = JSON.stringify([
+      paso,
+      driver.updatedAt,
+      driver.documents.map((doc) => doc.id),
+      driver.garages.map((garage) => [garage.id, garage.address, garage.documents.map((doc) => doc.id)]),
+      driver.guarantors.map((guarantor) => [guarantor.id, guarantor.address, guarantor.documents.map((doc) => doc.id)]),
+    ]);
+    return (
+      <DriverWizard
+        key={version}
+        mode="edit"
+        driver={driver}
+        initialStep={paso === 'documentos' ? 'documents' : undefined}
+      />
+    );
   } catch (error) {
     if (isAPIErrorType(error)) {
       if (error.status_code === 401 && error.detail === 'SESSION_EXPIRED') redirect('/api/auth/signout');

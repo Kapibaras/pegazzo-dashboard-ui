@@ -70,3 +70,12 @@ export const toAddressPayload = (fields: AddressFields): AddressFields => {
     state: fields.state.trim(),
   };
 };
+
+/** Every required field is filled (the same minimum the form enforces), so the address can be copied elsewhere. */
+export const isAddressComplete = (fields: AddressFields): boolean =>
+  !!fields.street.trim() &&
+  !!fields.exteriorNumber.trim() &&
+  !!fields.neighborhood.trim() &&
+  /^\d{5}$/.test(fields.postalCode.trim()) &&
+  !!fields.municipality.trim() &&
+  !!fields.state.trim();

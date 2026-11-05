@@ -62,6 +62,7 @@ const DriverDetail = ({ driver }: { driver: DriverDetailData }) => {
   const car = driver.assignedCar;
   const missing = getMissingDriverDocuments(driver);
   const activationBlocker = getActivationBlocker(driver);
+  const licensePermanent = driver.licenseValidity === null;
   const licenseStatus = getExpiryStatus(driver.licenseValidity);
 
   // Everything that is still missing, in words, for the banner.
@@ -165,8 +166,10 @@ const DriverDetail = ({ driver }: { driver: DriverDetailData }) => {
           <StatCard
             icon={CalendarClock}
             label="Vigencia de licencia"
-            value={formatDate(driver.licenseValidity)}
-            hint={licenseStatus ? EXPIRY_STATUS_LABELS[licenseStatus] : undefined}
+            value={licensePermanent ? 'Permanente' : formatDate(driver.licenseValidity)}
+            hint={
+              licensePermanent ? 'Sin vencimiento' : licenseStatus ? EXPIRY_STATUS_LABELS[licenseStatus] : undefined
+            }
             chipClassName={licenseStatus ? LICENSE_CHIP[licenseStatus] : 'bg-primary-50 text-primary-800'}
           />
           <StatCard
@@ -214,7 +217,11 @@ const DriverDetail = ({ driver }: { driver: DriverDetailData }) => {
           }
           rows={[
             { label: 'Número', value: driver.licenseNumber, mono: true },
-            { label: 'Vigencia', value: formatDate(driver.licenseValidity), mono: true },
+            {
+              label: 'Vigencia',
+              value: licensePermanent ? 'Permanente' : formatDate(driver.licenseValidity),
+              mono: !licensePermanent,
+            },
           ]}
         />
         <InfoCard

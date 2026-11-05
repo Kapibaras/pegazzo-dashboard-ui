@@ -70,7 +70,8 @@ export type AssignedCar = {
 export type DriverRecord = DriverSummary & {
   telephones: string[];
   licenseNumber: string;
-  licenseValidity: string;
+  /** `null` for a permanent license (no expiry date). */
+  licenseValidity: string | null;
   identificationNumber: string;
   address: string;
   addressFields?: AddressFields | null;
@@ -93,8 +94,8 @@ export type DriverCreate = {
   status: DriverStatus;
   telephones: string[];
   licenseNumber: string;
-  /** ISO datetime with timezone (naive datetimes are rejected). */
-  licenseValidity: string;
+  /** ISO datetime with timezone (naive datetimes are rejected). `null` for a permanent license. */
+  licenseValidity: string | null;
   /** CURP (18 characters). */
   identificationNumber: string;
   addressFields: AddressFields;

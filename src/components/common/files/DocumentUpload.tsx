@@ -81,6 +81,13 @@ const DocumentUpload = ({
   const abortRef = useRef<AbortController | null>(null);
 
   const [stored, setStored] = useState<StoredDocument | null>(current);
+  // The parent can put a document in the slot on its own (e.g. a copy of the driver's address proof): follow it.
+  const currentId = current?.id;
+  useEffect(() => {
+    setStored((previous) => (currentId !== undefined && previous?.id !== currentId ? current : previous));
+    // `current` is only read when its id changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentId]);
   const [state, setState] = useState<UploadState>('idle');
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);

@@ -14,17 +14,31 @@ export type LegacyAddresses = {
   guarantors: Record<number, string>;
 };
 
+export const ADDRESS_CHANGE_NOTE =
+  'Si cambias un domicilio ya guardado, su comprobante de domicilio anterior se elimina al guardar y tendrás que subir uno nuevo.';
+
 type AddressStepProps = {
   form: UseFormReturn<DriverFormValues>;
   legacy: LegacyAddresses;
+  /** Edit mode: warns that changing a saved address deletes its proof. */
+  isEdit?: boolean;
 };
 
-const AddressStep = ({ form, legacy }: AddressStepProps) => {
+const AddressStep = ({ form, legacy, isEdit = false }: AddressStepProps) => {
   const { fields, append, remove } = useFieldArray({ control: form.control, name: 'garages' });
   const garagesError = form.formState.errors.garages?.root?.message ?? form.formState.errors.garages?.message;
 
   return (
     <div className="flex flex-col gap-5">
+      {isEdit && (
+        <p
+          className="typo-sm-text bg-warning-100/60 text-warning-800 flex items-start gap-2 rounded-lg px-4 py-3"
+          role="note"
+        >
+          <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
+          {ADDRESS_CHANGE_NOTE}
+        </p>
+      )}
       <StepCard title="Domicilio del conductor" description="El domicilio de su comprobante de domicilio.">
         <AddressFieldset form={form} path="address" legacyText={legacy.driver} />
       </StepCard>
@@ -49,6 +63,7 @@ const AddressStep = ({ form, legacy }: AddressStepProps) => {
           <AddressFieldset
             form={form}
             path={`garages.${index}.address`}
+            sameAsDriverPath={index === 0 ? 'garages.0.sameAsDriver' : undefined}
             legacyText={item.garageId ? legacy.garages[item.garageId] : null}
           />
           {fields.length > 1 && (

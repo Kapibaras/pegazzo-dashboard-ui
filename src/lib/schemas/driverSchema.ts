@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { AddressFormValues, EMPTY_ADDRESS, sameAddress, toAddressFormValues, toAddressPayload } from '@/lib/address';
 import { CURP_LENGTH, CURP_REGEX, MAX_GUARANTORS } from '@/lib/driver';
 import {
+  AddressFields,
   DriverCreate,
   DriverDetail,
   DriverUpdate,
@@ -70,21 +71,27 @@ const guarantorSchema = z.object({
   relation: text('El parentesco', 50),
   telephones: telephones(' del aval'),
   address: addressSchema,
+  /** UI only (never sent): the address is the driver's, kept in sync with it while this is on. */
+  sameAsDriver: z.boolean(),
 });
 
 const garageSchema = z.object({
   /** Backend id; present only for garages that already exist (edit mode). Same naming reason as `guarantorId`. */
   garageId: z.number().optional(),
   address: addressSchema,
+  /** UI only (never sent); only the first garage can use the driver's address. */
+  sameAsDriver: z.boolean(),
 });
 
-const baseSchema = z.object({
+const objectSchema = z.object({
   // Step 1 – Datos del conductor
   name: text('El nombre', 50),
   surnames: text('Los apellidos', 100),
   identificationNumber: curp,
   licenseNumber: text('El número de licencia', 20),
-  licenseValidity: date('La vigencia de la licencia'),
+  /** Date of the license; empty when it is permanent. */
+  licenseValidity: z.string(),
+  licensePermanent: z.boolean(),
   telephones: telephones(''),
   // Step 2 – Domicilio y cocheras
   address: addressSchema,
@@ -98,19 +105,35 @@ const baseSchema = z.object({
 
 export type GuarantorFormValues = z.infer<typeof guarantorSchema>;
 export type GarageFormValues = z.infer<typeof garageSchema>;
-export type DriverFormValues = z.infer<typeof baseSchema>;
+export type DriverFormValues = z.infer<typeof objectSchema>;
 
 type SchemaOptions = {
   /** In edit mode an already expired license can be left untouched; only a *changed* date must not be in the past. */
   initialLicenseValidity?: string;
 };
 
+const licenseDate = date('La vigencia de la licencia');
+
 export const buildDriverSchema = ({ initialLicenseValidity }: SchemaOptions = {}) =>
-  baseSchema.extend({
-    licenseValidity: date('La vigencia de la licencia').refine(
-      (value) => value === initialLicenseValidity || Date.parse(`${value}T23:59:59Z`) > Date.now(),
-      'La vigencia de la licencia no puede estar en el pasado.',
-    ),
+  objectSchema.superRefine((values, ctx) => {
+    // A permanent license has no date to check.
+    if (values.licensePermanent) return;
+
+    const parsed = licenseDate.safeParse(values.licenseValidity);
+    if (!parsed.success) {
+      ctx.addIssue({ code: 'custom', path: ['licenseValidity'], message: parsed.error.issues[0].message });
+      return;
+    }
+    if (
+      values.licenseValidity !== initialLicenseValidity &&
+      Date.parse(`${values.licenseValidity}T23:59:59Z`) <= Date.now()
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['licenseValidity'],
+        message: 'La vigencia de la licencia no puede estar en el pasado.',
+      });
+    }
   });
 
 const emptyAddress = (): AddressFormValues => ({ ...EMPTY_ADDRESS });
@@ -121,9 +144,10 @@ export const EMPTY_GUARANTOR: GuarantorFormValues = {
   relation: '',
   telephones: [],
   address: emptyAddress(),
+  sameAsDriver: false,
 };
 
-export const EMPTY_GARAGE: GarageFormValues = { address: emptyAddress() };
+export const EMPTY_GARAGE: GarageFormValues = { address: emptyAddress(), sameAsDriver: false };
 
 export const DEFAULT_DRIVER_FORM_VALUES: DriverFormValues = {
   name: '',
@@ -131,9 +155,10 @@ export const DEFAULT_DRIVER_FORM_VALUES: DriverFormValues = {
   identificationNumber: '',
   licenseNumber: '',
   licenseValidity: '',
+  licensePermanent: false,
   telephones: [],
   address: emptyAddress(),
-  garages: [{ address: emptyAddress() }],
+  garages: [{ address: emptyAddress(), sameAsDriver: false }],
   guarantors: [{ ...EMPTY_GUARANTOR, address: emptyAddress() }],
 };
 
@@ -144,7 +169,15 @@ export const STEP_FIELDS: Record<
   Exclude<WizardStepId, 'photo' | 'summary' | 'documents'>,
   (keyof DriverFormValues)[]
 > = {
-  data: ['name', 'surnames', 'identificationNumber', 'licenseNumber', 'licenseValidity', 'telephones'],
+  data: [
+    'name',
+    'surnames',
+    'identificationNumber',
+    'licenseNumber',
+    'licensePermanent',
+    'licenseValidity',
+    'telephones',
+  ],
   address: ['address', 'garages'],
   guarantors: ['guarantors'],
 };
@@ -156,17 +189,23 @@ const toDateInput = (iso: string): string => iso.slice(0, 10);
 /** The license validity is a calendar date: it is sent as midnight UTC so it never shifts a day. */
 const toApiDateTime = (value: string): string => `${value}T00:00:00Z`;
 
+/** An address that equals the driver's own is shown with "use the driver's address" on when editing. */
+const usesDriverAddress = (driver: DriverDetail, fields: AddressFields | null | undefined): boolean =>
+  !!driver.addressFields && !!fields && sameAddress(fields, driver.addressFields);
+
 export const driverToFormValues = (driver: DriverDetail): DriverFormValues => ({
   name: driver.name,
   surnames: driver.surnames,
   identificationNumber: driver.identificationNumber,
   licenseNumber: driver.licenseNumber,
-  licenseValidity: toDateInput(driver.licenseValidity),
+  licenseValidity: driver.licenseValidity ? toDateInput(driver.licenseValidity) : '',
+  licensePermanent: driver.licenseValidity === null,
   telephones: driver.telephones ?? [],
   address: toAddressFormValues(driver.addressFields),
-  garages: (driver.garages ?? []).map((garage) => ({
+  garages: (driver.garages ?? []).map((garage, index) => ({
     garageId: garage.id,
     address: toAddressFormValues(garage.addressFields),
+    sameAsDriver: index === 0 && usesDriverAddress(driver, garage.addressFields),
   })),
   guarantors: (driver.guarantors ?? []).map((guarantor) => ({
     guarantorId: guarantor.id,
@@ -175,6 +214,7 @@ export const driverToFormValues = (driver: DriverDetail): DriverFormValues => ({
     relation: guarantor.relation,
     telephones: guarantor.telephones ?? [],
     address: toAddressFormValues(guarantor.addressFields),
+    sameAsDriver: usesDriverAddress(driver, guarantor.addressFields),
   })),
 });
 
@@ -199,7 +239,7 @@ export const toCreatePayload = (values: DriverFormValues): DriverCreate => ({
   status: 'INACTIVE',
   telephones: values.telephones,
   licenseNumber: values.licenseNumber.trim(),
-  licenseValidity: toApiDateTime(values.licenseValidity),
+  licenseValidity: values.licensePermanent ? null : toApiDateTime(values.licenseValidity),
   identificationNumber: values.identificationNumber.trim().toUpperCase(),
   addressFields: toAddressPayload(values.address),
 });
@@ -215,8 +255,8 @@ export const toUpdatePayload = (values: DriverFormValues, initial: DriverFormVal
   (['name', 'surnames', 'licenseNumber'] as const).forEach(trimmed);
   const curpValue = values.identificationNumber.trim().toUpperCase();
   if (curpValue !== initial.identificationNumber.trim().toUpperCase()) payload.identificationNumber = curpValue;
-  if (values.licenseValidity !== initial.licenseValidity)
-    payload.licenseValidity = toApiDateTime(values.licenseValidity);
+  const validity = (v: DriverFormValues) => (v.licensePermanent ? null : toApiDateTime(v.licenseValidity));
+  if (validity(values) !== validity(initial)) payload.licenseValidity = validity(values);
   if (!sameList(values.telephones, initial.telephones)) payload.telephones = values.telephones;
   if (!sameAddress(values.address, initial.address)) payload.addressFields = toAddressPayload(values.address);
 

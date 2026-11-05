@@ -9,14 +9,16 @@ import { FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/for
 import { MAX_GUARANTORS } from '@/lib/driver';
 import { DriverFormValues, EMPTY_GUARANTOR } from '@/lib/schemas/driverSchema';
 import AddressFieldset from './AddressFieldset';
-import { LegacyAddresses } from './AddressStep';
+import { ADDRESS_CHANGE_NOTE, LegacyAddresses } from './AddressStep';
 
 type GuarantorsStepProps = {
   form: UseFormReturn<DriverFormValues>;
   legacy: LegacyAddresses;
+  /** Edit mode: warns that changing a saved address deletes its proof. */
+  isEdit?: boolean;
 };
 
-const GuarantorsStep = ({ form, legacy }: GuarantorsStepProps) => {
+const GuarantorsStep = ({ form, legacy, isEdit = false }: GuarantorsStepProps) => {
   const { fields, append, remove } = useFieldArray({ control: form.control, name: 'guarantors' });
   const rootError = form.formState.errors.guarantors?.root?.message ?? form.formState.errors.guarantors?.message;
 
@@ -32,6 +34,16 @@ const GuarantorsStep = ({ form, legacy }: GuarantorsStepProps) => {
           último paso, cuando el conductor ya está creado.
         </p>
       </div>
+
+      {isEdit && (
+        <p
+          className="typo-sm-text bg-warning-100/60 text-warning-800 flex items-start gap-2 rounded-lg px-4 py-3"
+          role="note"
+        >
+          <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
+          {ADDRESS_CHANGE_NOTE}
+        </p>
+      )}
 
       {fields.map((item, index) => (
         <StepCard
@@ -54,6 +66,7 @@ const GuarantorsStep = ({ form, legacy }: GuarantorsStepProps) => {
           <AddressFieldset
             form={form}
             path={`guarantors.${index}.address`}
+            sameAsDriverPath={`guarantors.${index}.sameAsDriver`}
             legacyText={item.guarantorId ? legacy.guarantors[item.guarantorId] : null}
           />
 

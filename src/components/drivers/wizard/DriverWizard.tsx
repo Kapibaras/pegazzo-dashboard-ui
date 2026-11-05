@@ -39,6 +39,8 @@ import {
   WizardStepId,
 } from '@/lib/schemas/driverSchema';
 import { Role } from '@/lib/schemas/userSchema';
+import { sameAddress } from '@/lib/address';
+import DocumentService from '@/services/documents';
 import DriverService from '@/services/driver';
 import ImageService from '@/services/images';
 import { ToastService } from '@/services/toast';
@@ -229,9 +231,17 @@ const DriverWizard = (props: DriverWizardProps) => {
         setProgressOpen(false);
         setStepIndex(steps.indexOf('documents'));
       } else {
-        ToastService.success('Cambios guardados', 'El conductor se actualizó correctamente.');
         setProgressOpen(false);
-        router.push(`/conductores/${encodeURIComponent(driver!.id)}`);
+        if (proofsResetRef.current) {
+          ToastService.info(
+            'Domicilio actualizado',
+            'Se eliminó el comprobante anterior: sube uno nuevo para el domicilio que cambió.',
+          );
+          router.push(`/conductores/${encodeURIComponent(driver!.id)}/editar?paso=documentos`);
+        } else {
+          ToastService.success('Cambios guardados', 'El conductor se actualizó correctamente.');
+          router.push(`/conductores/${encodeURIComponent(driver!.id)}`);
+        }
         router.refresh();
       }
     }
@@ -337,6 +347,10 @@ const DriverWizard = (props: DriverWizardProps) => {
     const payload = toUpdatePayload(snapshot, initialValues);
     const changes = diffGuarantors(snapshot.guarantors, initialValues.guarantors);
     const garageChanges = diffGarages(snapshot.garages, initialValues.garages);
+    proofsResetRef.current =
+      !!payload.addressFields ||
+      garageChanges.updated.length > 0 ||
+      changes.updated.some((item) => !!item.payload.addressFields);
     const photoRemoved = !!driver?.photo && photos.length === 0;
 
     const tasks: SaveTask[] = [];
@@ -442,6 +456,98 @@ const DriverWizard = (props: DriverWizardProps) => {
     if (stepId === 'documents') return void router.push('/conductores');
     void goNext();
   };
+
+  /* ---------- "Use the driver's address" ---------- */
+
+  const watched = form.watch();
+  const documentService = useMemo(() => new DocumentService(SingletonAPIClient.getInstance()), []);
+  const copiedProofsRef = useRef<Set<string>>(new Set());
+  // Set when saving changes an address: its old proof is deleted by the backend and a new one must be uploaded.
+  const proofsResetRef = useRef(false);
+
+  // While "Usar domicilio del conductor" is on, the garage / guarantor address follows the driver's address. Only the
+  // first garage can use it, so the flag is dropped when another garage ends up first or is not the first one.
+  const driverAddressKey = JSON.stringify(watched.address);
+  const sameFlagsKey = JSON.stringify([
+    watched.garages.map((garage) => garage.sameAsDriver),
+    watched.guarantors.map((guarantor) => guarantor.sameAsDriver),
+  ]);
+  useEffect(() => {
+    const driverAddress = form.getValues('address');
+    form.getValues('garages').forEach((garage, index) => {
+      if (!garage.sameAsDriver) return;
+      if (index > 0) form.setValue(`garages.${index}.sameAsDriver`, false);
+      else if (!sameAddress(garage.address, driverAddress)) form.setValue('garages.0.address', { ...driverAddress });
+    });
+    form.getValues('guarantors').forEach((guarantor, index) => {
+      if (guarantor.sameAsDriver && !sameAddress(guarantor.address, driverAddress)) {
+        form.setValue(`guarantors.${index}.address`, { ...driverAddress });
+      }
+    });
+  }, [driverAddressKey, sameFlagsKey, form]);
+
+  // Once the driver has an address proof, the same file is uploaded as the proof of every garage / guarantor that uses
+  // the driver's address and has none yet. Each one keeps its own copy, so replacing one never affects the others.
+  const driverProof = storedDocuments.proof_of_address;
+  useEffect(() => {
+    if (stepId !== 'documents' || !driverId || !driverProof) return;
+
+    const copyTo = async (kind: 'garage' | 'guarantor', id: number, label: string) => {
+      const key = `${kind}-${id}-${driverProof.id}`;
+      if (copiedProofsRef.current.has(key)) return;
+      copiedProofsRef.current.add(key);
+
+      try {
+        const response = await fetch(driverProof.url);
+        if (!response.ok) throw new Error('download failed');
+        const blob = await response.blob();
+        const extensions: Record<string, string> = {
+          'application/pdf': 'pdf',
+          'image/jpeg': 'jpg',
+          'image/png': 'png',
+          'image/webp': 'webp',
+        };
+        const file = new File([blob], `comprobante-de-domicilio.${extensions[blob.type] ?? 'bin'}`, {
+          type: blob.type,
+        });
+        const created = await documentService.upload(file, {
+          entityType: kind,
+          entityId: String(id),
+          documentType: 'proof_of_address',
+        });
+        const stored = { id: created.id, url: created.url };
+        if (kind === 'garage') handleGarageDocumentChange(id, 'proof_of_address', stored);
+        else handleGuarantorDocumentChange(id, 'proof_of_address', stored);
+        ToastService.success('Comprobante copiado', `Se usó el comprobante del conductor para ${label}.`);
+      } catch {
+        ToastService.error('No se pudo copiar el comprobante', `Súbelo manualmente para ${label}.`);
+      }
+    };
+
+    watched.garages.forEach((garage, index) => {
+      if (index === 0 && garage.sameAsDriver && garage.garageId !== undefined) {
+        if (!garageDocuments[garage.garageId]?.proof_of_address) void copyTo('garage', garage.garageId, 'la cochera 1');
+      }
+    });
+    watched.guarantors.forEach((guarantor, index) => {
+      if (guarantor.sameAsDriver && guarantor.guarantorId !== undefined) {
+        if (!guarantorDocuments[guarantor.guarantorId]?.proof_of_address) {
+          void copyTo('guarantor', guarantor.guarantorId, `el aval ${index + 1}`);
+        }
+      }
+    });
+  }, [
+    stepId,
+    driverId,
+    driverProof,
+    watched.garages,
+    watched.guarantors,
+    garageDocuments,
+    guarantorDocuments,
+    documentService,
+    handleGarageDocumentChange,
+    handleGuarantorDocumentChange,
+  ]);
 
   /* ---------- Render ---------- */
 
@@ -556,23 +662,28 @@ const DriverWizard = (props: DriverWizardProps) => {
           className="flex flex-col gap-6"
         >
           {stepId === 'data' && <DataStep form={form} showFolioNotice={isCreate} />}
-          {stepId === 'address' && <AddressStep form={form} legacy={legacyAddresses} />}
+          {stepId === 'address' && <AddressStep form={form} legacy={legacyAddresses} isEdit={isEdit} />}
           {stepId === 'photo' && <PhotoStep photos={photos} onPhotosChange={setPhotos} />}
-          {stepId === 'guarantors' && <GuarantorsStep form={form} legacy={legacyAddresses} />}
+          {stepId === 'guarantors' && <GuarantorsStep form={form} legacy={legacyAddresses} isEdit={isEdit} />}
           {stepId === 'summary' && <SummaryStep values={values} hasPhoto={photos.length > 0} />}
           {isDocumentsStep && driverId && (
             <DocumentsStep
               driverId={driverId}
-              licenseValidity={values.licenseValidity}
+              licenseValidity={values.licensePermanent ? undefined : values.licenseValidity}
               storedDocuments={storedDocuments}
               onDocumentChange={handleDocumentChange}
               guarantors={values.guarantors.map((guarantor) => ({
                 guarantorId: guarantor.guarantorId,
+                sameAsDriver: guarantor.sameAsDriver,
                 label: `${guarantor.name} ${guarantor.surnames}`.trim(),
               }))}
               guarantorDocuments={guarantorDocuments}
               onGuarantorDocumentChange={handleGuarantorDocumentChange}
-              garages={values.garages.map((garage) => ({ garageId: garage.garageId, address: garage.address }))}
+              garages={values.garages.map((garage, index) => ({
+                garageId: garage.garageId,
+                address: garage.address,
+                sameAsDriver: index === 0 && garage.sameAsDriver,
+              }))}
               garageDocuments={garageDocuments}
               onGarageDocumentChange={handleGarageDocumentChange}
               missingCount={missingCount}

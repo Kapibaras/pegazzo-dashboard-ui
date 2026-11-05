@@ -44,7 +44,11 @@ const SummaryStep = ({ values, hasPhoto }: SummaryStepProps) => (
           title="Licencia de conducir"
           rows={[
             { label: 'Número', value: values.licenseNumber, mono: true },
-            { label: 'Vigencia', value: formatDate(values.licenseValidity), mono: true },
+            {
+              label: 'Vigencia',
+              value: values.licensePermanent ? 'Permanente' : formatDate(values.licenseValidity),
+              mono: !values.licensePermanent,
+            },
           ]}
         />
         <InfoCard

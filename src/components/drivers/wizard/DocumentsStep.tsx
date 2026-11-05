@@ -21,12 +21,16 @@ export type DocumentsStepGuarantor = {
   /** Backend id. Missing for a guarantor added in the edit form that has not been saved yet. */
   guarantorId?: number;
   label: string;
+  /** Uses the driver's address: its proof is copied from the driver's. */
+  sameAsDriver?: boolean;
 };
 
 export type DocumentsStepGarage = {
   /** Backend id. Missing for a garage added in the edit form that has not been saved yet. */
   garageId?: number;
   address: AddressFormValues;
+  /** Uses the driver's address: its proof is copied from the driver's. */
+  sameAsDriver?: boolean;
 };
 
 type DocumentsStepProps = {
@@ -50,6 +54,13 @@ type DocumentsStepProps = {
 };
 
 const ERROR_MODULES = ['common', 'drivers'] as const;
+
+const CopiedFromDriverNote = () => (
+  <p className="typo-caption text-carbon-300">
+    Usa el domicilio del conductor: en cuanto el conductor tenga su comprobante de domicilio se copia aquí
+    automáticamente (si este espacio está vacío). También puedes subir otro.
+  </p>
+);
 
 const UnsavedNote = ({ what }: { what: string }) => (
   <p
@@ -135,21 +146,24 @@ const DocumentsStep = ({
           {garage.garageId === undefined ? (
             <UnsavedNote what="esta cochera" />
           ) : (
-            <div className="grid items-start gap-5 lg:grid-cols-2">
-              {GARAGE_DOCUMENT_TYPES.map((type) => (
-                <DocumentUpload
-                  key={type}
-                  entityType="garage"
-                  entityId={String(garage.garageId)}
-                  documentType={type}
-                  label={GARAGE_PROOF_LABEL}
-                  required={REQUIRED_GARAGE_DOCUMENT_TYPES.includes(type)}
-                  errorModules={[...ERROR_MODULES]}
-                  current={garageDocuments[garage.garageId as number]?.[type] ?? null}
-                  onChange={(document) => onGarageDocumentChange(garage.garageId as number, type, document)}
-                />
-              ))}
-            </div>
+            <>
+              {garage.sameAsDriver && <CopiedFromDriverNote />}
+              <div className="grid items-start gap-5 lg:grid-cols-2">
+                {GARAGE_DOCUMENT_TYPES.map((type) => (
+                  <DocumentUpload
+                    key={type}
+                    entityType="garage"
+                    entityId={String(garage.garageId)}
+                    documentType={type}
+                    label={GARAGE_PROOF_LABEL}
+                    required={REQUIRED_GARAGE_DOCUMENT_TYPES.includes(type)}
+                    errorModules={[...ERROR_MODULES]}
+                    current={garageDocuments[garage.garageId as number]?.[type] ?? null}
+                    onChange={(document) => onGarageDocumentChange(garage.garageId as number, type, document)}
+                  />
+                ))}
+              </div>
+            </>
           )}
         </StepCard>
       ))}
@@ -163,21 +177,24 @@ const DocumentsStep = ({
           {guarantor.guarantorId === undefined ? (
             <UnsavedNote what="este aval" />
           ) : (
-            <div className="grid items-start gap-5 lg:grid-cols-2">
-              {GUARANTOR_DOCUMENT_TYPES.map((type) => (
-                <DocumentUpload
-                  key={type}
-                  entityType="guarantor"
-                  entityId={String(guarantor.guarantorId)}
-                  documentType={type}
-                  label={getDriverDocumentLabel(type)}
-                  required={REQUIRED_GUARANTOR_DOCUMENT_TYPES.includes(type)}
-                  errorModules={[...ERROR_MODULES]}
-                  current={guarantorDocuments[guarantor.guarantorId as number]?.[type] ?? null}
-                  onChange={(document) => onGuarantorDocumentChange(guarantor.guarantorId as number, type, document)}
-                />
-              ))}
-            </div>
+            <>
+              {guarantor.sameAsDriver && <CopiedFromDriverNote />}
+              <div className="grid items-start gap-5 lg:grid-cols-2">
+                {GUARANTOR_DOCUMENT_TYPES.map((type) => (
+                  <DocumentUpload
+                    key={type}
+                    entityType="guarantor"
+                    entityId={String(guarantor.guarantorId)}
+                    documentType={type}
+                    label={getDriverDocumentLabel(type)}
+                    required={REQUIRED_GUARANTOR_DOCUMENT_TYPES.includes(type)}
+                    errorModules={[...ERROR_MODULES]}
+                    current={guarantorDocuments[guarantor.guarantorId as number]?.[type] ?? null}
+                    onChange={(document) => onGuarantorDocumentChange(guarantor.guarantorId as number, type, document)}
+                  />
+                ))}
+              </div>
+            </>
           )}
         </StepCard>
       ))}
