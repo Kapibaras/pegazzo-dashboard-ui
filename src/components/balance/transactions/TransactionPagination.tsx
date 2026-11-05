@@ -60,7 +60,7 @@ const TransactionPagination = ({
     <div className="bg-primary-100/20 flex flex-col items-center justify-between gap-3 rounded-xl px-4 py-2.5 sm:flex-row">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <span className="typo-sm-text text-primary-800 font-medium whitespace-nowrap">Filas por página:</span>
+          <span className="typo-label text-primary-800 whitespace-nowrap">Filas por página:</span>
           <Select value={String(limit)} onValueChange={(value) => onLimitChange(Number(value))}>
             <SelectTrigger
               size="sm"
@@ -81,7 +81,7 @@ const TransactionPagination = ({
             </SelectContent>
           </Select>
         </div>
-        <p className="typo-sm-text font-numbers text-primary-800 font-medium">
+        <p className="typo-label font-numbers text-primary-800">
           Mostrando {start}-{end} de {total} transacciones
         </p>
       </div>
@@ -97,7 +97,7 @@ const TransactionPagination = ({
         </Button>
         {pageNumbers.map((num, idx) =>
           num === 'ellipsis' ? (
-            <span key={`ellipsis-${idx}`} className="font-numbers text-primary-400 px-1 text-sm">
+            <span key={`ellipsis-${idx}`} className="typo-sm-text font-numbers text-primary-400 px-1">
               ...
             </span>
           ) : (
@@ -106,7 +106,7 @@ const TransactionPagination = ({
               variant="ghost"
               size="icon"
               className={cn(
-                'font-numbers h-8 w-8 cursor-pointer text-sm font-semibold transition-all',
+                'typo-label font-numbers h-8 w-8 cursor-pointer transition-all',
                 num === page
                   ? 'bg-primary-700 hover:bg-primary-700 text-white shadow-md hover:text-white'
                   : 'text-primary-700 hover:bg-primary-200/40 hover:text-primary-900',

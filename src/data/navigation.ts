@@ -1,5 +1,5 @@
 import { Role } from '@/lib/schemas/userSchema';
-import { Building2, CarFront, CircleDollarSign, House } from 'lucide-react';
+import { Building2, CarFront, CircleDollarSign, Handshake, House } from 'lucide-react';
 
 const ROUTES_WITH_ICONS = [
   {
@@ -27,15 +27,21 @@ const ROUTES_WITH_ICONS = [
   {
     title: 'Coches',
     icon: CarFront,
-    url: '/#',
+    url: '/coches',
     allowed: [Role.OWNER, Role.ADMIN, Role.EMPLOYEE],
+  },
+  {
+    title: 'Socios',
+    icon: Handshake,
+    url: '/socios',
+    allowed: [Role.OWNER, Role.ADMIN],
   },
   {
     title: 'Organización',
     icon: Building2,
     subroutes: [
       { title: 'Usuarios', url: '/usuarios' },
-      { title: 'Configuración', url: '#' },
+      { title: 'Configuración', url: '/configuracion/coches' },
     ],
     allowed: [Role.OWNER],
   },
@@ -46,10 +52,23 @@ const ROUTES_PATHNAMES: Record<string, string> = {
   '/balance': 'Balance',
   '/balance/transacciones': 'Balance',
   '/balance/autorizaciones': 'Balance',
+  '/coches': 'Coches',
+  '/socios': 'Socios',
   '/usuarios': 'Usuarios',
-  '/settings': 'Configuración',
+  '/configuracion/coches': 'Configuración',
 };
 
-export { ROUTES_WITH_ICONS, ROUTES_PATHNAMES };
+/** Exact match first, then the longest registered prefix (so `/coches/ABC-1/editar` resolves to "Coches"). */
+const getRouteTitle = (pathname: string): string => {
+  if (ROUTES_PATHNAMES[pathname]) return ROUTES_PATHNAMES[pathname];
+
+  const prefix = Object.keys(ROUTES_PATHNAMES)
+    .filter((route) => route !== '/' && pathname.startsWith(`${route}/`))
+    .sort((a, b) => b.length - a.length)[0];
+
+  return prefix ? ROUTES_PATHNAMES[prefix] : 'Unknown';
+};
+
+export { ROUTES_WITH_ICONS, ROUTES_PATHNAMES, getRouteTitle };
 
 export type RoutesType = typeof ROUTES_WITH_ICONS;

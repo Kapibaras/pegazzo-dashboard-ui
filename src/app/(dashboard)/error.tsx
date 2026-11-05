@@ -24,8 +24,8 @@ const DashboardError = ({ error, reset }: { error: Error & { digest?: string }; 
       {forbidden ? (
         <Card className="border-error-100 w-full max-w-md">
           <CardContent className="flex flex-col items-center gap-4 py-10">
-            <div className="flex size-12 items-center justify-center rounded-full bg-error-50">
-              <ShieldX className="size-6 text-error-400" />
+            <div className="bg-error-50 flex size-12 items-center justify-center rounded-full">
+              <ShieldX className="text-error-400 size-6" />
             </div>
             <div className="space-y-1 text-center">
               <p className="typo-subtitle">Acceso denegado</p>
@@ -33,7 +33,7 @@ const DashboardError = ({ error, reset }: { error: Error & { digest?: string }; 
             </div>
             <Button
               asChild
-              className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text mt-2 cursor-pointer rounded-md px-12 py-5.5 hover:shadow-sm"
+              className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-button mt-2 cursor-pointer rounded-md px-12 py-5.5 hover:shadow-sm"
             >
               <Link href="/">Volver al inicio</Link>
             </Button>
@@ -42,8 +42,8 @@ const DashboardError = ({ error, reset }: { error: Error & { digest?: string }; 
       ) : (
         <Card className="border-error-100 w-full max-w-md">
           <CardContent className="flex flex-col items-center gap-4 py-10">
-            <div className="flex size-12 items-center justify-center rounded-full bg-error-50">
-              <AlertCircle className="size-6 text-error-400" />
+            <div className="bg-error-50 flex size-12 items-center justify-center rounded-full">
+              <AlertCircle className="text-error-400 size-6" />
             </div>
             <div className="space-y-1 text-center">
               <p className="typo-subtitle">Algo salio mal</p>
@@ -53,7 +53,7 @@ const DashboardError = ({ error, reset }: { error: Error & { digest?: string }; 
             </div>
             <Button
               onClick={handleRetry}
-              className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text mt-2 cursor-pointer rounded-md px-12 py-5.5 hover:shadow-sm"
+              className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-button mt-2 cursor-pointer rounded-md px-12 py-5.5 hover:shadow-sm"
             >
               <RefreshCw className="size-4" />
               Reintentar

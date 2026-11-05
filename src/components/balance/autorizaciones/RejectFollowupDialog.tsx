@@ -26,7 +26,7 @@ const RejectFollowupDialog = ({ open, reference, isDeleting, onKeep, onDelete }:
         <AlertDialogHeader>
           <AlertDialogTitle className="typo-subtitle text-carbon-500">Transacción rechazada</AlertDialogTitle>
           <AlertDialogDescription className="typo-text text-carbon-300">
-            La transacción <span className="font-mono font-semibold">{reference}</span> ha sido rechazada. ¿Deseas
+            La transacción <span className="font-numbers font-semibold">{reference}</span> ha sido rechazada. ¿Deseas
             también eliminarla?
           </AlertDialogDescription>
         </AlertDialogHeader>

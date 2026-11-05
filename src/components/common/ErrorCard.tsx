@@ -13,8 +13,8 @@ const ErrorCard = ({ title = 'Algo salió mal', message, onRetry }: ErrorCardPro
   return (
     <Card className="border-error-100">
       <CardContent className="flex flex-col items-center gap-4 py-10">
-        <div className="flex size-12 items-center justify-center rounded-full bg-error-50">
-          <AlertCircle className="size-6 text-error-400" />
+        <div className="bg-error-50 flex size-12 items-center justify-center rounded-full">
+          <AlertCircle className="text-error-400 size-6" />
         </div>
         <div className="space-y-1 text-center">
           <p className="typo-subtitle">{title}</p>
@@ -23,7 +23,7 @@ const ErrorCard = ({ title = 'Algo salió mal', message, onRetry }: ErrorCardPro
         {onRetry && (
           <Button
             onClick={onRetry}
-            className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text mt-2 cursor-pointer rounded-md px-12 py-5.5 hover:shadow-sm"
+            className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-button mt-2 cursor-pointer rounded-md px-12 py-5.5 hover:shadow-sm"
           >
             <RefreshCw className="size-4" />
             Reintentar

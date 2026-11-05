@@ -44,7 +44,7 @@ const NavFooter = ({
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton className="bg-terciary-500 h-fit cursor-pointer gap-3 rounded-none px-5 py-3.5 group-data-[state=collapsed]:h-[4.15rem]! group-data-[state=collapsed]:w-full!">
                 <IconRole className="size-9! group-data-[state=collapsed]:ml-[0.3rem]" />
-                <div className="grid flex-1 text-left text-sm leading-tight">
+                <div className="typo-sm-text grid flex-1 text-left leading-tight">
                   <span className="typo-bold-text truncate">{username}</span>
                   <span className="typo-sm-text truncate">{`${name} ${firstSurname}`}</span>
                 </div>

@@ -56,7 +56,7 @@ const ChangeRoleInput = ({ currentRole, username, onRoleUpdated }: ChangeRoleInp
         name="role"
         render={() => (
           <FormItem className="gap-2">
-            <FormLabel className="typo-subtitle text-carbon-500">Rol</FormLabel>
+            <FormLabel className="typo-label text-carbon-500">Rol</FormLabel>
             <Controller
               control={form.control}
               name="role"

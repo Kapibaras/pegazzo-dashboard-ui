@@ -3,14 +3,14 @@
 import { PanelLeftOpen } from 'lucide-react';
 import { useSidebar } from '../ui/sidebar';
 import { Button } from '../ui/button';
-import { ROUTES_PATHNAMES } from '@/data/navigation';
+import { getRouteTitle } from '@/data/navigation';
 import { usePathname } from 'next/navigation';
 
 const Header = () => {
   const { toggleSidebar } = useSidebar();
   const pathname = usePathname();
 
-  const title = ROUTES_PATHNAMES[pathname] || 'Unknown';
+  const title = getRouteTitle(pathname);
 
   return (
     <header className="bg-terciary-500 text-primary-100 typo-subtitle flex h-16 w-full items-center px-5 shadow-[0_6px_9px_0_rgba(0,0,0,0.25)]">

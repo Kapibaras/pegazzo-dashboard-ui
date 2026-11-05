@@ -62,19 +62,19 @@ const ViewUserSheet = ({ user, children }: { user: User; children: React.ReactNo
             name={user.name}
             surnames={user.surnames}
           >
-            <Button className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm">
+            <Button className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-button flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm">
               Editar Nombre
             </Button>
           </UpdateUserNamesSheet>
           <UpdateUserPasswordSheet userId={user.username} onSuccess={() => setOpen(false)}>
-            <Button className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm">
+            <Button className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-button flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:shadow-sm">
               Cambiar Contraseña
             </Button>
           </UpdateUserPasswordSheet>
           <AlertDeleteUser username={user.username} onSuccess={() => setOpen(false)}>
             <Button
               disabled={user.role === CONFIG.USER_ROLES.OWNER}
-              className="bg-error-400 hover:bg-error-500 text-error-50 typo-bold-text flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:text-white hover:shadow-sm"
+              className="bg-error-400 hover:bg-error-500 text-error-50 typo-button flex cursor-pointer items-center justify-center rounded-md px-28 py-5.5 text-center hover:text-white hover:shadow-sm"
             >
               Eliminar Usuario
             </Button>

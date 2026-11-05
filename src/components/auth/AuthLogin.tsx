@@ -62,7 +62,7 @@ const AuthLogin = () => {
           <FieldSet className="md:px-5">
             <FieldGroup className="flex flex-col gap-8">
               <Field data-invalid={!!errors.username}>
-                <FieldLabel htmlFor="username" className="typo-bold-text">
+                <FieldLabel htmlFor="username" className="typo-label">
                   Username
                 </FieldLabel>
                 <Input
@@ -76,7 +76,7 @@ const AuthLogin = () => {
               </Field>
 
               <Field data-invalid={!!errors.password}>
-                <FieldLabel htmlFor="password" className="typo-bold-text">
+                <FieldLabel htmlFor="password" className="typo-label">
                   Contraseña
                 </FieldLabel>
                 <Input
@@ -94,7 +94,7 @@ const AuthLogin = () => {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex cursor-pointer items-center justify-center rounded-md py-5.5 text-center hover:shadow-sm md:mx-5"
+            className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-button flex cursor-pointer items-center justify-center rounded-md py-5.5 text-center hover:shadow-sm md:mx-5"
           >
             {isSubmitting ? (
               <>

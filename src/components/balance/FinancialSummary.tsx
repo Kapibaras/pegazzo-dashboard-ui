@@ -52,9 +52,7 @@ const FinancialSummary = ({ weeklyAverages, incomeExpenseRatio }: FinancialSumma
               </div>
               <span className="typo-bold-text">Promedio semanal ingresos</span>
             </div>
-            <span className="font-numbers text-2xl font-semibold tracking-tight">
-              {formatCurrency(weeklyAverages.income)}
-            </span>
+            <span className="typo-kpi-sm">{formatCurrency(weeklyAverages.income)}</span>
           </div>
 
           <div className="flex flex-col items-center gap-2 text-center">
@@ -70,8 +68,8 @@ const FinancialSummary = ({ weeklyAverages, incomeExpenseRatio }: FinancialSumma
                 </TooltipContent>
               </Tooltip>
             </div>
-            <span className="font-numbers text-4xl font-semibold tracking-tight">{ratioDisplay}</span>
-            <span className={cn('rounded-full px-3 py-1 text-xs font-medium', badge.className)}>{badge.label}</span>
+            <span className="typo-kpi">{ratioDisplay}</span>
+            <span className={cn('typo-caption rounded-full px-3 py-1', badge.className)}>{badge.label}</span>
           </div>
 
           <div className="flex flex-col items-center gap-1 text-center">
@@ -81,9 +79,7 @@ const FinancialSummary = ({ weeklyAverages, incomeExpenseRatio }: FinancialSumma
               </div>
               <span className="typo-bold-text">Promedio semanal gastos</span>
             </div>
-            <span className="font-numbers text-2xl font-semibold tracking-tight">
-              {formatCurrency(weeklyAverages.expense)}
-            </span>
+            <span className="typo-kpi-sm">{formatCurrency(weeklyAverages.expense)}</span>
           </div>
         </div>
       </CardContent>

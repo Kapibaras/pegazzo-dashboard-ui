@@ -94,7 +94,7 @@ const StepperUnit = ({ value, max, label, onChange }: StepperUnitProps) => {
           e.target.select();
         }}
         maxLength={2}
-        className="border-primary-700/25 bg-primary-700/10 text-primary-700 focus:border-primary-700/60 focus:ring-primary-700/20 size-14 rounded-xl border text-center font-mono text-2xl font-semibold tabular-nums shadow-inner transition-all outline-none focus:ring-2"
+        className="typo-kpi-sm border-primary-700/25 bg-primary-700/10 text-primary-700 focus:border-primary-700/60 focus:ring-primary-700/20 size-14 rounded-xl border text-center tabular-nums shadow-inner transition-all outline-none focus:ring-2"
       />
 
       <button
@@ -105,7 +105,7 @@ const StepperUnit = ({ value, max, label, onChange }: StepperUnitProps) => {
         <ChevronDown className="text-carbon-300 group-hover:text-primary-700 size-4 transition-colors" />
       </button>
 
-      <span className="text-carbon-300 text-[0.62rem] font-semibold tracking-widest uppercase">{label}</span>
+      <span className="typo-overline text-carbon-300">{label}</span>
     </div>
   );
 };
@@ -137,12 +137,12 @@ const TimePicker = ({ value, onChange, error }: TimePickerProps) => {
           )}
         >
           <Clock className="text-carbon-300 size-4 shrink-0" />
-          <span className="text-carbon-500 font-numbers text-base tabular-nums">{value}</span>
+          <span className="typo-text text-carbon-500 font-numbers tabular-nums">{value}</span>
         </button>
       </PopoverTrigger>
 
       <PopoverContent className="border-surface-700 bg-surface-400 w-auto p-5 shadow-xl" align="end" sideOffset={6}>
-        <p className="text-carbon-300 mb-4 text-[0.65rem] font-semibold tracking-widest uppercase">Hora</p>
+        <p className="typo-overline text-carbon-300 mb-4">Hora</p>
 
         <div className="flex items-center gap-2">
           <StepperUnit value={hh} max={23} label="Horas" onChange={setHour} />

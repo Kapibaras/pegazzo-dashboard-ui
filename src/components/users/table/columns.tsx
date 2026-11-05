@@ -13,7 +13,7 @@ export const columns: ColumnDef<User>[] = [
     header: ({ column }) => (
       <Button
         variant="ghost"
-        className="text-primary-100 typo-bold-text hover:bg-primary-100 cursor-pointer"
+        className="text-primary-100 typo-bold-text! hover:bg-primary-100 cursor-pointer"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
         Usuario
@@ -38,7 +38,7 @@ export const columns: ColumnDef<User>[] = [
       <div className="flex w-full justify-end">
         <Button
           variant="ghost"
-          className="text-primary-100 typo-bold-text hover:bg-primary-100 cursor-pointer"
+          className="text-primary-100 typo-bold-text! hover:bg-primary-100 cursor-pointer"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Rol

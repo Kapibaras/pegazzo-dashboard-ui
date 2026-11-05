@@ -52,20 +52,18 @@ const ComparisonRow = ({
         <span className="typo-sm-text text-muted-foreground">{label}</span>
       </div>
       <div className="flex items-end justify-between gap-3">
-        <span className="font-numbers text-2xl font-semibold tracking-tight">{formatCurrency(currentValue)}</span>
+        <span className="typo-kpi-sm">{formatCurrency(currentValue)}</span>
         <div className={cn('mb-0.5 flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1', bgClass, colorClass)}>
           <ChangeIcon className="size-3.5" />
-          <span className="font-numbers text-sm">
+          <span className="typo-sm-text font-numbers">
             {isPositive ? '+' : ''}
             {formatPercent(changePercent)}
           </span>
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <span className="bg-muted rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-          Anterior
-        </span>
-        <span className="font-numbers text-sm text-muted-foreground">{formatCurrency(previousValue)}</span>
+        <span className="typo-overline bg-muted text-muted-foreground/60 rounded px-1.5 py-0.5">Anterior</span>
+        <span className="typo-sm-text font-numbers text-muted-foreground">{formatCurrency(previousValue)}</span>
       </div>
     </div>
   );
@@ -107,8 +105,8 @@ const ComparisonPanel = ({ comparison, currentPeriod, previousPeriod }: Comparis
     <Card className="h-full">
       <CardHeader>
         <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-lg bg-primary-100">
-            <ArrowLeftRight className="size-5 text-primary-600" />
+          <div className="bg-primary-100 flex size-10 items-center justify-center rounded-lg">
+            <ArrowLeftRight className="text-primary-600 size-5" />
           </div>
           <CardTitle className="typo-subtitle">Comparación con período anterior</CardTitle>
         </div>

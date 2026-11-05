@@ -41,7 +41,7 @@ const SaveOptionsDialog = ({ open, isSaving, onOpenChange, onSaveOnly, onSaveAnd
           <AlertDialogAction
             onClick={onSaveAndResubmit}
             disabled={isSaving}
-            className="typo-bold-text bg-terciary-500 hover:bg-primary-700 text-primary-100 cursor-pointer py-5.5 hover:shadow-sm"
+            className="typo-button bg-terciary-500 hover:bg-primary-700 text-primary-100 cursor-pointer py-5.5 hover:shadow-sm"
           >
             {isSaving ? 'Guardando...' : 'Guardar y reenviar a revisión'}
           </AlertDialogAction>

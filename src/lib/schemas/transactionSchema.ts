@@ -2,10 +2,7 @@ import { z } from 'zod';
 import { isAfter, isBefore, subMonths } from 'date-fns';
 
 export const createTransactionSchema = z.object({
-  amount: z
-    .coerce
-    .number({ error: 'El monto debe ser un número.' })
-    .positive('El monto debe ser un número positivo.'),
+  amount: z.coerce.number({ error: 'El monto debe ser un número.' }).positive('El monto debe ser un número positivo.'),
   date: z
     .string()
     .optional()
@@ -26,10 +23,7 @@ export const createTransactionSchema = z.object({
   type: z.enum(['debit', 'credit'], { error: 'Selecciona un tipo.' }),
   category_group: z.string().min(1, 'Selecciona un rubro.'),
   category_subcategory: z.string().min(1, 'Selecciona una categoría.'),
-  description: z
-    .string()
-    .min(1, 'La descripción es requerida.')
-    .max(255, 'Máximo 255 caracteres.'),
+  description: z.string().min(1, 'La descripción es requerida.').max(255, 'Máximo 255 caracteres.'),
   payment_method: z.enum(['cash', 'personal_transfer', 'pegazzo_transfer'], {
     error: 'Selecciona un método de pago.',
   }),

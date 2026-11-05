@@ -16,7 +16,7 @@ const CreateTransactionSheet = ({ onRefetch }: CreateTransactionSheetProps) => {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-bold-text flex min-h-10 cursor-pointer items-center justify-center px-6 py-3 text-center hover:shadow-sm md:px-6 md:py-3">
+        <Button className="bg-terciary-500 hover:bg-primary-700 text-primary-100 typo-button flex min-h-10 cursor-pointer items-center justify-center px-6 py-3 text-center hover:shadow-sm md:px-6 md:py-3">
           <PlusCircle className="!h-6 !w-6" />
           <span className="mr-1 hidden lg:inline">Agregar transacción</span>
         </Button>

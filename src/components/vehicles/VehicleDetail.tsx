@@ -1,0 +1,357 @@
+import Link from 'next/link';
+import {
+  BatteryCharging,
+  CalendarClock,
+  Camera,
+  Car,
+  ChevronRight,
+  CircleDollarSign,
+  Eye,
+  FileText,
+  FileWarning,
+  Fingerprint,
+  Gauge,
+  Landmark,
+  Plus,
+  Receipt,
+  Scale,
+  ShieldCheck,
+  UserRound,
+  Wrench,
+} from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import {
+  formatCurrency,
+  formatDate,
+  formatOdometer,
+  getDocumentTypeLabel,
+  getTransmissionLabel,
+  getVehicleTitle,
+  isPegazzoOwner,
+  requiredDocumentTypes,
+} from '@/lib/vehicle';
+import { VehicleDetail as VehicleDetailData } from '@/types/vehicle';
+import CanManage from './CanManage';
+import ExpiryBadge from './ExpiryBadge';
+import VehicleDetailActions from './VehicleDetailActions';
+import ViewFileButton from './ViewFileButton';
+import ViewFileTile from './ViewFileTile';
+import VehicleGallery from './VehicleGallery';
+import VehicleInfoCard from './VehicleInfoCard';
+import VehicleStatCard from './VehicleStatCard';
+import VehicleStatusSelector from './VehicleStatusSelector';
+
+const SectionTitle = ({ children }: { children: React.ReactNode }) => (
+  <h2 className="typo-subtitle text-carbon-500">{children}</h2>
+);
+
+const VehicleDetail = ({ vehicle }: { vehicle: VehicleDetailData }) => {
+  const title = getVehicleTitle(vehicle);
+  const archived = !!vehicle.archivedAt;
+  const photos = vehicle.photos ?? [];
+  const documents = vehicle.documents ?? [];
+  const pegazzoOwned = isPegazzoOwner(vehicle.legalOwnerName);
+  const associate = vehicle.associate;
+  const driver = vehicle.assignedDriver;
+  // Required documents (they depend on the financing) that are not uploaded yet: the status stays locked until done.
+  const missingDocuments = requiredDocumentTypes(vehicle.isFinancedLiquidated).filter(
+    (type) => !documents.some((doc) => doc.type === type),
+  );
+
+  return (
+    <article className="flex flex-col gap-6">
+      <header className="flex flex-col gap-4">
+        <nav aria-label="Ruta de navegación" className="typo-sm-text text-carbon-300 flex items-center gap-1.5">
+          <Link href="/coches" className="hover:text-primary-800 hover:underline">
+            Coches
+          </Link>
+          <ChevronRight className="size-3.5" aria-hidden />
+          <span className="text-carbon-500 font-medium" aria-current="page">
+            {title}
+          </span>
+        </nav>
+
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="typo-title text-carbon-500">{title}</h1>
+              <VehicleStatusSelector
+                vehicleId={vehicle.id}
+                vehicleName={title}
+                status={vehicle.status}
+                archived={archived}
+                missingDocuments={missingDocuments}
+              />
+              {archived && (
+                <Badge className="typo-sm-text bg-secondary-50 text-carbon-400 hover:bg-secondary-50 px-3 py-1">
+                  Archivado
+                </Badge>
+              )}
+            </div>
+            <p className="typo-sm-text font-numbers text-carbon-300">
+              <span className="sr-only">Folio interno: </span>
+              {vehicle.id}
+            </p>
+          </div>
+          <VehicleDetailActions
+            vehicleId={vehicle.id}
+            vehicleName={title}
+            archived={archived}
+            status={vehicle.status}
+            missingDocuments={missingDocuments}
+          />
+        </div>
+
+        {missingDocuments.length > 0 && (
+          <div
+            role="status"
+            className="typo-sm-text border-warning-600/30 bg-warning-100/60 text-warning-800 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border px-4 py-3"
+          >
+            <FileWarning className="text-warning-700 size-5 shrink-0" aria-hidden />
+            <p className="min-w-0 flex-1">
+              <strong>Documentación incompleta.</strong> Faltan: {missingDocuments.map(getDocumentTypeLabel).join(', ')}
+              . Mientras tanto no se puede cambiar el estado del coche.
+            </p>
+            <CanManage>
+              <Link
+                href={`/coches/${encodeURIComponent(vehicle.id)}/editar?paso=documentos`}
+                className="text-warning-800 font-semibold underline underline-offset-2 hover:no-underline"
+              >
+                Completar documentos
+              </Link>
+            </CanManage>
+          </div>
+        )}
+      </header>
+
+      <div className="grid gap-5 lg:grid-cols-[400px_1fr]">
+        <VehicleGallery agencyImage={vehicle.agencyImage} photos={vehicle.photos} title={title} />
+
+        <div className="grid grid-cols-2 gap-4">
+          <VehicleStatCard
+            icon={Gauge}
+            label="Odómetro"
+            value={formatOdometer(vehicle.odometer)}
+            chipClassName="bg-primary-50 text-primary-800"
+          />
+          <VehicleStatCard
+            icon={CircleDollarSign}
+            label="Valor de unidad"
+            value={formatCurrency(vehicle.unitValue)}
+            chipClassName="bg-success-50 text-success-700"
+          />
+          <VehicleStatCard
+            icon={CalendarClock}
+            label="Vencimiento de póliza"
+            value={formatDate(vehicle.insurance?.policyExpirationDate)}
+            hint={vehicle.insurance?.name}
+            chipClassName="bg-warning-100 text-warning-700"
+          />
+          <VehicleStatCard
+            icon={UserRound}
+            label="Socio"
+            value={associate ? `${associate.name} ${associate.surnames}` : 'Sin socio'}
+            hint={associate?.telephones?.[0]}
+            chipClassName="bg-terciary-50 text-terciary-500"
+          />
+        </div>
+      </div>
+
+      <div className="grid gap-5 lg:grid-cols-2">
+        <VehicleInfoCard
+          icon={Car}
+          title="Identidad"
+          rows={[
+            { label: 'Marca', value: vehicle.make },
+            { label: 'Modelo', value: vehicle.model },
+            { label: 'Año', value: vehicle.year, mono: true },
+            { label: 'Color', value: vehicle.color },
+            { label: 'Carrocería', value: vehicle.bodyType },
+          ]}
+        />
+        <VehicleInfoCard
+          icon={Wrench}
+          title="Datos técnicos"
+          rows={[
+            { label: 'VIN', value: vehicle.vin, mono: true },
+            { label: 'Placa', value: vehicle.plate, mono: true },
+            { label: 'Serie de motor', value: vehicle.engineSerialNumber, mono: true },
+            { label: 'Motor', value: vehicle.engineType },
+            { label: 'Transmisión', value: getTransmissionLabel(vehicle.transmission) },
+            { label: 'Puertas', value: vehicle.doorsNumber, mono: true },
+            { label: 'Pasajeros', value: vehicle.passengersNumber, mono: true },
+            { label: 'Llantas', value: vehicle.tireSpecification, mono: true },
+          ]}
+        />
+        <VehicleInfoCard
+          icon={BatteryCharging}
+          title="Batería"
+          rows={[
+            { label: 'Modelo', value: vehicle.batteryModel },
+            { label: 'Número de serie', value: vehicle.batterySerialNumber, mono: true },
+            { label: 'Fecha', value: formatDate(vehicle.batteryDate), mono: true },
+          ]}
+        />
+        <VehicleInfoCard
+          icon={ShieldCheck}
+          title="Seguro"
+          rows={[
+            { label: 'Aseguradora', value: vehicle.insurance?.name },
+            { label: 'Número de póliza', value: vehicle.insurance?.policyNumber, mono: true },
+            { label: 'Tipo de póliza', value: vehicle.insurance?.policyType },
+            { label: 'Vigencia', value: formatDate(vehicle.insurance?.policyExpirationDate), mono: true },
+          ]}
+        />
+        <VehicleInfoCard
+          icon={Receipt}
+          title="Registro y facturación"
+          rows={[
+            { label: 'Valor de unidad', value: formatCurrency(vehicle.unitValue), mono: true },
+            { label: 'Valor de facturación', value: formatCurrency(vehicle.unitBillingValue), mono: true },
+            { label: 'Número de factura', value: vehicle.billNumber, mono: true },
+            { label: 'RPV', value: vehicle.publicVehicleRegistry, mono: true },
+            { label: 'Fecha de alta RPV', value: formatDate(vehicle.altaPublicVehicleRegistry), mono: true },
+          ]}
+        />
+        <VehicleInfoCard
+          icon={Landmark}
+          title="Financiamiento"
+          badge={
+            vehicle.isFinancedLiquidated ? (
+              <Badge className="typo-caption bg-success-50 text-success-700 hover:bg-success-50">Liquidado</Badge>
+            ) : (
+              <Badge className="typo-caption bg-warning-100 text-warning-700 hover:bg-warning-100">No liquidado</Badge>
+            )
+          }
+          rows={
+            vehicle.isFinancedLiquidated
+              ? [{ label: 'Situación', value: 'El coche está liquidado.' }]
+              : [
+                  { label: 'Agencia', value: vehicle.financingAgency },
+                  { label: 'Fecha de compra', value: formatDate(vehicle.financingPurchaseDate), mono: true },
+                  {
+                    label: 'Plazo',
+                    value: vehicle.financingTermMonths ? `${vehicle.financingTermMonths} meses` : null,
+                    mono: true,
+                  },
+                  { label: 'Restante', value: formatCurrency(vehicle.financingRemainingAmount), mono: true },
+                ]
+          }
+        />
+        <VehicleInfoCard
+          icon={Scale}
+          title="Propietario legal"
+          badge={
+            <Badge
+              className={
+                pegazzoOwned
+                  ? 'typo-caption bg-primary-50 text-primary-800 hover:bg-primary-50'
+                  : 'typo-caption bg-secondary-50 text-carbon-400 hover:bg-secondary-50'
+              }
+            >
+              {pegazzoOwned ? 'Pegazzo' : 'Propietario particular'}
+            </Badge>
+          }
+          rows={[
+            { label: 'Nombre', value: vehicle.legalOwnerName },
+            { label: 'Apellidos', value: vehicle.legalOwnerSurnames },
+          ]}
+        />
+        <VehicleInfoCard
+          icon={Fingerprint}
+          title="Conductor asignado"
+          rows={[
+            {
+              label: 'Conductor',
+              value: driver ? `${driver.name} ${driver.surnames}` : 'Sin asignar',
+            },
+          ]}
+        />
+      </div>
+
+      <section className="flex flex-col gap-3" aria-labelledby="photos-title">
+        <div className="flex items-center gap-3">
+          <SectionTitle>
+            <span id="photos-title">Fotos del vehículo</span>
+          </SectionTitle>
+          <span className="typo-sm-text text-carbon-300">
+            {photos.length === 0
+              ? 'Aún no hay fotos'
+              : `${photos.length} ${photos.length === 1 ? 'foto subida' : 'fotos subidas'}`}
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          {photos.map((src, index) => (
+            <ViewFileButton
+              key={src}
+              items={photos.map((url, i) => ({ url, title: `Foto ${i + 1} de ${title}` }))}
+              startIndex={index}
+              aria-label={`Ver foto ${index + 1} de ${title}`}
+              className="focus-visible:ring-primary-700 block cursor-zoom-in overflow-hidden rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={src}
+                alt={`Foto ${index + 1} de ${title}`}
+                className="border-surface-600/70 h-[100px] w-[140px] rounded-lg border object-cover transition-transform duration-300 hover:scale-105 motion-reduce:transition-none"
+                loading="lazy"
+              />
+            </ViewFileButton>
+          ))}
+          <CanManage>
+            <Link
+              href={`/coches/${encodeURIComponent(vehicle.id)}/editar`}
+              className="typo-sm-text border-surface-700/60 text-carbon-300 hover:border-primary-700 hover:text-primary-800 hover:bg-primary-50 flex h-[100px] w-[140px] cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed transition-colors"
+            >
+              {photos.length === 0 ? (
+                <Camera className="size-5" aria-hidden />
+              ) : (
+                <Plus className="size-5" aria-hidden />
+              )}
+              Agregar
+            </Link>
+          </CanManage>
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-3" aria-labelledby="documents-title">
+        <SectionTitle>
+          <span id="documents-title">Documentos</span>
+        </SectionTitle>
+        {documents.length === 0 ? (
+          <p className="typo-sm-text text-carbon-300 border-surface-700/60 rounded-lg border-2 border-dashed px-4 py-6 text-center">
+            Aún no hay documentos cargados.
+          </p>
+        ) : (
+          <ul className="border-surface-600/70 divide-surface-600/60 divide-y overflow-hidden rounded-xl border bg-white">
+            {documents.map((doc) => (
+              <li key={doc.id}>
+                <ViewFileTile
+                  items={[{ url: doc.url, title: getDocumentTypeLabel(doc.type) }]}
+                  aria-label={`Ver ${getDocumentTypeLabel(doc.type)}`}
+                  className="hover:bg-surface-400/60 group/doc flex items-center gap-4 px-4 py-3 transition-colors"
+                >
+                  <span className="bg-primary-50 text-primary-800 flex size-9 shrink-0 items-center justify-center rounded-lg">
+                    <FileText className="size-[18px]" aria-hidden />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="typo-label text-carbon-500 truncate">{getDocumentTypeLabel(doc.type)}</p>
+                    {doc.expiryDate && (
+                      <p className="typo-caption text-carbon-300">Vence el {formatDate(doc.expiryDate)}</p>
+                    )}
+                  </div>
+                  <ExpiryBadge status={doc.expiryStatus} />
+                  <span className="typo-label text-primary-800 group-hover/doc:text-primary-900 flex items-center gap-1 group-hover/doc:underline">
+                    Ver <Eye className="size-3.5" aria-hidden />
+                  </span>
+                </ViewFileTile>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </article>
+  );
+};
+
+export default VehicleDetail;
